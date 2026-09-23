@@ -51,14 +51,19 @@ export default async function DashboardPage() {
           {courses?.map((course) => (
             <div
               key={course.id}
-              className="border border-neutral-800 rounded-2xl p-6 hover:border-neutral-600 transition flex flex-col"
+              className="border border-neutral-800 rounded-2xl hover:border-neutral-600 transition flex flex-col"
             >
-              <div className="text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                {course.track === 'en_to_nl' ? 'English → Dutch' : 'Dutch → English'} · {course.level}
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-              <p className="text-neutral-400 text-sm mb-4 flex-1">{course.description}</p>
-              <div>
+              <Link
+                href={`/courses/${course.slug}`}
+                className="p-6 flex-1 block"
+              >
+                <div className="text-xs uppercase tracking-wider text-neutral-500 mb-2">
+                  {course.track === 'en_to_nl' ? 'English → Dutch' : 'Dutch → English'} · {course.level}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
+                <p className="text-neutral-400 text-sm">{course.description}</p>
+              </Link>
+              <div className="px-6 pb-6">
                 <EnrollButton
                   courseId={course.id}
                   enrolled={enrolledIds.has(course.id)}
