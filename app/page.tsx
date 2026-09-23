@@ -13,6 +13,7 @@ export default async function Home() {
       <nav className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
         <span className="text-xl font-bold tracking-tight">Meridian Academy</span>
         <div className="flex gap-4 text-sm items-center">
+          <Link href="/community" className="hover:text-neutral-300">Community</Link>
           <Link href="/login" className="hover:text-neutral-300">Login</Link>
           <Link
             href="/signup"
@@ -47,16 +48,17 @@ export default async function Home() {
         )}
         <div className="grid md:grid-cols-2 gap-6">
           {courses?.map((course) => (
-            <div
+            <Link
               key={course.id}
-              className="border border-neutral-800 rounded-2xl p-6 hover:border-neutral-600 transition"
+              href={`/courses/${course.slug}`}
+              className="border border-neutral-800 rounded-2xl p-6 hover:border-neutral-600 transition block"
             >
               <div className="text-xs uppercase tracking-wider text-neutral-500 mb-2">
                 {course.track === 'en_to_nl' ? 'English → Dutch' : 'Dutch → English'} · {course.level}
               </div>
               <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
               <p className="text-neutral-400 text-sm">{course.description}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
