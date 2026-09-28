@@ -3,11 +3,14 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import LessonEditor from './LessonEditor'
 
+const ADMIN_EMAIL = 'stephaniederoeck.jedits@gmail.com'
+
 export default async function AdminLessonsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login')
+  if (user.email !== ADMIN_EMAIL) redirect('/dashboard')
 
   const { data: courses } = await supabase
     .from('courses')
