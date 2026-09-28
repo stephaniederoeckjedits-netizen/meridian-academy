@@ -2,6 +2,13 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
+function getYouTubeId(url: string) {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  )
+  return match ? match[1] : null
+}
+
 export default async function LessonPage({
   params,
 }: {
@@ -51,6 +58,8 @@ export default async function LessonPage({
       ? allLessons[currentIndex + 1]
       : null
 
+  const youtubeId = lesson.video_url ? getYouTubeId(lesson.video_url) : null
+
   return (
     <main className="min-h-screen bg-neutral-950 text-white">
       <nav className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
@@ -71,7 +80,17 @@ export default async function LessonPage({
         </div>
         <h1 className="text-3xl font-bold mb-6">{lesson.title}</h1>
 
-        {lesson.video_url ? (
+        {youtubeId ? (
+          <div className="w-full aspect-video rounded-xl overflow-hidden mb-8 bg-black">
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}`}
+              title={lesson.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
+        ) : lesson.video_url ? (
           <video
             src={lesson.video_url}
             controls
