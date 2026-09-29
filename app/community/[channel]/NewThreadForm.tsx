@@ -1,3 +1,5 @@
+// FILE: app/community/[channel]/NewThreadForm.tsx  (form component)
+
 'use client'
 
 import { useState } from 'react'
@@ -16,7 +18,10 @@ export default function NewThreadForm({ channelId }: { channelId: string }) {
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
 
     const { error } = await supabase.from('threads').insert({
       channel_id: channelId,
@@ -38,12 +43,12 @@ export default function NewThreadForm({ channelId }: { channelId: string }) {
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Start a new thread..."
-        className="flex-1 bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-2 focus:border-neutral-600 outline-none"
+        className="flex-1 bg-[var(--m-surface)] border border-[var(--m-border)] rounded-lg px-4 py-2.5 focus:border-[var(--m-border-bright)] outline-none text-sm"
       />
       <button
         type="submit"
         disabled={loading}
-        className="bg-white text-black font-semibold rounded-full px-5 hover:bg-neutral-200 disabled:opacity-50"
+        className="bg-white text-black text-sm font-semibold rounded-lg px-5 hover:bg-neutral-200 disabled:opacity-50 transition"
       >
         {loading ? '...' : 'Post'}
       </button>

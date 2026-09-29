@@ -1,3 +1,5 @@
+// FILE: app/community/[channel]/[threadId]/ReplyForm.tsx  (reply form component)
+
 'use client'
 
 import { useState } from 'react'
@@ -16,7 +18,10 @@ export default function ReplyForm({ threadId }: { threadId: string }) {
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) {
+      setLoading(false)
+      return
+    }
 
     const { error } = await supabase.from('posts').insert({
       thread_id: threadId,
@@ -38,12 +43,12 @@ export default function ReplyForm({ threadId }: { threadId: string }) {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Write a reply..."
         rows={4}
-        className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 focus:border-neutral-600 outline-none resize-none"
+        className="w-full bg-[var(--m-surface)] border border-[var(--m-border)] rounded-lg px-4 py-3 focus:border-[var(--m-border-bright)] outline-none resize-none text-sm"
       />
       <button
         type="submit"
         disabled={loading}
-        className="bg-white text-black font-semibold rounded-full px-6 py-2 hover:bg-neutral-200 disabled:opacity-50"
+        className="bg-white text-black font-semibold text-sm rounded-lg px-6 py-2.5 hover:bg-neutral-200 disabled:opacity-50 transition"
       >
         {loading ? 'Posting...' : 'Reply'}
       </button>
