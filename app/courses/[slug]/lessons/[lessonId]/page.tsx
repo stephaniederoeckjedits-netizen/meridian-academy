@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import CompleteButton from './CompleteButton'
 
 function getYouTubeId(url: string) {
   const match = url.match(
@@ -45,19 +46,24 @@ export default async function LessonPage({
 
   if (!lesson) notFound()
 
-  const { data: allLessons } = await supabase
+  const { data: siblings } = await supabase
     .from('lessons')
     .select('id, title, order_index')
-    .eq('course_id', course.id)
+    .eq('mission_id', lesson.mission_id)
     .order('order_index', { ascending: true })
 
-  const currentIndex = allLessons?.findIndex((l) => l.id === lesson.id) ?? -1
-  const prevLesson = currentIndex > 0 ? allLessons?.[currentIndex - 1] : null
-  const nextLesson =
-    allLessons && currentIndex < allLessons.length - 1
-      ? allLessons[currentIndex + 1]
-      : null
+  const idx = siblings?.findIndex((l) => l.id === lesson.id) ?? -1
+  const prev = idx > 0 ? siblings?.[idx - 1] : null
+  const next = siblings && idx < siblings.length - 1 ? siblings[idx + 1] : null
 
+  const { data: progress } = await supabase
+    .from('lesson_progress')
+    .select('completed')
+    .eq('user_id', user.id)
+    .eq('lesson_id', lesson.id)
+    .maybeSingle()
+
+  const isCompleted = progress?.completed === true
   const youtubeId = lesson.video_url ? getYouTubeId(lesson.video_url) : null
 
   return (
@@ -75,56 +81,66 @@ export default async function LessonPage({
           ← Back to {course.title}
         </Link>
 
-        <div className="text-xs text-neutral-500 mt-6 mb-2">
-          Lesson {lesson.order_index}
+        <div className="mt-8 mb-2 text-xs uppercase tracking-widest text-cyan-400">
+          ⚔ Side Quest {String(lesson.order_index).padStart(2, '0')}
         </div>
-        <h1 className="text-3xl font-bold mb-6">{lesson.title}</h1>
+        <h1 className="text-3xl font-bold mb-10">{lesson.title}</h1>
 
-        {youtubeId ? (
-          <div className="w-full aspect-video rounded-xl overflow-hidden mb-8 bg-black">
-            <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}`}
-              title={lesson.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3 text-xs uppercase tracking-widest text-neutral-400">
+            <span>🎥</span> Quest Briefing
           </div>
-        ) : lesson.video_url ? (
-          <video
-            src={lesson.video_url}
-            controls
-            className="w-full rounded-xl mb-8 bg-black"
-          />
-        ) : (
-          <div className="w-full aspect-video bg-neutral-900 rounded-xl mb-8 flex items-center justify-center text-neutral-600 text-sm">
-            Video coming soon
-          </div>
-        )}
+          {youtubeId ? (
+            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-neutral-800">
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeId}`}
+                title={lesson.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          ) : lesson.video_url ? (
+            <video src={lesson.video_url} controls className="w-full rounded-xl bg-black" />
+          ) : (
+            <div className="w-full aspect-video bg-neutral-900 border border-neutral-800 rounded-xl flex items-center justify-center text-neutral-600 text-sm">
+              Video coming soon
+            </div>
+          )}
+        </div>
 
         {lesson.content && (
-          <p className="text-neutral-300 whitespace-pre-wrap mb-12">
-            {lesson.content}
-          </p>
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-3 text-xs uppercase tracking-widest text-neutral-400">
+              <span>📖</span> Quest Codex
+            </div>
+            <p className="text-neutral-300 whitespace-pre-wrap leading-relaxed">
+              {lesson.content}
+            </p>
+          </div>
         )}
 
+        <div className="mb-10">
+          <CompleteButton lessonId={lesson.id} completed={isCompleted} />
+        </div>
+
         <div className="flex justify-between items-center border-t border-neutral-800 pt-6 gap-4">
-          {prevLesson ? (
+          {prev ? (
             <Link
-              href={`/courses/${slug}/lessons/${prevLesson.id}`}
+              href={`/courses/${slug}/lessons/${prev.id}`}
               className="text-sm text-neutral-400 hover:text-white"
             >
-              ← {prevLesson.title}
+              ← {prev.title}
             </Link>
           ) : (
             <span />
           )}
-          {nextLesson ? (
+          {next ? (
             <Link
-              href={`/courses/${slug}/lessons/${nextLesson.id}`}
+              href={`/courses/${slug}/lessons/${next.id}`}
               className="text-sm text-neutral-400 hover:text-white text-right"
             >
-              {nextLesson.title} →
+              {next.title} →
             </Link>
           ) : (
             <span />
