@@ -70,7 +70,6 @@ export default async function CoursePage({
     progress?.forEach((p) => completedIds.add(p.lesson_id))
   }
 
-  // Build sagas → missions → lessons with state
   const sagas: any[] = (sagasRaw || []).map((s: any) => ({
     ...s,
     missions: (s.missions || [])

@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --m-bg: #0a0e14;
+  --m-surface: #0f141c;
+  --m-surface-2: #141b26;
+  --m-border: #1e2633;
+  --m-border-bright: #2d3748;
+  --m-text: #e5e9f0;
+  --m-text-muted: #8892a6;
+  --m-text-dim: #566074;
+  --m-cyan: #22d3ee;
+  --m-cyan-soft: rgba(34, 211, 238, 0.12);
+  --m-blue: #3b82f6;
+  --m-green: #10b981;
+  --m-amber: #f59e0b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body {
+  background-color: var(--m-bg);
+  color: var(--m-text);
+  -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.m-panel {
+  background-color: var(--m-surface);
+  border: 1px solid var(--m-border);
+  border-radius: 0.875rem;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.m-panel-raised {
+  background-color: var(--m-surface-2);
+  border: 1px solid var(--m-border);
+  border-radius: 0.875rem;
 }
+
+.m-panel-interactive {
+  transition: border-color 150ms ease;
+}
+.m-panel-interactive:hover {
+  border-color: var(--m-border-bright);
+}
+
+.m-label {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--m-text-muted);
+}
+
+.m-label-cyan {
+  color: var(--m-cyan);
+}
+
+.m-grid-bg {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.m-progress-track {
+  height: 4px;
+  background: #1a2130;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.m-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--m-cyan), var(--m-blue));
+  transition: width 400ms ease;
+}
+
+.m-current-glow {
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35),
+              0 0 24px -4px rgba(34, 211, 238, 0.35);
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--m-bg); }
+::-webkit-scrollbar-thumb { background: #1e2633; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2d3748; }
