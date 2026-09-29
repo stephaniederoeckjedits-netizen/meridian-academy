@@ -1,69 +1,113 @@
+// FILE: app/page.tsx  (URL: / — public landing page)
+
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function Home() {
   const supabase = await createClient()
-  const { data: courses, error } = await supabase
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { data: courses } = await supabase
     .from('courses')
     .select('*')
     .eq('published', true)
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      <nav className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
-        <span className="text-xl font-bold tracking-tight">Meridian Academy</span>
-        <div className="flex gap-4 text-sm items-center">
-          <Link href="/community" className="hover:text-neutral-300">Community</Link>
-          <Link href="/login" className="hover:text-neutral-300">Login</Link>
+    <main className="min-h-screen bg-[var(--m-bg)] text-[var(--m-text)] m-grid-bg">
+      <nav className="flex items-center justify-between px-6 md:px-10 py-5 border-b border-[var(--m-border)]">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold text-sm">
+            M
+          </div>
+          <div>
+            <div className="text-sm font-bold tracking-tight leading-none">
+              MERIDIAN
+            </div>
+            <div className="text-[10px] tracking-[0.2em] text-[var(--m-text-muted)] mt-0.5">
+              ACADEMY
+            </div>
+          </div>
+        </Link>
+        <div className="flex gap-5 items-center text-sm">
           <Link
-            href="/signup"
-            className="bg-white text-black px-4 py-1.5 rounded-full font-medium hover:bg-neutral-200"
+            href="/community"
+            className="text-[var(--m-text-muted)] hover:text-[var(--m-text)] transition"
           >
-            Join
+            Community
           </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="bg-white text-black px-4 py-1.5 rounded-full font-medium hover:bg-neutral-200 transition"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-[var(--m-text-muted)] hover:text-[var(--m-text)] transition"
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-white text-black px-4 py-1.5 rounded-full font-medium hover:bg-neutral-200 transition"
+              >
+                Join
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
-      <section className="px-6 py-24 max-w-4xl mx-auto text-center">
+      <section className="px-6 py-28 max-w-4xl mx-auto text-center">
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
           Master Dutch and English.
-          <span className="block text-neutral-500">For real this time.</span>
+          <span className="block text-[var(--m-text-dim)]">For real this time.</span>
         </h1>
-        <p className="text-lg text-neutral-400 mb-10 max-w-2xl mx-auto">
+        <p className="text-lg text-[var(--m-text-muted)] mb-10 max-w-2xl mx-auto leading-relaxed">
           Structured courses, live practice, and a community that actually
           keeps you accountable. Built for the Dutch↔English bridge.
         </p>
         <Link
-          href="/signup"
-          className="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-neutral-200"
+          href={user ? '/dashboard' : '/signup'}
+          className="inline-block bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-neutral-200 transition"
         >
-          Start learning free
+          {user ? 'Go to dashboard' : 'Start learning free'}
         </Link>
       </section>
 
       <section className="px-6 py-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold mb-8">Courses</h2>
-        {error && (
-          <p className="text-red-400 text-sm">Error: {error.message}</p>
-        )}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="m-label m-label-cyan mb-2">Courses</div>
+        <h2 className="text-2xl font-bold tracking-tight mb-8">
+          Available tracks
+        </h2>
+        <div className="grid md:grid-cols-2 gap-5">
           {courses?.map((course) => (
             <Link
               key={course.id}
               href={`/courses/${course.slug}`}
-              className="border border-neutral-800 rounded-2xl p-6 hover:border-neutral-600 transition block"
+              className="m-panel m-panel-interactive p-6 block"
             >
-              <div className="text-xs uppercase tracking-wider text-neutral-500 mb-2">
-                {course.track === 'en_to_nl' ? 'English → Dutch' : 'Dutch → English'} · {course.level}
+              <div className="flex items-center justify-between mb-4">
+                <div className="m-label m-label-cyan">
+                  {course.track === 'en_to_nl' ? 'EN → NL' : 'NL → EN'}
+                </div>
+                <div className="m-label">{course.level}</div>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-              <p className="text-neutral-400 text-sm">{course.description}</p>
+              <h3 className="text-xl font-semibold mb-2 tracking-tight">
+                {course.title}
+              </h3>
+              <p className="text-[var(--m-text-muted)] text-sm leading-relaxed">
+                {course.description}
+              </p>
             </Link>
           ))}
         </div>
       </section>
 
-      <footer className="px-6 py-10 border-t border-neutral-800 text-center text-neutral-500 text-sm">
+      <footer className="px-6 py-10 border-t border-[var(--m-border)] text-center text-[var(--m-text-dim)] text-sm">
         © {new Date().getFullYear()} Meridian Academy
       </footer>
     </main>
