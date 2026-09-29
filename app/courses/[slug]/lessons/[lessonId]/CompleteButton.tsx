@@ -1,3 +1,5 @@
+// FILE: app/courses/[slug]/lessons/[lessonId]/CompleteButton.tsx  (quest completion)
+
 'use client'
 
 import { useState } from 'react'
@@ -47,7 +49,7 @@ export default function CompleteButton({
 
   if (completed) {
     return (
-      <div className="flex items-center justify-between border border-green-800/60 bg-green-950/20 rounded-xl px-5 py-4">
+      <div className="flex items-center justify-between border border-green-800/50 bg-green-950/30 rounded-lg px-5 py-4">
         <div className="flex items-center gap-3 text-green-400 font-semibold">
           <span className="text-xl">✓</span>
           <span>Quest Complete</span>
@@ -61,7 +63,7 @@ export default function CompleteButton({
     <button
       onClick={handleComplete}
       disabled={loading}
-      className="w-full bg-white text-black font-semibold rounded-full py-3 hover:bg-neutral-200 disabled:opacity-50 transition"
+      className="w-full bg-white text-black font-semibold rounded-lg py-3.5 hover:bg-neutral-200 disabled:opacity-50 transition"
     >
       {loading ? 'Completing...' : '✓ Complete Side Quest'}
     </button>

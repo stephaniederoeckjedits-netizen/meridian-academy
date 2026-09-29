@@ -1,6 +1,9 @@
+// FILE: app/courses/[slug]/page.tsx  (URL: /courses/dutch-a1-foundations)
+
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import AppShell from '@/components/AppShell'
 import EnrollButton from '@/app/dashboard/EnrollButton'
 
 const XP_PER_QUEST = 50
@@ -108,109 +111,119 @@ export default async function CoursePage({
   const totalXP = completedQuests * XP_PER_QUEST
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      <nav className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
-        <Link href="/" className="text-xl font-bold">Meridian Academy</Link>
-        <div className="flex gap-4 text-sm">
-          {user ? (
-            <Link href="/dashboard" className="hover:text-neutral-300">Dashboard</Link>
-          ) : (
-            <Link href="/login" className="hover:text-neutral-300">Login</Link>
-          )}
-        </div>
-      </nav>
-
-      <section className="max-w-4xl mx-auto px-6 py-12">
-        <Link href="/dashboard" className="text-sm text-neutral-500 hover:text-neutral-300">
-          ← Dashboard
+    <AppShell userEmail={user?.email}>
+      <div className="max-w-4xl mx-auto px-6 md:px-10 py-12">
+        <Link
+          href="/courses"
+          className="text-sm text-[var(--m-text-dim)] hover:text-[var(--m-text)]"
+        >
+          ← Back to courses
         </Link>
 
-        <div className="mt-6 mb-2 text-xs uppercase tracking-widest text-cyan-400">
+        <div className="mt-8 mb-2 m-label m-label-cyan">
           {course.track === 'en_to_nl' ? 'English → Dutch' : 'Dutch → English'} · {course.level}
         </div>
-        <h1 className="text-4xl font-bold mb-4">{course.title}</h1>
-        <p className="text-neutral-400 mb-8">{course.description}</p>
+        <h1 className="text-4xl font-bold tracking-tight mb-3">
+          {course.title}
+        </h1>
+        <p className="text-[var(--m-text-muted)] mb-8 max-w-2xl">
+          {course.description}
+        </p>
 
         {enrolled ? (
-          <div className="border border-neutral-800 rounded-2xl p-6 bg-neutral-900/30">
+          <div className="m-panel p-6 mb-14">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="text-xs uppercase tracking-widest text-neutral-400">
-                Course Progress
+              <div className="m-label">Course Progress</div>
+              <div className="text-3xl font-bold text-[var(--m-cyan)] tabular-nums">
+                {courseProgress}%
               </div>
-              <div className="text-2xl font-bold text-cyan-400">{courseProgress}%</div>
             </div>
-            <div className="h-1.5 bg-neutral-800 rounded-full overflow-hidden mb-3">
+            <div className="m-progress-track mb-3">
               <div
-                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all"
+                className="m-progress-fill"
                 style={{ width: `${courseProgress}%` }}
               />
             </div>
-            <div className="flex justify-between text-xs text-neutral-500">
-              <span>{completedQuests} / {totalQuests} quests complete</span>
-              <span>{totalXP.toLocaleString()} XP</span>
+            <div className="flex justify-between text-xs text-[var(--m-text-dim)]">
+              <span>
+                {completedQuests} / {totalQuests} quests complete
+              </span>
+              <span className="font-mono">{totalXP.toLocaleString()} XP</span>
             </div>
           </div>
         ) : user ? (
-          <div className="mb-8">
+          <div className="mb-12">
             <EnrollButton courseId={course.id} enrolled={false} />
           </div>
         ) : (
           <Link
             href="/login"
-            className="inline-block bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-neutral-200"
+            className="inline-block bg-white text-black px-6 py-2.5 rounded-lg font-semibold hover:bg-neutral-200 mb-12"
           >
             Log in to enroll
           </Link>
         )}
 
-        <div className="mt-12 space-y-14">
+        <div className="space-y-16">
           {sagas.map((saga, sagaIdx) => {
             const sagaQuests = saga.missions.flatMap((m: any) => m.lessons)
-            const sagaDone = sagaQuests.filter((l: any) => l.state === 'completed').length
+            const sagaDone = sagaQuests.filter(
+              (l: any) => l.state === 'completed'
+            ).length
 
             return (
-              <div key={saga.id}>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-cyan-400 text-2xl">⚔</span>
-                  <span className="text-xs uppercase tracking-widest text-cyan-400">
+              <section key={saga.id}>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-[var(--m-cyan)] text-xl">⚔</span>
+                  <span className="m-label m-label-cyan">
                     Saga {toRoman(sagaIdx + 1)}
                   </span>
                 </div>
-                <h2 className="text-2xl font-bold mb-2">{saga.title}</h2>
+                <h2 className="text-2xl font-bold tracking-tight mb-2">
+                  {saga.title}
+                </h2>
                 {saga.description && (
-                  <p className="text-neutral-400 mb-3">{saga.description}</p>
+                  <p className="text-[var(--m-text-muted)] mb-3 max-w-2xl">
+                    {saga.description}
+                  </p>
                 )}
-                <div className="text-xs text-neutral-500 mb-6">
+                <div className="text-xs text-[var(--m-text-dim)] mb-6 font-mono">
                   {sagaDone} / {sagaQuests.length} quests complete
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-5">
                   {saga.missions.map((mission: any, mi: number) => {
                     const mQuests = mission.lessons
-                    const mDone = mQuests.filter((l: any) => l.state === 'completed').length
+                    const mDone = mQuests.filter(
+                      (l: any) => l.state === 'completed'
+                    ).length
 
                     return (
-                      <div
-                        key={mission.id}
-                        className="border border-neutral-800 rounded-2xl p-6 bg-neutral-900/20"
-                      >
+                      <div key={mission.id} className="m-panel p-6">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs uppercase tracking-widest text-neutral-400">
+                          <span className="m-label">
                             Main Mission {String(mi + 1).padStart(2, '0')}
                           </span>
-                          <span className="text-xs text-neutral-500">
+                          <span className="text-xs text-[var(--m-text-dim)] font-mono">
                             {mDone} / {mQuests.length}
                           </span>
                         </div>
-                        <h3 className="text-lg font-semibold mb-5">{mission.title}</h3>
+                        <h3 className="text-lg font-semibold tracking-tight mb-5">
+                          {mission.title}
+                        </h3>
 
                         <div className="space-y-2">
                           {mQuests.map((lesson: any) => {
-                            const clickable = enrolled && lesson.state !== 'locked'
-                            const rowStyles: Record<string, string> = {
-                              completed: 'border-neutral-800 bg-neutral-950 hover:border-neutral-700',
-                              current: 'border-cyan-500/50 bg-cyan-950/20 hover:border-cyan-400',
-                              locked: 'border-neutral-900 bg-neutral-950/50 opacity-60',
+                            const clickable =
+                              enrolled && lesson.state !== 'locked'
+
+                            const stateClasses: Record<string, string> = {
+                              completed:
+                                'border-[var(--m-border)] bg-[var(--m-bg)] hover:border-[var(--m-border-bright)]',
+                              current:
+                                'border-cyan-500/40 bg-cyan-500/[0.06] hover:border-cyan-500/70 m-current-glow',
+                              locked:
+                                'border-[var(--m-border)] bg-[var(--m-bg)] opacity-50',
                             }
                             const indicator: Record<string, string> = {
                               completed: '✓',
@@ -219,36 +232,42 @@ export default async function CoursePage({
                             }
                             const indColor: Record<string, string> = {
                               completed: 'text-green-400',
-                              current: 'text-cyan-400',
-                              locked: 'text-neutral-600',
+                              current: 'text-[var(--m-cyan)]',
+                              locked: 'text-[var(--m-text-dim)]',
                             }
 
                             const inner = (
                               <>
                                 <div className="flex items-center gap-3 min-w-0">
-                                  <span className={`text-lg shrink-0 ${indColor[lesson.state]}`}>
+                                  <span
+                                    className={`text-base shrink-0 w-5 text-center ${indColor[lesson.state]}`}
+                                  >
                                     {indicator[lesson.state]}
                                   </span>
                                   <span
                                     className={`text-sm truncate ${
                                       lesson.state === 'locked'
-                                        ? 'text-neutral-500'
-                                        : 'text-neutral-200'
+                                        ? 'text-[var(--m-text-dim)]'
+                                        : 'text-[var(--m-text)]'
                                     }`}
                                   >
                                     {lesson.title}
                                   </span>
                                 </div>
-                                <span className="text-xs text-neutral-500 shrink-0">
+                                <span className="text-xs text-[var(--m-text-dim)] shrink-0 font-mono">
                                   +{XP_PER_QUEST} XP
                                 </span>
                               </>
                             )
 
-                            const cls = `flex items-center justify-between gap-3 rounded-xl px-4 py-3 border transition ${rowStyles[lesson.state]}`
+                            const cls = `flex items-center justify-between gap-3 rounded-lg px-4 py-3 border transition ${stateClasses[lesson.state]}`
 
                             if (!clickable) {
-                              return <div key={lesson.id} className={cls}>{inner}</div>
+                              return (
+                                <div key={lesson.id} className={cls}>
+                                  {inner}
+                                </div>
+                              )
                             }
 
                             return (
@@ -266,11 +285,11 @@ export default async function CoursePage({
                     )
                   })}
                 </div>
-              </div>
+              </section>
             )
           })}
         </div>
-      </section>
-    </main>
+      </div>
+    </AppShell>
   )
 }

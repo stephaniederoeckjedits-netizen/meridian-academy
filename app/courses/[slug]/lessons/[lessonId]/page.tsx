@@ -1,6 +1,9 @@
+// FILE: app/courses/[slug]/lessons/[lessonId]/page.tsx  (quest player)
+
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import AppShell from '@/components/AppShell'
 import CompleteButton from './CompleteButton'
 
 function getYouTubeId(url: string) {
@@ -54,7 +57,8 @@ export default async function LessonPage({
 
   const idx = siblings?.findIndex((l) => l.id === lesson.id) ?? -1
   const prev = idx > 0 ? siblings?.[idx - 1] : null
-  const next = siblings && idx < siblings.length - 1 ? siblings[idx + 1] : null
+  const next =
+    siblings && idx < siblings.length - 1 ? siblings[idx + 1] : null
 
   const { data: progress } = await supabase
     .from('lesson_progress')
@@ -67,31 +71,28 @@ export default async function LessonPage({
   const youtubeId = lesson.video_url ? getYouTubeId(lesson.video_url) : null
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-white">
-      <nav className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
-        <Link href="/" className="text-xl font-bold">Meridian Academy</Link>
-        <Link href="/dashboard" className="text-sm hover:text-neutral-300">Dashboard</Link>
-      </nav>
-
-      <section className="max-w-3xl mx-auto px-6 py-12">
+    <AppShell userEmail={user.email}>
+      <div className="max-w-3xl mx-auto px-6 md:px-10 py-12">
         <Link
           href={`/courses/${slug}`}
-          className="text-sm text-neutral-500 hover:text-neutral-300"
+          className="text-sm text-[var(--m-text-dim)] hover:text-[var(--m-text)]"
         >
           ← Back to {course.title}
         </Link>
 
-        <div className="mt-8 mb-2 text-xs uppercase tracking-widest text-cyan-400">
+        <div className="mt-8 mb-2 m-label m-label-cyan">
           ⚔ Side Quest {String(lesson.order_index).padStart(2, '0')}
         </div>
-        <h1 className="text-3xl font-bold mb-10">{lesson.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-10">
+          {lesson.title}
+        </h1>
 
         <div className="mb-10">
-          <div className="flex items-center gap-2 mb-3 text-xs uppercase tracking-widest text-neutral-400">
+          <div className="flex items-center gap-2 mb-3 m-label">
             <span>🎥</span> Quest Briefing
           </div>
           {youtubeId ? (
-            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-neutral-800">
+            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-[var(--m-border)]">
               <iframe
                 src={`https://www.youtube.com/embed/${youtubeId}`}
                 title={lesson.title}
@@ -101,9 +102,13 @@ export default async function LessonPage({
               />
             </div>
           ) : lesson.video_url ? (
-            <video src={lesson.video_url} controls className="w-full rounded-xl bg-black" />
+            <video
+              src={lesson.video_url}
+              controls
+              className="w-full rounded-xl bg-black border border-[var(--m-border)]"
+            />
           ) : (
-            <div className="w-full aspect-video bg-neutral-900 border border-neutral-800 rounded-xl flex items-center justify-center text-neutral-600 text-sm">
+            <div className="w-full aspect-video bg-[var(--m-surface)] border border-[var(--m-border)] rounded-xl flex items-center justify-center text-[var(--m-text-dim)] text-sm">
               Video coming soon
             </div>
           )}
@@ -111,12 +116,14 @@ export default async function LessonPage({
 
         {lesson.content && (
           <div className="mb-10">
-            <div className="flex items-center gap-2 mb-3 text-xs uppercase tracking-widest text-neutral-400">
+            <div className="flex items-center gap-2 mb-3 m-label">
               <span>📖</span> Quest Codex
             </div>
-            <p className="text-neutral-300 whitespace-pre-wrap leading-relaxed">
-              {lesson.content}
-            </p>
+            <div className="m-panel p-6">
+              <p className="text-[var(--m-text)] whitespace-pre-wrap leading-relaxed">
+                {lesson.content}
+              </p>
+            </div>
           </div>
         )}
 
@@ -124,11 +131,11 @@ export default async function LessonPage({
           <CompleteButton lessonId={lesson.id} completed={isCompleted} />
         </div>
 
-        <div className="flex justify-between items-center border-t border-neutral-800 pt-6 gap-4">
+        <div className="flex justify-between items-center border-t border-[var(--m-border)] pt-6 gap-4">
           {prev ? (
             <Link
               href={`/courses/${slug}/lessons/${prev.id}`}
-              className="text-sm text-neutral-400 hover:text-white"
+              className="text-sm text-[var(--m-text-muted)] hover:text-[var(--m-text)] transition"
             >
               ← {prev.title}
             </Link>
@@ -138,7 +145,7 @@ export default async function LessonPage({
           {next ? (
             <Link
               href={`/courses/${slug}/lessons/${next.id}`}
-              className="text-sm text-neutral-400 hover:text-white text-right"
+              className="text-sm text-[var(--m-text-muted)] hover:text-[var(--m-text)] text-right transition"
             >
               {next.title} →
             </Link>
@@ -146,7 +153,7 @@ export default async function LessonPage({
             <span />
           )}
         </div>
-      </section>
-    </main>
+      </div>
+    </AppShell>
   )
 }
