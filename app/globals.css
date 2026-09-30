@@ -82,3 +82,66 @@ html, body {
 ::-webkit-scrollbar-track { background: var(--m-bg); }
 ::-webkit-scrollbar-thumb { background: #1e2633; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #2d3748; }
+/* ─── Meridian HUD animations ─── */
+
+@keyframes m-pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(34, 211, 238, 0.45),
+      0 0 24px -4px rgba(34, 211, 238, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(34, 211, 238, 0),
+      0 0 36px -2px rgba(34, 211, 238, 0.75);
+  }
+}
+
+.m-pulse {
+  animation: m-pulse-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes m-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.7; }
+  94% { opacity: 1; }
+}
+
+.m-flicker {
+  animation: m-flicker 6s linear infinite;
+}
+
+@keyframes m-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.m-bar {
+  transform-origin: left center;
+  animation: m-bar 0.8s ease-out forwards;
+}
+
+/* HUD corner brackets on any element */
+.m-hud-corners {
+  position: relative;
+}
+.m-hud-corners::before,
+.m-hud-corners::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--m-cyan);
+  pointer-events: none;
+}
+.m-hud-corners::before {
+  top: -1px; left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.m-hud-corners::after {
+  bottom: -1px; right: -1px;
+  border-left: none;
+  border-top: none;
+}

@@ -1,17 +1,10 @@
-// FILE: app/courses/[slug]/lessons/[lessonId]/page.tsx  (quest player)
+// FILE: app/courses/[slug]/lessons/[lessonId]/page.tsx  (quest player shell)
 
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AppShell from '@/components/AppShell'
-import QuizSection from './QuizSection'
-
-function getYouTubeId(url: string) {
-  const match = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-  )
-  return match ? match[1] : null
-}
+import QuestPlayer from './QuestPlayer'
 
 export default async function LessonPage({
   params,
@@ -57,8 +50,7 @@ export default async function LessonPage({
 
   const idx = siblings?.findIndex((l) => l.id === lesson.id) ?? -1
   const prev = idx > 0 ? siblings?.[idx - 1] : null
-  const next =
-    siblings && idx < siblings.length - 1 ? siblings[idx + 1] : null
+  const next = siblings && idx < siblings.length - 1 ? siblings[idx + 1] : null
 
   const { data: progress } = await supabase
     .from('lesson_progress')
@@ -68,7 +60,7 @@ export default async function LessonPage({
     .maybeSingle()
 
   const isCompleted = progress?.completed === true
-  const youtubeId = lesson.video_url ? getYouTubeId(lesson.video_url) : null
+  const passThreshold = lesson.pass_threshold ?? 80
 
   return (
     <AppShell userEmail={user.email}>
@@ -80,55 +72,20 @@ export default async function LessonPage({
           ← Back to {course.title}
         </Link>
 
-        <div className="mt-8 mb-2 m-label m-label-cyan">
-          ⚔ Side Quest {String(lesson.order_index).padStart(2, '0')}
-        </div>
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-10">
-          {lesson.title}
-        </h1>
-
-        <div className="mb-10">
-          <div className="flex items-center gap-2 mb-3 m-label">
-            <span>🎥</span> Quest Briefing
-          </div>
-          {youtubeId ? (
-            <div className="w-full aspect-video rounded-xl overflow-hidden bg-black border border-[var(--m-border)]">
-              <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}`}
-                title={lesson.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            </div>
-          ) : lesson.video_url ? (
-            <video
-              src={lesson.video_url}
-              controls
-              className="w-full rounded-xl bg-black border border-[var(--m-border)]"
-            />
-          ) : (
-            <div className="w-full aspect-video bg-[var(--m-surface)] border border-[var(--m-border)] rounded-xl flex items-center justify-center text-[var(--m-text-dim)] text-sm">
-              Video coming soon
-            </div>
-          )}
-        </div>
-
-        {lesson.content && (
-          <div className="mb-10">
-            <div className="flex items-center gap-2 mb-3 m-label">
-              <span>📖</span> Quest Codex
-            </div>
-            <div className="m-panel p-6">
-              <p className="text-[var(--m-text)] whitespace-pre-wrap leading-relaxed">
-                {lesson.content}
-              </p>
-            </div>
-          </div>
-        )}
-
-        <div className="mb-10">
-          <QuizSection lessonId={lesson.id} initialCompleted={isCompleted} />
+        <div className="mt-8 mb-8">
+          <QuestPlayer
+            lessonId={lesson.id}
+            lessonTitle={lesson.title}
+            lessonIndex={lesson.order_index}
+            videoUrl={lesson.video_url}
+            content={lesson.content}
+            isFinalExam={lesson.is_final_exam || false}
+            passThreshold={passThreshold}
+            initialCompleted={isCompleted}
+            slug={slug}
+            nextHref={next ? `/courses/${slug}/lessons/${next.id}` : null}
+            nextTitle={next?.title || null}
+          />
         </div>
 
         <div className="flex justify-between items-center border-t border-[var(--m-border)] pt-6 gap-4">
@@ -151,8 +108,8 @@ export default async function LessonPage({
                 {next.title} →
               </Link>
             ) : (
-              <span className="text-sm text-[var(--m-text-dim)] text-right">
-                🔒 Pass the exam to continue
+              <span className="text-xs font-mono tracking-wider text-[var(--m-text-dim)] text-right">
+                🔒 CLEAR CURRENT MISSION TO UNLOCK
               </span>
             )
           ) : (
