@@ -1,4 +1,4 @@
-// FILE: app/courses/[slug]/lessons/[lessonId]/CodexContent.tsx  (mini markdown renderer)
+// FILE: app/courses/[slug]/lessons/[lessonId]/CodexContent.tsx  (architectural markdown renderer)
 
 function renderInline(text: string, keyPrefix: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g)
@@ -17,100 +17,185 @@ function renderInline(text: string, keyPrefix: string) {
   })
 }
 
-function isNumberedHeading(line: string): boolean {
-  return /^\d+\.\s+\S/.test(line) && line.length < 90 && !line.endsWith('.')
+// The Supabase SQL editor collapsed newlines to spaces. Re-insert them
+// before markdown markers so we can parse the structure back.
+function normalize(content: string): string {
+  return content
+    .replace(/\s+(#{2,3}\s)/g, '\n\n$1')  // ## and ### headings
+    .replace(/\s+(>\s)/g, '\n$1')          // > blockquotes
+    .replace(/\s+(-\s)/g, '\n$1')          // - bullets
+    .replace(/\s+(\d+\.\s)/g, '\n$1')      // 1. numbered items
+    .trim()
+}
+
+type Block =
+  | { type: 'h2'; text: string }
+  | { type: 'h3'; text: string }
+  | { type: 'hr' }
+  | { type: 'quote'; lines: string[] }
+  | { type: 'list'; items: string[]; ordered: boolean }
+  | { type: 'para'; text: string }
+
+function parse(content: string): Block[] {
+  const lines = normalize(content).split('\n')
+  const blocks: Block[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const trimmed = line.trim()
+
+    if (trimmed === '') {
+      i++
+      continue
+    }
+
+    if (/^-{3,}$/.test(trimmed)) {
+      blocks.push({ type: 'hr' })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('## ')) {
+      blocks.push({ type: 'h2', text: trimmed.slice(3) })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('### ')) {
+      blocks.push({ type: 'h3', text: trimmed.slice(4) })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('> ')) {
+      const quoteLines: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('> ')) {
+        quoteLines.push(lines[i].trim().slice(2))
+        i++
+      }
+      blocks.push({ type: 'quote', lines: quoteLines })
+      continue
+    }
+
+    if (trimmed.startsWith('- ')) {
+      const items: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('- ')) {
+        items.push(lines[i].trim().slice(2))
+        i++
+      }
+      blocks.push({ type: 'list', items, ordered: false })
+      continue
+    }
+
+    if (/^\d+\.\s/.test(trimmed)) {
+      const items: string[] = []
+      while (i < lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+        items.push(lines[i].trim().replace(/^\d+\.\s+/, ''))
+        i++
+      }
+      blocks.push({ type: 'list', items, ordered: true })
+      continue
+    }
+
+    // Paragraph - accumulate until blank line or next marker
+    const para: string[] = []
+    while (
+      i < lines.length &&
+      lines[i].trim() !== '' &&
+      !lines[i].trim().startsWith('## ') &&
+      !lines[i].trim().startsWith('### ') &&
+      !lines[i].trim().startsWith('> ') &&
+      !lines[i].trim().startsWith('- ') &&
+      !/^\d+\.\s/.test(lines[i].trim()) &&
+      !/^-{3,}$/.test(lines[i].trim())
+    ) {
+      para.push(lines[i].trim())
+      i++
+    }
+    if (para.length) {
+      blocks.push({ type: 'para', text: para.join(' ') })
+    }
+  }
+
+  return blocks
 }
 
 export default function CodexContent({ content }: { content: string }) {
-  const blocks = content.split(/\n\n+/)
+  const blocks = parse(content)
 
   return (
-    <div className="space-y-5">
+    <div className="text-[15px]">
       {blocks.map((block, i) => {
-        const trimmed = block.trim()
-        if (!trimmed) return null
-
-        if (/^-{3,}$/.test(trimmed)) {
+        if (block.type === 'hr') {
           return (
-            <hr
+            <div
               key={i}
-              className="border-0 border-t border-[var(--m-border)] my-6"
+              className="h-px bg-[var(--m-border)] my-10"
             />
           )
         }
 
-        if (trimmed.startsWith('## ')) {
+        if (block.type === 'h2') {
+          return (
+            <h2
+              key={i}
+              className="text-lg md:text-xl font-bold tracking-tight text-[var(--m-cyan)] mt-10 mb-5 first:mt-0 pb-2 border-b border-[var(--m-border)]"
+            >
+              {block.text}
+            </h2>
+          )
+        }
+
+        if (block.type === 'h3') {
           return (
             <h3
               key={i}
-              className="text-lg font-semibold text-[var(--m-cyan)] pt-3"
+              className="text-base font-semibold text-[var(--m-text)] mt-7 mb-3"
             >
-              {trimmed.slice(3)}
+              {block.text}
             </h3>
           )
         }
 
-        if (trimmed.startsWith('### ')) {
+        if (block.type === 'quote') {
           return (
-            <h4 key={i} className="text-base font-semibold pt-2">
-              {trimmed.slice(4)}
-            </h4>
-          )
-        }
-
-        if (trimmed.startsWith('> ')) {
-          const lines = trimmed
-            .split('\n')
-            .map((l) => l.replace(/^>\s?/, ''))
-            .join(' ')
-          return (
-            <blockquote
+            <div
               key={i}
-              className="border-l-2 border-[var(--m-cyan)] pl-4 py-1 text-[var(--m-text-muted)] italic"
+              className="my-6 border-l-2 border-[var(--m-cyan)] bg-[var(--m-surface-2)]/40 rounded-r-lg px-5 py-4"
             >
-              {renderInline(lines, `q${i}`)}
-            </blockquote>
+              <div className="text-[var(--m-cyan)] font-mono text-[13px] tracking-wide leading-relaxed">
+                {block.lines.map((line, j) => (
+                  <div key={j}>{renderInline(line, `q${i}-${j}`)}</div>
+                ))}
+              </div>
+            </div>
           )
         }
 
-        const lines = trimmed.split('\n')
-        if (lines.every((l) => l.trim().startsWith('- '))) {
-          const items = lines.map((l) => l.trim().slice(2))
+        if (block.type === 'list') {
           return (
-            <ul key={i} className="space-y-2">
-              {items.map((item, j) => (
-                <li
-                  key={j}
-                  className="flex gap-3 text-[var(--m-text)] leading-relaxed"
-                >
-                  <span className="text-[var(--m-cyan)] mt-2 shrink-0 text-xs">
-                    ●
+            <ul key={i} className="my-5 space-y-2.5">
+              {block.items.map((item, j) => (
+                <li key={j} className="flex gap-3 leading-relaxed">
+                  <span className="text-[var(--m-cyan)] mt-[7px] shrink-0 text-[10px]">
+                    {block.ordered ? `${j + 1}.` : '▸'}
                   </span>
-                  <span>{renderInline(item, `l${i}-${j}`)}</span>
+                  <span className="text-[var(--m-text)]">
+                    {renderInline(item, `l${i}-${j}`)}
+                  </span>
                 </li>
               ))}
             </ul>
           )
         }
 
-        if (lines.length === 1 && isNumberedHeading(lines[0])) {
-          const text = lines[0].replace(/^\d+\.\s+/, '')
-          return (
-            <h3
-              key={i}
-              className="text-lg font-semibold text-[var(--m-cyan)] pt-3"
-            >
-              {text}
-            </h3>
-          )
-        }
-
         return (
           <p
             key={i}
-            className="text-[var(--m-text)] leading-relaxed whitespace-pre-wrap"
+            className="text-[var(--m-text)] leading-relaxed my-4"
           >
-            {renderInline(trimmed, `p${i}`)}
+            {renderInline(block.text, `p${i}`)}
           </p>
         )
       })}
