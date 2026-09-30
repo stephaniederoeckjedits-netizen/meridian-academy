@@ -1,4 +1,4 @@
-// FILE: components/MobileNav.tsx  (mobile drawer navigation)
+// FILE: components/MobileNav.tsx  (mobile header + drawer)
 
 'use client'
 
@@ -6,6 +6,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import ThemeToggle from './ThemeToggle'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '◧' },
@@ -28,21 +29,33 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="md:hidden p-2 -ml-2 text-xl text-[var(--m-text-muted)] hover:text-[var(--m-text)]"
-        aria-label="Open menu"
-      >
-        ☰
-      </button>
+      <header className="md:hidden flex items-center justify-between px-4 py-3 border-b border-[var(--m-border)] bg-[var(--m-surface)] sticky top-0 z-30">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+          className="p-2 -ml-2 text-2xl text-[var(--m-text-muted)] hover:text-[var(--m-text)] active:scale-95 transition"
+        >
+          ☰
+        </button>
+
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold text-xs">
+            M
+          </div>
+          <span className="text-sm font-bold tracking-tight">MERIDIAN</span>
+        </Link>
+
+        <ThemeToggle compact />
+      </header>
 
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-[100] md:hidden">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-[var(--m-bg)] border-r border-[var(--m-border)] flex flex-col">
+          <aside className="absolute inset-y-0 left-0 w-72 bg-[var(--m-bg)] border-r border-[var(--m-border)] flex flex-col shadow-2xl">
             <div className="px-6 py-6 border-b border-[var(--m-border)] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold text-sm">
@@ -58,9 +71,10 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setOpen(false)}
-                className="text-[var(--m-text-muted)] text-xl"
                 aria-label="Close menu"
+                className="text-[var(--m-text-muted)] text-2xl leading-none hover:text-[var(--m-text)]"
               >
                 ×
               </button>
@@ -74,7 +88,7 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
                       active
                         ? 'bg-[var(--m-cyan-soft)] text-[var(--m-cyan)] border border-cyan-500/20'
                         : 'text-[var(--m-text-muted)] hover:text-[var(--m-text)] hover:bg-white/[0.03] border border-transparent'
@@ -89,9 +103,10 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
               })}
             </nav>
 
-            <div className="p-3 border-t border-[var(--m-border)]">
+            <div className="p-3 border-t border-[var(--m-border)] space-y-1">
+              <ThemeToggle />
               {userEmail && (
-                <div className="px-3 py-2 text-[11px] text-[var(--m-text-dim)] truncate mb-1">
+                <div className="px-3 py-2 text-[11px] text-[var(--m-text-dim)] truncate">
                   {userEmail}
                 </div>
               )}

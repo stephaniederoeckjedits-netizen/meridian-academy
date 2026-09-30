@@ -1,8 +1,11 @@
+// FILE: components/Sidebar.tsx
+
 'use client'
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import ThemeToggle from './ThemeToggle'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '◧' },
@@ -60,9 +63,10 @@ export default function Sidebar({ userEmail }: { userEmail?: string }) {
         })}
       </nav>
 
-      <div className="p-3 border-t border-[var(--m-border)]">
+      <div className="p-3 border-t border-[var(--m-border)] space-y-1">
+        <ThemeToggle />
         {userEmail && (
-          <div className="px-3 py-2 text-[11px] text-[var(--m-text-dim)] truncate mb-1">
+          <div className="px-3 py-2 text-[11px] text-[var(--m-text-dim)] truncate">
             {userEmail}
           </div>
         )}

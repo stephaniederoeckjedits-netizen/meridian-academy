@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-:root {
+/* ─── Meridian design tokens — DARK (default) ─── */
+:root, [data-theme="dark"] {
   --m-bg: #0a0e14;
   --m-surface: #0f141c;
   --m-surface-2: #141b26;
@@ -14,18 +15,39 @@
   --m-blue: #3b82f6;
   --m-green: #10b981;
   --m-amber: #f59e0b;
+  --m-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Meridian design tokens — LIGHT ─── */
+[data-theme="light"] {
+  --m-bg: #f6f7fa;
+  --m-surface: #ffffff;
+  --m-surface-2: #f0f2f6;
+  --m-border: #e2e6ee;
+  --m-border-bright: #c8d0dd;
+  --m-text: #0a0e14;
+  --m-text-muted: #4b5563;
+  --m-text-dim: #8a94a3;
+  --m-cyan: #0891b2;
+  --m-cyan-soft: rgba(8, 145, 178, 0.1);
+  --m-blue: #2563eb;
+  --m-green: #059669;
+  --m-amber: #d97706;
+  --m-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08);
 }
 
 html, body {
   background-color: var(--m-bg);
   color: var(--m-text);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 .m-panel {
   background-color: var(--m-surface);
   border: 1px solid var(--m-border);
   border-radius: 0.875rem;
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .m-panel-raised {
@@ -34,12 +56,8 @@ html, body {
   border-radius: 0.875rem;
 }
 
-.m-panel-interactive {
-  transition: border-color 150ms ease;
-}
-.m-panel-interactive:hover {
-  border-color: var(--m-border-bright);
-}
+.m-panel-interactive { transition: border-color 150ms ease; }
+.m-panel-interactive:hover { border-color: var(--m-border-bright); }
 
 .m-label {
   text-transform: uppercase;
@@ -49,9 +67,7 @@ html, body {
   color: var(--m-text-muted);
 }
 
-.m-label-cyan {
-  color: var(--m-cyan);
-}
+.m-label-cyan { color: var(--m-cyan); }
 
 .m-grid-bg {
   background-image:
@@ -59,10 +75,15 @@ html, body {
     linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px);
   background-size: 48px 48px;
 }
+[data-theme="light"] .m-grid-bg {
+  background-image:
+    linear-gradient(rgba(8, 145, 178, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 145, 178, 0.05) 1px, transparent 1px);
+}
 
 .m-progress-track {
   height: 4px;
-  background: #1a2130;
+  background: var(--m-surface-2);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -77,55 +98,37 @@ html, body {
   box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35),
               0 0 24px -4px rgba(34, 211, 238, 0.35);
 }
+[data-theme="light"] .m-current-glow {
+  box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.35),
+              0 0 20px -6px rgba(8, 145, 178, 0.28);
+}
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--m-bg); }
-::-webkit-scrollbar-thumb { background: #1e2633; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #2d3748; }
-/* ─── Meridian HUD animations ─── */
+::-webkit-scrollbar-thumb { background: var(--m-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--m-border-bright); }
 
+/* ─── HUD animations ─── */
 @keyframes m-pulse-glow {
   0%, 100% {
-    box-shadow:
-      0 0 0 0 rgba(34, 211, 238, 0.45),
-      0 0 24px -4px rgba(34, 211, 238, 0.5);
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.45),
+                0 0 24px -4px rgba(34, 211, 238, 0.5);
   }
   50% {
-    box-shadow:
-      0 0 0 10px rgba(34, 211, 238, 0),
-      0 0 36px -2px rgba(34, 211, 238, 0.75);
+    box-shadow: 0 0 0 10px rgba(34, 211, 238, 0),
+                0 0 36px -2px rgba(34, 211, 238, 0.75);
   }
 }
 
-.m-pulse {
-  animation: m-pulse-glow 2.4s ease-in-out infinite;
-}
-
-@keyframes m-flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.7; }
-  94% { opacity: 1; }
-}
-
-.m-flicker {
-  animation: m-flicker 6s linear infinite;
-}
+.m-pulse { animation: m-pulse-glow 2.4s ease-in-out infinite; }
 
 @keyframes m-bar {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
+.m-bar { transform-origin: left center; animation: m-bar 0.8s ease-out forwards; }
 
-.m-bar {
-  transform-origin: left center;
-  animation: m-bar 0.8s ease-out forwards;
-}
-
-/* HUD corner brackets on any element */
-.m-hud-corners {
-  position: relative;
-}
+.m-hud-corners { position: relative; }
 .m-hud-corners::before,
 .m-hud-corners::after {
   content: '';
@@ -137,11 +140,9 @@ html, body {
 }
 .m-hud-corners::before {
   top: -1px; left: -1px;
-  border-right: none;
-  border-bottom: none;
+  border-right: none; border-bottom: none;
 }
 .m-hud-corners::after {
   bottom: -1px; right: -1px;
-  border-left: none;
-  border-top: none;
+  border-left: none; border-top: none;
 }
