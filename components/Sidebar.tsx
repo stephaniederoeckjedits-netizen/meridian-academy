@@ -8,6 +8,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '◧' },
   { href: '/courses', label: 'My Courses', icon: '▤' },
   { href: '/community', label: 'Community', icon: '◇' },
+  { href: '/profile', label: 'Profile', icon: '◉' },
 ]
 
 export default function Sidebar({ userEmail }: { userEmail?: string }) {
