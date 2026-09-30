@@ -17,14 +17,15 @@ function renderInline(text: string, keyPrefix: string) {
   })
 }
 
-// The Supabase SQL editor collapsed newlines to spaces. Re-insert them
-// before markdown markers so we can parse the structure back.
+// If the content already has \n\n breaks, leave it alone. Only reinsert
+// line breaks if the SQL editor collapsed everything to a single line.
 function normalize(content: string): string {
+  if (/\n\n/.test(content)) return content.trim()
+
   return content
-    .replace(/\s+(#{2,3}\s)/g, '\n\n$1')  // ## and ### headings
-    .replace(/\s+(>\s)/g, '\n$1')          // > blockquotes
-    .replace(/\s+(-\s)/g, '\n$1')          // - bullets
-    .replace(/\s+(\d+\.\s)/g, '\n$1')      // 1. numbered items
+    .replace(/\s+(#{2,3}\s)/g, '\n\n$1')
+    .replace(/\s+(>\s)/g, '\n$1')
+    .replace(/\s+(-\s)/g, '\n$1')
     .trim()
 }
 
@@ -98,7 +99,7 @@ function parse(content: string): Block[] {
       continue
     }
 
-    // Paragraph - accumulate until blank line or next marker
+    // Paragraph — accumulate until blank line or next marker
     const para: string[] = []
     while (
       i < lines.length &&
@@ -129,10 +130,7 @@ export default function CodexContent({ content }: { content: string }) {
       {blocks.map((block, i) => {
         if (block.type === 'hr') {
           return (
-            <div
-              key={i}
-              className="h-px bg-[var(--m-border)] my-10"
-            />
+            <div key={i} className="h-px bg-[var(--m-border)] my-10" />
           )
         }
 
@@ -191,10 +189,7 @@ export default function CodexContent({ content }: { content: string }) {
         }
 
         return (
-          <p
-            key={i}
-            className="text-[var(--m-text)] leading-relaxed my-4"
-          >
+          <p key={i} className="text-[var(--m-text)] leading-relaxed my-4">
             {renderInline(block.text, `p${i}`)}
           </p>
         )
