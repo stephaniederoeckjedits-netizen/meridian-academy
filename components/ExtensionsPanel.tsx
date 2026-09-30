@@ -6,25 +6,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import PomodoroTimer from './PomodoroTimer'
 import QuickNotes from './QuickNotes'
-
-const wordOfDay = [
-  { nl: 'leren', en: 'to learn' },
-  { nl: 'spreken', en: 'to speak' },
-  { nl: 'denken', en: 'to think' },
-  { nl: 'werken', en: 'to work' },
-  { nl: 'wonen', en: 'to live' },
-  { nl: 'lezen', en: 'to read' },
-  { nl: 'schrijven', en: 'to write' },
-  { nl: 'drinken', en: 'to drink' },
-  { nl: 'eten', en: 'to eat' },
-  { nl: 'slapen', en: 'to sleep' },
-]
+import StudyStreak from './StudyStreak'
+import DailyGoal from './DailyGoal'
+import QuickFlashcard from './QuickFlashcard'
 
 export default function ExtensionsPanel() {
   const [collapsed, setCollapsed] = useState(false)
-
-  const day = new Date().getDate()
-  const wod = wordOfDay[day % wordOfDay.length]
 
   if (collapsed) {
     return (
@@ -57,7 +44,6 @@ export default function ExtensionsPanel() {
       </div>
 
       <div className="p-4 space-y-4">
-        {/* Quick Actions */}
         <div className="m-panel p-4">
           <div className="m-label mb-3">⚡ Quick Actions</div>
           <div className="grid grid-cols-2 gap-2">
@@ -74,37 +60,26 @@ export default function ExtensionsPanel() {
               Community
             </Link>
             <Link
+              href="/library"
+              className="text-xs text-center border border-[var(--m-border)] rounded-lg py-2.5 hover:border-[var(--m-border-bright)] hover:bg-white/[0.02] transition text-[var(--m-text)]"
+            >
+              Library
+            </Link>
+            <Link
               href="/profile"
               className="text-xs text-center border border-[var(--m-border)] rounded-lg py-2.5 hover:border-[var(--m-border-bright)] hover:bg-white/[0.02] transition text-[var(--m-text)]"
             >
               Profile
             </Link>
-            <Link
-              href="/dashboard"
-              className="text-xs text-center border border-[var(--m-border)] rounded-lg py-2.5 hover:border-[var(--m-border-bright)] hover:bg-white/[0.02] transition text-[var(--m-text)]"
-            >
-              Dashboard
-            </Link>
           </div>
         </div>
 
+        <StudyStreak />
+        <DailyGoal />
         <PomodoroTimer />
+        <QuickFlashcard />
         <QuickNotes />
 
-        {/* Word of the day */}
-        <div className="m-panel p-4">
-          <div className="m-label mb-3">🌐 Word of the Day</div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[var(--m-cyan)] mb-1">
-              {wod.nl}
-            </div>
-            <div className="text-xs text-[var(--m-text-muted)]">
-              {wod.en}
-            </div>
-          </div>
-        </div>
-
-        {/* Help */}
         <div className="m-panel p-4">
           <div className="m-label mb-3">💬 Need Help?</div>
           <Link
@@ -127,9 +102,8 @@ export default function ExtensionsPanel() {
           </Link>
         </div>
 
-        {/* Version */}
         <div className="text-[10px] font-mono text-[var(--m-text-dim)] text-center pt-2 pb-4">
-          MERIDIAN v1.0 · LIVE
+          MERIDIAN v1.1 · LIVE
         </div>
       </div>
     </aside>

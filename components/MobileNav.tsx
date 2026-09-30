@@ -11,6 +11,7 @@ import ThemeToggle from './ThemeToggle'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '◧' },
   { href: '/courses', label: 'My Courses', icon: '▤' },
+  { href: '/library', label: 'Library', icon: '▦' },
   { href: '/community', label: 'Community', icon: '◇' },
   { href: '/profile', label: 'Profile', icon: '◉' },
 ]
