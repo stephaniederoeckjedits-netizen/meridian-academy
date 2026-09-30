@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import AppShell from '@/components/AppShell'
-import CompleteButton from './CompleteButton'
+import QuizSection from './QuizSection'
 
 function getYouTubeId(url: string) {
   const match = url.match(
@@ -128,7 +128,7 @@ export default async function LessonPage({
         )}
 
         <div className="mb-10">
-          <CompleteButton lessonId={lesson.id} completed={isCompleted} />
+          <QuizSection lessonId={lesson.id} initialCompleted={isCompleted} />
         </div>
 
         <div className="flex justify-between items-center border-t border-[var(--m-border)] pt-6 gap-4">
@@ -143,12 +143,18 @@ export default async function LessonPage({
             <span />
           )}
           {next ? (
-            <Link
-              href={`/courses/${slug}/lessons/${next.id}`}
-              className="text-sm text-[var(--m-text-muted)] hover:text-[var(--m-text)] text-right transition"
-            >
-              {next.title} →
-            </Link>
+            isCompleted ? (
+              <Link
+                href={`/courses/${slug}/lessons/${next.id}`}
+                className="text-sm text-[var(--m-text-muted)] hover:text-[var(--m-text)] text-right transition"
+              >
+                {next.title} →
+              </Link>
+            ) : (
+              <span className="text-sm text-[var(--m-text-dim)] text-right">
+                🔒 Pass the exam to continue
+              </span>
+            )
           ) : (
             <span />
           )}
