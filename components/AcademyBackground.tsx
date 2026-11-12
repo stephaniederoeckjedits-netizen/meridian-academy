@@ -9,18 +9,18 @@ export default function AcademyBackground({ variant }: Props) {
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a1018] via-[#050810] to-[#020408]" />
       
       {/* Cyberpunk Horizon Glow */}
-      <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-[#22d3ee]/10 to-transparent" />
-      <div className="absolute top-0 left-0 right-0 h-[20vh] bg-gradient-to-b from-[#8b5cf6]/5 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[30vh] bg-gradient-to-t from-[#22d3ee]/20 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[20vh] bg-gradient-to-b from-[#8b5cf6]/10 to-transparent" />
 
       {/* Ambient Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#22d3ee]/5 blur-[120px] rounded-full mix-blend-screen" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8b5cf6]/5 blur-[120px] rounded-full mix-blend-screen" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#22d3ee]/10 blur-[120px] rounded-full mix-blend-screen" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8b5cf6]/10 blur-[120px] rounded-full mix-blend-screen" />
 
       {/* Perspective Grid (Star Wars/Cyberpunk style) */}
       <div 
-        className="absolute inset-0 opacity-[0.03]" 
+        className="absolute inset-0 opacity-[0.06]" 
         style={{ 
-          backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.5) 1px, transparent 1px)', 
+          backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.8) 1px, transparent 1px)', 
           backgroundSize: '40px 40px',
           backgroundPosition: 'center top'
         }} 
