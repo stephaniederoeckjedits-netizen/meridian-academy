@@ -63,12 +63,16 @@ export default function HomeScreen() {
   return (
     <div className="min-h-screen bg-[#050810] flex flex-col items-center justify-center p-6 relative overflow-hidden">
       
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0 opacity-60 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/main-bg.jpg?v=5')" }} />
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#050810] via-transparent to-[#050810] opacity-90" />
+      {/* Bulletproof Image Tag for Background */}
+      <img 
+        src="/main-bg.jpg?v=6" 
+        alt="Background" 
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      />
+      {/* Subtle Vignette to darken edges for text readability */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
 
       <div className="relative z-10 w-full max-w-xl flex flex-col items-center">
-        {/* Menu Box - Centered */}
         <div className="w-full bg-[#0a1018]/80 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.02]">
             <span className="flex items-center gap-2 text-[#22d3ee] font-mono text-xs tracking-[0.2em] uppercase font-bold">

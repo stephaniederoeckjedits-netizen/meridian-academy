@@ -33,17 +33,13 @@ export default function NavLoader() {
   if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center">
-      <div 
-        className="absolute inset-0 bg-[#050810]"
-        style={{
-          backgroundImage: "url('/loading-bg.jpg?v=5')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden">
+      <img 
+        src="/loading-bg.jpg?v=6" 
+        alt="Loading Background" 
+        className="absolute inset-0 w-full h-full object-cover z-0"
       />
-      <div className="absolute inset-0 bg-[#050810]/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
       
       <div className="relative z-10 flex flex-col items-center max-w-3xl text-center">
         <LogoEmblem size={160} className="mb-8" />
@@ -55,7 +51,7 @@ export default function NavLoader() {
         </div>
         
         <div className="flex flex-col items-center gap-3">
-          <div className="text-[11px] tracking-[0.25em] uppercase text-[#566074] font-medium">
+          <div className="text-[11px] tracking-[0.25em] uppercase text-[#8892a6] font-medium">
             LOADING{dots}
           </div>
           <div className="h-px w-48 overflow-hidden bg-[#1e2633]">

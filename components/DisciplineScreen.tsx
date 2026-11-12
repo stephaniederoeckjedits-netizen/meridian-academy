@@ -20,17 +20,13 @@ export default function DisciplineScreen({ onDone, duration = 6000 }: { onDone: 
   }, [duration, onDone])
 
   return (
-    <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center px-8 pointer-events-none transition-opacity duration-1000" style={{ opacity: fading ? 0 : 1 }}>
-      <div 
-        className="absolute inset-0 bg-[#050810]"
-        style={{
-          backgroundImage: "url('/loading-bg.jpg?v=5')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
+    <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center px-8 pointer-events-none transition-opacity duration-1000 overflow-hidden" style={{ opacity: fading ? 0 : 1 }}>
+      <img 
+        src="/loading-bg.jpg?v=6" 
+        alt="Loading Background" 
+        className="absolute inset-0 w-full h-full object-cover z-0"
       />
-      <div className="absolute inset-0 bg-[#050810]/70 backdrop-blur-sm" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
       
       <div className="relative flex flex-col items-center max-w-3xl text-center z-10">
         <LogoEmblem size={160} className="mb-8" />
@@ -43,7 +39,7 @@ export default function DisciplineScreen({ onDone, duration = 6000 }: { onDone: 
       </div>
 
       <div className="absolute bottom-16 flex flex-col items-center gap-3 z-10">
-        <div className="text-[11px] tracking-[0.25em] uppercase text-[#566074] font-medium">
+        <div className="text-[11px] tracking-[0.25em] uppercase text-[#8892a6] font-medium">
           LOADING NEXT MISSION{dots}
         </div>
         <div className="h-px w-40 overflow-hidden bg-[#1e2633]">
