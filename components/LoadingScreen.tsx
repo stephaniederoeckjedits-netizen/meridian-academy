@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 
 const QUOTES = [
+  // Original 20
   { text: "The training is nothing. The will is everything.", author: "Bruce Wayne" },
   { text: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
@@ -21,7 +22,29 @@ const QUOTES = [
   { text: "The mind is everything. What you think you become.", author: "Buddha" },
   { text: "I think, therefore I am.", author: "René Descartes" },
   { text: "He who has a why to live for can bear almost any how.", author: "Friedrich Nietzsche" },
-  { text: "The unexamined life is not worth living.", author: "Socrates" }
+  { text: "The unexamined life is not worth living.", author: "Socrates" },
+  
+  // 20 New Quotes
+  { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+  { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+  { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
+  { text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+  { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+  { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+  { text: "If you want to lift yourself up, lift up someone else.", author: "Booker T. Washington" },
+  { text: "Great minds discuss ideas; average minds discuss events; small minds discuss people.", author: "Eleanor Roosevelt" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+  { text: "The best revenge is massive success.", author: "Frank Sinatra" },
+  { text: "A room without books is like a body without a soul.", author: "Cicero" },
+  { text: "Fortune favors the bold.", author: "Virgil" },
+  { text: "Nothing in life is to be feared, it is only to be understood.", author: "Marie Curie" },
+  { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+  { text: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
+  { text: "Get busy living or get busy dying.", author: "Stephen King" }
 ]
 
 export default function LoadingScreen() {
@@ -38,24 +61,21 @@ export default function LoadingScreen() {
 
   return (
     <div 
-      className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer"
+      className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer pointer-events-auto"
       onClick={() => setQuoteIndex((prev) => (prev + 1) % QUOTES.length)}
     >
       {/* Background Image */}
       <img 
-        src="/loading-bg.jpg?v=11" 
+        src="/loading-bg.jpg?v=12" 
         alt="Loading Background" 
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
       />
       
       {/* Vignette */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80 pointer-events-none" />
       
-      {/* 
-        CRITICAL FIX: Using absolute positioning at top-48% 
-        This guarantees the text drops exactly below the logo, regardless of screen height.
-      */}
-      <div className="absolute top-[48%] left-0 right-0 z-10 flex flex-col items-center max-w-4xl mx-auto text-center px-6">
+      {/* Text Content */}
+      <div className="absolute top-[48%] left-0 right-0 z-10 flex flex-col items-center max-w-5xl mx-auto text-center px-6 pointer-events-none">
         <div className="text-2xl md:text-4xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif transition-opacity duration-500 min-h-[120px] flex items-center justify-center" key={quoteIndex}>
           "{QUOTES[quoteIndex].text}"
         </div>

@@ -12,7 +12,7 @@ export default function DisciplineScreen({ onDone, duration = 12000 }: { onDone:
   }, [duration, onDone])
 
   return (
-    <div className={`fixed inset-0 z-[10000] pointer-events-none transition-opacity duration-1000 ${fading ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[10000] transition-opacity duration-1000 ${fading ? 'opacity-0' : 'opacity-100'}`}>
       <LoadingScreen />
     </div>
   )
