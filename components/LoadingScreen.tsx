@@ -38,12 +38,12 @@ export default function LoadingScreen() {
 
   return (
     <div 
-      className="fixed inset-0 z-[99999] flex flex-col items-center justify-start overflow-hidden bg-[#050810] cursor-pointer"
+      className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer"
       onClick={() => setQuoteIndex((prev) => (prev + 1) % QUOTES.length)}
     >
       {/* Background Image */}
       <img 
-        src="/loading-bg.jpg?v=10" 
+        src="/loading-bg.jpg?v=11" 
         alt="Loading Background" 
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
@@ -51,8 +51,11 @@ export default function LoadingScreen() {
       {/* Vignette */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
       
-      {/* Content pushed down to avoid logo overlap */}
-      <div className="relative z-10 flex flex-col items-center max-w-4xl text-center px-6 mt-[25vh] md:mt-[30vh]">
+      {/* 
+        CRITICAL FIX: Using absolute positioning at top-48% 
+        This guarantees the text drops exactly below the logo, regardless of screen height.
+      */}
+      <div className="absolute top-[48%] left-0 right-0 z-10 flex flex-col items-center max-w-4xl mx-auto text-center px-6">
         <div className="text-2xl md:text-4xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif transition-opacity duration-500 min-h-[120px] flex items-center justify-center" key={quoteIndex}>
           "{QUOTES[quoteIndex].text}"
         </div>
