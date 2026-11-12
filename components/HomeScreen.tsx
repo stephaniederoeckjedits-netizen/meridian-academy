@@ -63,13 +63,12 @@ export default function HomeScreen() {
   return (
     <div className="min-h-screen bg-[#050810] flex flex-col items-center justify-center p-6 relative overflow-hidden">
       
-      {/* Bulletproof Image Tag for Background */}
+      {/* Bulletproof Background Image */}
       <img 
-        src="/main-bg.jpg?v=6" 
+        src="/main-bg.jpg?v=7" 
         alt="Background" 
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
-      {/* Subtle Vignette to darken edges for text readability */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
 
       <div className="relative z-10 w-full max-w-xl flex flex-col items-center">

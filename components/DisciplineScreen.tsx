@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import LogoEmblem from './LogoEmblem'
 
 export default function DisciplineScreen({ onDone, duration = 6000 }: { onDone: () => void, duration?: number }) {
   const [fading, setFading] = useState(false)
@@ -21,15 +20,16 @@ export default function DisciplineScreen({ onDone, duration = 6000 }: { onDone: 
 
   return (
     <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center px-8 pointer-events-none transition-opacity duration-1000 overflow-hidden" style={{ opacity: fading ? 0 : 1 }}>
+      
+      {/* Background Image (No duplicate logo) */}
       <img 
-        src="/loading-bg.jpg?v=6" 
+        src="/loading-bg.jpg?v=7" 
         alt="Loading Background" 
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
       
-      <div className="relative flex flex-col items-center max-w-3xl text-center z-10">
-        <LogoEmblem size={160} className="mb-8" />
+      <div className="relative flex flex-col items-center max-w-3xl text-center z-10 mt-16">
         <div className="text-2xl md:text-3xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif">
           "The training is nothing. The will is everything."
         </div>

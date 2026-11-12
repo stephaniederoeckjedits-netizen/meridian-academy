@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import LogoEmblem from './LogoEmblem'
 
 export function triggerNav() {
   if (typeof window !== 'undefined') {
@@ -34,16 +33,16 @@ export default function NavLoader() {
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden">
+      {/* Background Image (No duplicate logo) */}
       <img 
-        src="/loading-bg.jpg?v=6" 
+        src="/loading-bg.jpg?v=7" 
         alt="Loading Background" 
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
       
       <div className="relative z-10 flex flex-col items-center max-w-3xl text-center">
-        <LogoEmblem size={160} className="mb-8" />
-        <div className="text-2xl md:text-3xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif">
+        <div className="text-2xl md:text-3xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif mt-16">
           "The training is nothing. The will is everything."
         </div>
         <div className="text-sm tracking-widest uppercase text-[#22d3ee] mb-12">
