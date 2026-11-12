@@ -1,0 +1,1742 @@
+[
+  {
+    "articles": [
+      {
+        "body": [
+          {
+            "text": "There is a quiet transaction happening every time you open your phone. You are not the customer. You are the product. The customer is the advertiser, and the currency is the fraction of a second your attention lingers on a notification, a headline, a video that autoplays before you can look away.",
+            "type": "p"
+          },
+          {
+            "text": "This is not a conspiracy. It is an economic model ΓÇö one so powerful that it has restructured the entire digital landscape. Social platforms, news outlets, and mobile games all compete for the same scarce resource: the next ten seconds of your conscious awareness.",
+            "type": "p"
+          },
+          {
+            "text": "The Architecture of Capture",
+            "type": "h2"
+          },
+          {
+            "text": "Tristan Harris, a former design ethicist at Google, has spent years explaining how infinite scroll, pull-to-refresh, and algorithmic feeds are not neutral features. They are deliberate engineering choices that bypass the brain's prefrontal cortex ΓÇö the part responsible for long-term decision making ΓÇö and speak directly to the limbic system, which craves novelty and immediate reward.",
+            "type": "p"
+          },
+          {
+            "attribution": "Tristan Harris",
+            "text": "The race is not for your money. It is for your mind.",
+            "type": "quote"
+          },
+          {
+            "text": "Once you see it, you cannot unsee it. The red badge. The vibration in your pocket. The 'Just one more' suggestion. Every one of these is a small manipulation that compounds over a lifetime of usage.",
+            "type": "p"
+          },
+          {
+            "text": "What Gets Lost",
+            "type": "h2"
+          },
+          {
+            "text": "The most obvious casualty is deep reading. A 2019 study from the University of Michigan found that the average American worker switches tasks every three minutes ΓÇö not because they want to, but because the environment is engineered to make switching feel like relief.",
+            "type": "p"
+          },
+          {
+            "text": "But the deeper loss is subtler. When you cannot hold a single idea in your head for more than a few minutes, you cannot develop the kind of layered thinking that produces insight. You are left with a stream of fragments: interesting, disconnected, and quickly forgotten.",
+            "type": "p"
+          },
+          {
+            "text": "Try this: for one week, keep a small notebook next to you. Every time you instinctively reach for your phone, write down what you were about to do. You will discover that most of those moments were not motivated by a real need ΓÇö they were reflex.",
+            "type": "callout"
+          },
+          {
+            "text": "The Reclamation",
+            "type": "h2"
+          },
+          {
+            "text": "The good news is that attention is trainable. Not by sheer willpower, but by design. The same way the environment once shaped you, you can reshape the environment.",
+            "type": "p"
+          },
+          {
+            "items": [
+              "Turn off every non-essential notification on every device. Not reduce ΓÇö off.",
+              "Use physical books for reading you care about. The tactile cost of turning a page is a feature, not a bug.",
+              "Batch phone use into two or three windows per day. The 24-hour wait rule is brutal at first, and then it becomes a gift.",
+              "Replace scrolling with a specific activity you care about ΓÇö a walk, a journal, a problem you want to solve."
+            ],
+            "ordered": false,
+            "type": "list"
+          },
+          {
+            "text": "None of this requires monastic discipline. It requires the recognition that your attention is the raw material of your life. Whatever you give it to, that is what your life becomes. Not metaphorically. Literally.",
+            "type": "p"
+          },
+          {
+            "text": "The question is no longer 'How do I get more focus?' The question is 'What am I willing to give up to have it?'",
+            "type": "p"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Every app you open is designed to keep you there. This is not a conspiracy; it is an economic model. Understanding that model is the first step toward reclaiming your attention.",
+        "featured": true,
+        "format": "analysis",
+        "id": "53ab6258-c9ec-4db7-be5d-0682d67c01f2",
+        "published_at": "2026-11-06T07:00:09.447377+00:00",
+        "reading_minutes": 6,
+        "slug": "attention-economy-eating-your-mind",
+        "status": "published",
+        "subtitle": "Why focus has become the scarcest resource of the 21st century ΓÇö and what you can do about it.",
+        "title": "The Attention Economy Is Eating Your Mind",
+        "updated_at": "2026-11-06T07:00:09.447377+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Albert Einstein allegedly called compound interest 'the eighth wonder of the world.' Whether he actually said it or not, the mathematics are undeniable. A small, consistent improvement does not just add up ΓÇö it multiplies. This is the single most important idea in the study of human progress, and almost no one takes it seriously.",
+            "type": "p"
+          },
+          {
+            "text": "The Math, Briefly",
+            "type": "h2"
+          },
+          {
+            "text": "If you improve at something by 1% per day, you do not end the year 365% better. You end it 37 times better. The reason is simple: every improvement applies to the previous version of you. Growth is not additive. It is exponential ΓÇö as long as you keep going.",
+            "type": "p"
+          },
+          {
+            "text": "The same math applies in reverse. A 1% decline per day does not leave you 365% worse. It leaves you at 3% of your original capacity. Small habits, good or bad, compound faster than most people intuit.",
+            "type": "p"
+          },
+          {
+            "text": "Why Most People Fail",
+            "type": "h2"
+          },
+          {
+            "text": "The problem is not that people do not understand the math. It is that the math is invisible at first. The early returns are tiny. You do not feel 1% better on day three. You feel roughly the same ΓÇö maybe a little worse, because you gave up something familiar to do something new.",
+            "type": "p"
+          },
+          {
+            "attribution": "James Clear",
+            "text": "Habits often appear to make no difference until you cross a critical threshold, and the most powerful outcomes are often delayed.",
+            "type": "quote"
+          },
+          {
+            "text": "Most people quit in the plateau. They push for weeks and see no visible change, and they conclude the habit is not working. But the plateau is not evidence that the habit is failing. It is evidence that the habit is working, and the results have not arrived yet.",
+            "type": "p"
+          },
+          {
+            "text": "The Three Rules",
+            "type": "h2"
+          },
+          {
+            "items": [
+              "Pick one habit. Not five. Not ten. One. The smaller the better.",
+              "Attach it to something you already do. After I brush my teeth, I will read one page. The anchor matters more than the habit itself.",
+              "Measure streaks, not outcomes. You are not trying to get better this week. You are trying to not miss. The outcomes take care of themselves."
+            ],
+            "ordered": true,
+            "type": "list"
+          },
+          {
+            "text": "The goal is not to be a person who runs five kilometers. The goal is to be a person who runs. The distance will follow.",
+            "type": "callout"
+          },
+          {
+            "text": "This is why Meridian's streak system exists. Not to gamify learning into a shallow score, but to make the invisible arithmetic of consistency visible. Every day you show up is a 1% deposit into a bank account you cannot see yet ΓÇö but one day, you will check the balance and wonder how you ever lived any other way.",
+            "type": "p"
+          }
+        ],
+        "category_id": "75ab3f4f-a213-480d-b042-c0d673774f63",
+        "cover_image": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "James Clear got it right: habits are the compound interest of self-improvement. But the deeper lesson is not about habits at all ΓÇö it is about the arithmetic of growth.",
+        "featured": false,
+        "format": "guide",
+        "id": "c687516e-6a88-479b-969e-765f2168f0a4",
+        "published_at": "2026-11-06T07:00:09.447377+00:00",
+        "reading_minutes": 4,
+        "slug": "compound-interest-of-small-habits",
+        "status": "published",
+        "subtitle": "Why 1% better every day beats 100% better twice a year.",
+        "title": "The Compound Interest of Small Habits",
+        "updated_at": "2026-11-06T07:00:09.447377+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "There are two ways to make a decision. The first is to look at what other people have done, find the pattern, and copy it. The second is to break the problem down into its most fundamental truths and reason upward from there. The first is faster. The second is usually better.",
+            "type": "p"
+          },
+          {
+            "text": "The Problem with Best Practices",
+            "type": "h2"
+          },
+          {
+            "text": "A best practice is a conclusion that has been extracted from someone else's context. When you copy it, you are importing an answer without importing the reasoning that produced it. This works fine ΓÇö until the context changes, which is exactly when you need the most help.",
+            "type": "p"
+          },
+          {
+            "text": "Consider a common example: 'Startups should hire slowly.' That sounds wise. But it is a best practice derived from a specific set of assumptions ΓÇö typically about high salaries, high turnover, and the availability of capital. In a different context, the same advice can be actively harmful.",
+            "type": "p"
+          },
+          {
+            "attribution": "Elon Musk",
+            "text": "You cannot reason from analogy alone. Eventually, you have to reason from first principles.",
+            "type": "quote"
+          },
+          {
+            "text": "What First Principles Actually Mean",
+            "type": "h2"
+          },
+          {
+            "text": "First principles thinking is the practice of reducing a problem to its most basic, irreducible components, and then building up from there. It is what physicists do when they ask, 'What is a battery actually made of?' rather than, 'How do other companies build batteries?'",
+            "type": "p"
+          },
+          {
+            "text": "The method is simple, but not easy. It requires you to unlearn the assumptions you did not even realize you were holding ΓÇö about what is possible, what is cheap, what is fast, and what is normal.",
+            "type": "p"
+          },
+          {
+            "items": [
+              "Identify the assumption. Write down every belief you have about the problem. Be specific.",
+              "Question each one. Ask: 'Is this actually true, or is it true only under certain conditions?'",
+              "Keep the ones that survive. These become your first principles.",
+              "Rebuild from scratch. Design a solution that does not require the assumptions you discarded."
+            ],
+            "ordered": true,
+            "type": "list"
+          },
+          {
+            "text": "When to Use It",
+            "type": "h2"
+          },
+          {
+            "text": "First principles is not always the right tool. For most day-to-day decisions, best practices are fine ΓÇö they encode the wisdom of people who have already solved similar problems. The method earns its keep when you are facing a problem that has never been solved before, or when the stakes are high enough to justify the slower path.",
+            "type": "p"
+          },
+          {
+            "text": "The deeper value of the method is that it trains your mind. Every time you reason from first principles, you get a little better at distinguishing between what is true and what is merely conventional. That habit compounds.",
+            "type": "p"
+          },
+          {
+            "text": "The real question is not 'What should I do?' It is 'What is actually true about this situation?' Answer the second question and the first one usually takes care of itself.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "1b63e9f0-1c4f-421a-baa2-3be5ebf6305c",
+        "cover_image": "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Best practices are someone else's conclusions, frozen in time. First principles let you reason from scratch ΓÇö which is the only way to think about problems that have never been solved before.",
+        "featured": false,
+        "format": "explainer",
+        "id": "41a6b6b7-4873-4a09-b6c5-72a11f80d77f",
+        "published_at": "2026-11-06T07:00:09.447377+00:00",
+        "reading_minutes": 5,
+        "slug": "first-principles-beat-best-practices",
+        "status": "published",
+        "subtitle": "Copying what works is safe. Understanding why it works changes everything.",
+        "title": "Why First Principles Beat Best Practices",
+        "updated_at": "2026-11-06T07:00:09.447377+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Marcus Aurelius ruled the Roman Empire for nineteen years. During that time he fought wars, buried children, survived plagues, and faced betrayal from the people closest to him. He also wrote, in private, a series of notes to himself that would eventually be published as the Meditations ΓÇö arguably the most useful book on anxiety ever written.",
+            "type": "p"
+          },
+          {
+            "text": "The Central Insight",
+            "type": "h2"
+          },
+          {
+            "text": "Marcus believed that the source of most suffering is not the thing that happened ΓÇö it is our opinion about the thing that happened. 'If you are distressed by anything external,' he wrote, 'the pain is not due to the thing itself, but to your estimate of it. And this you have the power to revoke at any moment.'",
+            "type": "p"
+          },
+          {
+            "attribution": "Marcus Aurelius, Meditations",
+            "text": "You have power over your mind ΓÇö not outside events. Realize this, and you will find strength.",
+            "type": "quote"
+          },
+          {
+            "text": "This sounds like a clich├⌐ until you sit with it. How much of your current anxiety is about the thing, and how much is about the story you are telling yourself about the thing? The presentation tomorrow is one event. The fear of humiliation, the fear of being seen as incompetent, the fear of the future ΓÇö those are additions you are making.",
+            "type": "p"
+          },
+          {
+            "text": "What Marcus Actually Practiced",
+            "type": "h2"
+          },
+          {
+            "text": "He did not just believe these ideas. He practiced them, every single day, for decades. Some of his practices are directly applicable to a modern life:",
+            "type": "p"
+          },
+          {
+            "items": [
+              "Negative visualization. Spend a few minutes imagining the worst realistic outcome. Not to wallow, but to see that you would survive it. The fear shrinks when the outcome is in view.",
+              "The view from above. Picture your problem from a thousand feet. Then from space. Then from time. The scale is not designed to dismiss your problems ΓÇö it is designed to remind you that you can hold them.",
+              "The morning question. Marcus began each day by asking what he intended to do and who he intended to be. Not a to-do list. An intention.",
+              "Journaling, but honestly. He wrote to himself the way a friend would write ΓÇö not to perform, but to think. That is what the Meditations is."
+            ],
+            "ordered": false,
+            "type": "list"
+          },
+          {
+            "text": "The Modern Application",
+            "type": "h2"
+          },
+          {
+            "text": "The anxiety you feel today is different in content from what Marcus felt, but identical in structure. It is the mind rehearsing possible futures and mistaking them for reality. The Stoic response is not to suppress the feeling or pretend it is not there. It is to see it clearly ΓÇö to identify what is within your control and what is not, and then to act only on the part that is.",
+            "type": "p"
+          },
+          {
+            "text": "Some things are up to us: our own mind, our own actions, our own character. Some things are not: the opinions of others, the state of the world, the outcome of our work. Confusing the two is the root of nearly all suffering.",
+            "type": "callout"
+          },
+          {
+            "text": "You will not eliminate anxiety. Marcus did not. But you can relate to it differently ΓÇö as a signal to be observed rather than a verdict to be feared. That shift, practiced for a lifetime, is worth more than any technique.",
+            "type": "p"
+          },
+          {
+            "text": "Start with the sentence he wrote to himself nearly two thousand years ago: 'You could leave life right now. Let that determine what you do and say and think.' It is not a threat. It is a gift ΓÇö one that has been available to you the entire time.",
+            "type": "p"
+          }
+        ],
+        "category_id": "ca5d0704-3ac0-4fb6-976f-d56b64010713",
+        "cover_image": "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Anxiety is not new. But the Stoic approach to it might be more useful today than it was in 170 AD, because we have more to be anxious about ΓÇö and fewer tools to cope.",
+        "featured": false,
+        "format": "editorial",
+        "id": "236cfee6-0c64-4bd6-807b-cba40e7d526c",
+        "published_at": "2026-11-06T07:00:09.447377+00:00",
+        "reading_minutes": 7,
+        "slug": "marcus-aurelius-modern-anxiety",
+        "status": "published",
+        "subtitle": "A Roman emperor who lived 1,900 years ago solved a problem you are probably dealing with right now.",
+        "title": "What Marcus Aurelius Knew About Modern Anxiety",
+        "updated_at": "2026-11-06T07:00:09.447377+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Ask any writer, designer, or musician about their best work and they will almost always tell you it came from a constraint. A deadline. A budget. A limitation on tools. A brief they did not choose.",
+            "type": "p"
+          },
+          {
+            "text": "The Paradox of Freedom",
+            "type": "h2"
+          },
+          {
+            "text": "Total freedom feels like a gift. But the mind is not built for infinite choice. Psychologists call it \"analysis paralysis\" ΓÇö when the number of options exceeds a threshold, we freeze. Constraints reduce the search space. They make the problem tractable.",
+            "type": "p"
+          },
+          {
+            "attribution": "Orson Welles",
+            "text": "The absence of limitations is the enemy of art.",
+            "type": "quote"
+          },
+          {
+            "text": "Think of your favorite album. It was probably recorded in a limited studio with limited gear. Think of your favorite design. It was probably made with a limited color palette. The constraint is not a bug. It is often the feature.",
+            "type": "p"
+          },
+          {
+            "items": [
+              "Set a hard deadline, even if artificial",
+              "Pick one tool and only use that",
+              "Write in a single sitting, no edits",
+              "Design with a specific real-world audience in mind",
+              "Choose one metric and optimize it ruthlessly"
+            ],
+            "ordered": true,
+            "type": "list"
+          },
+          {
+            "text": "Creativity is not the absence of constraints. It is the art of working well within them.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1b580f4-0e6d-47e2-9e53-fdcaf2f68aff",
+        "cover_image": "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "The blank page is terrifying. The box you are given is liberating. Every great creative work was born from a constraint.",
+        "featured": false,
+        "format": "guide",
+        "id": "d8dd06b3-be9c-4902-a52c-6170d4a48ad3",
+        "published_at": "2026-11-06T07:34:10.690269+00:00",
+        "reading_minutes": 5,
+        "slug": "constraints-breed-creativity",
+        "status": "published",
+        "subtitle": "Total freedom is the enemy of great work.",
+        "title": "Why Constraints Make You More Creative",
+        "updated_at": "2026-11-06T07:34:10.690269+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Everyone knows Rome fell. Almost no one knows how. The popular image ΓÇö barbarians at the gates, an empire overrun ΓÇö is a cartoon. The reality is a slow-motion collapse over centuries, driven by problems the Romans created themselves.",
+            "type": "p"
+          },
+          {
+            "text": "It Was Not One Thing",
+            "type": "h2"
+          },
+          {
+            "text": "Edward Gibbon blamed Christianity. Others blamed lead poisoning. Modern historians blame a combination: fiscal crisis, military overextension, political instability, climate change, plague, and yes, migration ΓÇö but migration driven by pressures Rome itself created.",
+            "type": "p"
+          },
+          {
+            "attribution": "Edward Gibbon",
+            "text": "The decline of Rome was the natural and inevitable effect of immoderate greatness.",
+            "type": "quote"
+          },
+          {
+            "text": "The Fiscal Death Spiral",
+            "type": "h2"
+          },
+          {
+            "text": "The most instructive failure was fiscal. As the empire expanded, it stopped conquering new territory ΓÇö which meant it stopped collecting new plunder and tribute. But its commitments kept growing. To pay its armies, the state debased its currency. By 270 AD, the denarius had less than 3% silver. Inflation became so severe that the empire reverted to barter in some regions.",
+            "type": "p"
+          },
+          {
+            "text": "This is not a story about external enemies. It is a story about an organization that promised more than it could deliver, hid the gap with accounting tricks, and eventually collapsed under its own weight.",
+            "type": "p"
+          },
+          {
+            "text": "Every empire ΓÇö company, civilization, or career ΓÇö falls the same way. Not because of the enemy at the gate, but because of the promise that could no longer be kept.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "1edc8005-2b25-4083-96de-97120875bfcd",
+        "cover_image": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "The Western Roman Empire took three centuries to collapse. Understanding why reveals the invisible rot that kills every civilization, company, and career.",
+        "featured": false,
+        "format": "analysis",
+        "id": "a19eee1f-95b6-4466-a3d7-a02ef7eef4c6",
+        "published_at": "2026-11-06T07:34:10.690269+00:00",
+        "reading_minutes": 7,
+        "slug": "how-rome-actually-fell",
+        "status": "published",
+        "subtitle": "Not in a day. Not to one enemy. The truth is messier ΓÇö and more instructive.",
+        "title": "How Rome Actually Fell",
+        "updated_at": "2026-11-06T07:34:10.690269+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "The phrase is attributed to Alfred Korzybski, a Polish-American philosopher who studied how language shapes thought. It has since become a foundational idea in systems thinking, cognitive science, and any discipline that deals with complex systems.",
+            "type": "p"
+          },
+          {
+            "text": "The idea is simple: a map is a useful simplification of a territory. But it is not the territory. The map cannot tell you about the smell of rain, the sound of a river, or the particular rock that will trip you.",
+            "type": "p"
+          },
+          {
+            "text": "Why It Matters",
+            "type": "h2"
+          },
+          {
+            "text": "Every mental model, every spreadsheet, every KPI, every spreadsheet you have ever built is a map. The problem is that humans mistake maps for territory constantly. We optimize the metric and destroy the underlying thing. We trust the model over the reality.",
+            "type": "p"
+          },
+          {
+            "attribution": "Aldous Huxley",
+            "text": "The map appears to us more real than the land.",
+            "type": "quote"
+          },
+          {
+            "text": "When you find yourself confident in a model, ask: what did I leave out? What does this simplification hide? The answer is usually the most important thing.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "ca5d0704-3ac0-4fb6-976f-d56b64010713",
+        "cover_image": "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "A model of reality is not reality. Every simplification leaves something out. When you forget that, you make decisions that feel right but lead astray.",
+        "featured": false,
+        "format": "editorial",
+        "id": "c0d4b09d-f80a-45db-b450-60f7f0f364fb",
+        "published_at": "2026-11-06T07:34:10.690269+00:00",
+        "reading_minutes": 4,
+        "slug": "map-not-territory",
+        "status": "published",
+        "subtitle": "The most important sentence in systems thinking.",
+        "title": "The Map Is Not the Territory",
+        "updated_at": "2026-11-06T07:34:10.690269+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Daniel Kahneman, the only psychologist to ever win a Nobel Prize in economics, spent fifty years studying how humans actually make decisions. His conclusion is devastating: we are not rational actors. We are storytellers with a math problem.",
+            "type": "p"
+          },
+          {
+            "text": "System 1 and System 2",
+            "type": "h2"
+          },
+          {
+            "text": "Kahneman proposed that the mind operates in two modes. System 1 is fast, automatic, and effortless. It is what recognizes faces, completes sentences, and drives on autopilot. System 2 is slow, deliberate, and effortful. It is what solves a math problem, weighs trade-offs, or reads a contract.",
+            "type": "p"
+          },
+          {
+            "attribution": "Daniel Kahneman",
+            "text": "System 1 is a machine for jumping to conclusions.",
+            "type": "quote"
+          },
+          {
+            "text": "Both systems are useful. Without System 1 we would be paralyzed by every decision. But System 1 has biases. It prefers the first answer that makes sense. It conflates easy-to-remember with true. It assumes what you see is all there is.",
+            "type": "p"
+          },
+          {
+            "text": "Why This Matters",
+            "type": "h2"
+          },
+          {
+            "text": "Every important decision in your life ΓÇö who to marry, what to build, when to quit ΓÇö involves a choice between trusting your gut and doing the work. Most people trust the gut too early and do the work too late.",
+            "type": "p"
+          },
+          {
+            "text": "The next time you feel certain about a big decision, pause. Ask yourself: is this System 1 or System 2? If you cannot explain your reasoning to a stranger in under a minute, it is probably System 1 pretending to be System 2.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Your brain runs two systems. One is fast and intuitive. The other is slow and deliberate. Most of your bad decisions come from using the wrong one.",
+        "featured": false,
+        "format": "explainer",
+        "id": "7ae0c894-c2b4-47be-b74d-09764982aaf5",
+        "published_at": "2026-11-06T07:34:10.690269+00:00",
+        "reading_minutes": 5,
+        "slug": "two-systems-of-thinking",
+        "status": "published",
+        "subtitle": "Kahneman's framework changed how we understand decisions. Here is why it matters.",
+        "title": "The Two Systems of Thinking",
+        "updated_at": "2026-11-06T07:34:10.690269+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Donald Knuth, one of the giants of computer science, famously said that 'programming is an art.' He was not speaking metaphorically. The best code has rhythm, structure, and clarity. It communicates ideas as effectively as a well-written essay.",
+            "type": "p"
+          },
+          {
+            "text": "The Aesthetics of Code",
+            "type": "h2"
+          },
+          {
+            "text": "Martin Fowler, in his book Refactoring, talks about 'code smells' ΓÇö patterns that suggest something is wrong. These smells are not bugs; they are aesthetic judgments. A function is too long. A variable name is unclear. The logic is nested too deeply. These are the same criticisms you would make of a clumsy sentence.",
+            "type": "p"
+          },
+          {
+            "attribution": "Martin Fowler",
+            "text": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+            "type": "quote"
+          },
+          {
+            "text": "When you write code, you are writing for two audiences: the machine that executes it, and the human who reads it later (often yourself). Optimising only for the machine leads to brittle, unmaintainable systems. Optimising for the human ΓÇö for clarity, simplicity, and elegance ΓÇö leads to software that lasts.",
+            "type": "p"
+          },
+          {
+            "text": "Write code like you are writing a letter to a future colleague who is tired, overworked, and needs to understand your logic in 30 seconds. That is the standard.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "c004186d-0bed-4d3c-97b7-310a30ad99b4",
+        "cover_image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Code is not just instructions for a machine. It is a medium of human expression. The best code is not just functional; it is elegant, readable, and beautiful.",
+        "featured": false,
+        "format": "editorial",
+        "id": "845bccb6-4742-4fde-916a-62dc3d3e19f0",
+        "published_at": "2026-11-06T07:42:02.427629+00:00",
+        "reading_minutes": 5,
+        "slug": "code-as-poetry",
+        "status": "published",
+        "subtitle": "Why the best programmers are also artists.",
+        "title": "Code as Poetry",
+        "updated_at": "2026-11-06T07:42:02.427629+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "The word 'stoic' has come to mean 'suffering without complaining.' This is a profound misunderstanding. Stoicism is not about feeling nothing. It is about feeling the right thing at the right time, and not being enslaved by emotions you cannot control.",
+            "type": "p"
+          },
+          {
+            "text": "The Dichotomy of Control",
+            "type": "h2"
+          },
+          {
+            "text": "Epictetus, the slave-turned-philosopher, opened his manual with a simple rule: Some things are in our control and others are not. Our opinions, our actions, our desires are up to us. Our reputation, our possessions, the actions of others are not.",
+            "type": "p"
+          },
+          {
+            "attribution": "Marcus Aurelius",
+            "text": "If you are distressed by anything external, the pain is not due to the thing itself, but to your estimate of it.",
+            "type": "quote"
+          },
+          {
+            "text": "A passive person accepts the world as it is. A Stoic actively works to change what can be changed, and accepts what cannot. The Serenity Prayer, adopted by millions, is pure Stoicism: 'Grant me the serenity to accept the things I cannot change, the courage to change the things I can, and the wisdom to know the difference.'",
+            "type": "p"
+          },
+          {
+            "text": "The next time you are frustrated, ask: 'Is this within my control?' If yes, act. If no, accept. This single question can dissolve most of your daily suffering.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "ca5d0704-3ac0-4fb6-976f-d56b64010713",
+        "cover_image": "https://images.unsplash.com/photo-1606168094238-b28e3f0f2c1b?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Stoics are not emotionless robots. They are warriors who have trained themselves to focus only on what they can control.",
+        "featured": false,
+        "format": "editorial",
+        "id": "b5c96258-bbf9-431e-b5dc-493c749d3d99",
+        "published_at": "2026-11-06T07:42:02.427629+00:00",
+        "reading_minutes": 6,
+        "slug": "stoicism-is-not-passivity",
+        "status": "published",
+        "subtitle": "The most misunderstood philosophy of our time.",
+        "title": "Stoicism Is Not Passivity",
+        "updated_at": "2026-11-06T07:42:02.427629+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "In quantum mechanics, the observer effect is the idea that simply observing a system changes it. While this concept is often misunderstood at the quantum level, it is profoundly true in the macroscopic world of human behaviour.",
+            "type": "p"
+          },
+          {
+            "text": "The Hawthorne Effect",
+            "type": "h2"
+          },
+          {
+            "text": "In the 1920s, researchers at the Hawthorne Works factory tried to figure out how lighting affected productivity. They turned the lights up, and productivity went up. They turned them down, and productivity went up again. The conclusion: the workers were not responding to the light, but to the fact that they were being observed.",
+            "type": "p"
+          },
+          {
+            "attribution": "Meridian Journal",
+            "text": "The act of measurement is not passive. It is an intervention.",
+            "type": "quote"
+          },
+          {
+            "text": "This has massive implications. If you know your boss is watching, you act differently. If you know your code is being reviewed, you write it more carefully. If you track your habits, the tracking itself often changes the habit.",
+            "type": "p"
+          },
+          {
+            "text": "Use this to your advantage. Set up systems that observe the behaviours you want to encourage, not just the ones you want to punish.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1889715-a6a1-4098-9137-aed2e5a26dcb",
+        "cover_image": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "In physics, observing a particle changes its state. In life, the same is true. The metrics you track, the people you watch, the goals you set ΓÇö they change your behaviour.",
+        "featured": false,
+        "format": "explainer",
+        "id": "81b92a65-2a08-44fa-9b8b-c76cfb1d20b6",
+        "published_at": "2026-11-06T07:42:02.427629+00:00",
+        "reading_minutes": 4,
+        "slug": "the-observer-effect",
+        "status": "published",
+        "subtitle": "Why the act of looking changes what you see.",
+        "title": "The Observer Effect",
+        "updated_at": "2026-11-06T07:42:02.427629+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Every city is a physical representation of an idea. The grid of Manhattan speaks to commerce, efficiency, and the Enlightenment belief in rationality. The winding medieval streets of Paris speak to the organic, incremental growth of history. Neither is 'better' ΓÇö they are simply different expressions of what a city is for.",
+            "type": "p"
+          },
+          {
+            "text": "The Architecture of Power",
+            "type": "h2"
+          },
+          {
+            "text": "Walk through any major city and look at the tallest buildings. They are almost never schools or hospitals. They are banks, tech companies, or luxury apartments. The skyline is a chart of who holds the most power in that society.",
+            "type": "p"
+          },
+          {
+            "attribution": "Winston Churchill",
+            "text": "We shape our buildings; thereafter they shape us.",
+            "type": "quote"
+          },
+          {
+            "text": "This is not just about skyscrapers. It is about zoning laws, public transport, and park benches. A city that is designed for cars isolates people. A city that is designed for pedestrians creates community. The physical environment shapes the psychological environment.",
+            "type": "p"
+          },
+          {
+            "text": "The next time you are in a city, look around. What is the architecture telling you to do? Where is it telling you to go? The city is speaking. You just have to listen.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1b580f4-0e6d-47e2-9e53-fdcaf2f68aff",
+        "cover_image": "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Cities are not just collections of buildings. They are complex systems, physical manifestations of our values, economies, and social contracts.",
+        "featured": false,
+        "format": "guide",
+        "id": "3706c36e-2645-40ba-bbc6-25f50890c5fd",
+        "published_at": "2026-11-06T07:42:02.427629+00:00",
+        "reading_minutes": 6,
+        "slug": "why-we-build-cities",
+        "status": "published",
+        "subtitle": "The invisible rules that shape our world.",
+        "title": "Why We Build Cities",
+        "updated_at": "2026-11-06T07:42:02.427629+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Classical computers use bits. A bit is either 0 or 1. Quantum computers use qubits. A qubit can be 0, 1, or both at the same time. This property is called superposition.",
+            "type": "p"
+          },
+          {
+            "text": "Why Superposition Matters",
+            "type": "h2"
+          },
+          {
+            "text": "If a classical computer is a coin lying flat on a table (heads or tails), a quantum computer is a coin spinning in the air. It is both heads and tails until it lands.",
+            "type": "p"
+          },
+          {
+            "attribution": "Richard Feynman",
+            "text": "Nature isn''t classical, dammit, and if you want to make a simulation of nature, you''d better make it quantum mechanical.",
+            "type": "quote"
+          },
+          {
+            "text": "The Catch",
+            "type": "h2"
+          },
+          {
+            "text": "Qubits are incredibly fragile. The slightest vibration or temperature change causes them to lose their quantum state (decoherence). That is why quantum computers are cooled to near absolute zero and isolated from the outside world.",
+            "type": "p"
+          },
+          {
+            "text": "Quantum computing will not replace classical computers. It will solve specific problemsΓÇölike simulating molecules for drug discovery or breaking encryptionΓÇöthat classical computers cannot.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "c004186d-0bed-4d3c-97b7-310a30ad99b4",
+        "cover_image": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Quantum computers don't just compute faster. They compute differently. Here is why that matters.",
+        "featured": false,
+        "format": "explainer",
+        "id": "6ba1e190-db46-4350-b0f4-9c756f1a1d33",
+        "published_at": "2026-11-06T07:58:57.500713+00:00",
+        "reading_minutes": 7,
+        "slug": "quantum-computing-explained",
+        "status": "published",
+        "subtitle": "The technology that will change everything, in plain English.",
+        "title": "Quantum Computing, Explained",
+        "updated_at": "2026-11-06T07:58:57.500713+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Sun Tzu wrote The Art of War for generals. But its lessons apply just as well to founders, marketers, and anyone competing for attention and resources.",
+            "type": "p"
+          },
+          {
+            "text": "Positioning Over Conflict",
+            "type": "h2"
+          },
+          {
+            "text": "The highest form of strategy is not winning battles. It is winning without fighting. Sun Tzu argued that the best generals win by positioning themselves so that victory is inevitable, not by engaging in long, costly battles.",
+            "type": "p"
+          },
+          {
+            "attribution": "Sun Tzu",
+            "text": "Supreme excellence consists of breaking the enemy''s resistance without fighting.",
+            "type": "quote"
+          },
+          {
+            "text": "Knowing Your Enemy",
+            "type": "h2"
+          },
+          {
+            "text": "If you know the enemy and know yourself, you need not fear the result of a hundred battles. In business, this means knowing your competitors'' weaknesses as well as your own strengths.",
+            "type": "p"
+          },
+          {
+            "text": "Do not fight where your competitor is strongest. Find the uncontested market space. Compete where you can win.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "75ab3f4f-a213-480d-b042-c0d673774f63",
+        "cover_image": "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Business is not a battle. But the principles of strategyΓÇöpositioning, timing, and knowing your enemyΓÇöare universal.",
+        "featured": false,
+        "format": "analysis",
+        "id": "78621292-ba04-4985-b5d6-a3a5f5546d61",
+        "published_at": "2026-11-06T07:58:57.500713+00:00",
+        "reading_minutes": 6,
+        "slug": "the-art-of-war-in-business",
+        "status": "published",
+        "subtitle": "Sun Tzu's 2,500-year-old strategy manual is still the best book on competition.",
+        "title": "The Art of War in Business",
+        "updated_at": "2026-11-06T07:58:57.500713+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Blue rooms make people feel calmer. Red rooms make them feel more alert. Yellow rooms are associated with creativity but can also be irritating in large doses. These are not opinions; they are measurable psychological effects.",
+            "type": "p"
+          },
+          {
+            "text": "Color in Design",
+            "type": "h2"
+          },
+          {
+            "text": "Every brand you love chose its colors deliberately. Facebook is blue because it feels trustworthy. Starbucks is green because it signals nature and calm. Amazon is orange because it is energetic and action-oriented.",
+            "type": "p"
+          },
+          {
+            "attribution": "Wassily Kandinsky",
+            "text": "Color is a power which directly influences the soul.",
+            "type": "quote"
+          },
+          {
+            "text": "Using Color Deliberately",
+            "type": "h2"
+          },
+          {
+            "text": "If you are building a workspace, choose colors that match the mental state you want. If you are designing a product, choose colors that match the emotion you want to evoke.",
+            "type": "p"
+          },
+          {
+            "text": "Do not pick colors because they look nice. Pick them because they do something.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1502691876148-a84978e59af8?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Color is not just decoration. It is a tool that can influence your mood, your focus, and your decisions.",
+        "featured": false,
+        "format": "guide",
+        "id": "1cb97d7d-46c2-4b93-8f71-a50606fd2682",
+        "published_at": "2026-11-06T07:58:57.500713+00:00",
+        "reading_minutes": 5,
+        "slug": "the-psychology-of-color",
+        "status": "published",
+        "subtitle": "How the colors around you change the way you think and feel.",
+        "title": "The Psychology of Color",
+        "updated_at": "2026-11-06T07:58:57.500713+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Every night, your brain constructs vivid, immersive worlds. Some of them are terrifying. Some are nonsensical. Some are so real you wake up convinced they happened.",
+            "type": "p"
+          },
+          {
+            "text": "The Leading Theories",
+            "type": "h2"
+          },
+          {
+            "text": "There is no consensus. But the leading theories fall into three camps: memory consolidation (dreams help you process what you learned), emotional regulation (dreams help you process difficult feelings), and threat simulation (dreams are a safe way to practice dangerous situations).",
+            "type": "p"
+          },
+          {
+            "author": "Carl Jung",
+            "text": "The dream is the small hidden door in the deepest and most intimate sanctum of the soul.",
+            "type": "quote"
+          },
+          {
+            "text": "What We Do Know",
+            "type": "h2"
+          },
+          {
+            "text": "Dreams are not random. They are heavily influenced by your waking life. Studies show that people who are learning new skills dream about them, and people who are stressed tend to have more nightmares.",
+            "type": "p"
+          },
+          {
+            "text": "Keep a dream journal. It is one of the best ways to understand your own mind.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1889715-a6a1-4098-9137-aed2e5a26dcb",
+        "cover_image": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "We spend a third of our lives sleeping, and a significant portion of that time dreaming. But why?",
+        "featured": false,
+        "format": "explainer",
+        "id": "c8ff9975-dc89-4e53-bd2d-5282bdc1fe0a",
+        "published_at": "2026-11-06T07:58:57.500713+00:00",
+        "reading_minutes": 6,
+        "slug": "why-we-dream",
+        "status": "published",
+        "subtitle": "The most mysterious part of the human mind.",
+        "title": "Why We Dream",
+        "updated_at": "2026-11-06T07:58:57.500713+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Scientific papers are not designed to be read linearly. They are designed to communicate a very specific structure of logic to other researchers. Once you understand the structure, you can read them in a fraction of the time.",
+            "type": "p"
+          },
+          {
+            "text": "The Three-Pass Method",
+            "type": "h2"
+          },
+          {
+            "text": "The famous 'three-pass approach' by S. Keshav suggests reading a paper three times. First, read only the title, abstract, and conclusion. Second, read the introduction and the figures. Only on the third pass do you read the body text.",
+            "type": "p"
+          },
+          {
+            "attribution": "S. Keshav, University of Waterloo",
+            "text": "Never read a paper to understand every detail. Read it to understand the main idea.",
+            "type": "quote"
+          },
+          {
+            "text": "A paper is not a mystery novel. Read the ending first.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1889715-a6a1-4098-9137-aed2e5a26dcb",
+        "cover_image": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Most people read scientific papers the same way they read a novel ΓÇö from start to finish. This is the slowest and least effective method.",
+        "featured": false,
+        "format": "guide",
+        "id": "49c216f7-e9a5-46c6-bd7d-9afe740ba24c",
+        "published_at": "2026-11-06T08:41:21.795854+00:00",
+        "reading_minutes": 6,
+        "slug": "how-to-read-a-scientific-paper",
+        "status": "published",
+        "subtitle": "A practical guide to cutting through the jargon.",
+        "title": "How to Read a Scientific Paper",
+        "updated_at": "2026-11-06T08:41:21.795854+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Burnout is an occupational phenomenon, not a personal failing. The World Health Organization defines it as a syndrome resulting from chronic workplace stress that has not been successfully managed.",
+            "type": "p"
+          },
+          {
+            "text": "The Three Dimensions",
+            "type": "h2"
+          },
+          {
+            "text": "Research shows burnout has three dimensions: exhaustion, cynicism, and a sense of inefficacy. The Stoics addressed all three with one core idea: the dichotomy of control. By focusing only on what you can control, you remove the psychological friction that causes exhaustion.",
+            "type": "p"
+          },
+          {
+            "attribution": "Marcus Aurelius",
+            "text": "You have power over your mind ΓÇö not outside events. Realize this, and you will find strength.",
+            "type": "quote"
+          },
+          {
+            "text": "You cannot control the amount of work you are given. You can control the boundaries you set around it.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Burnout is not just about working too much. It is about working without meaning, autonomy, or boundaries. Here is how to fix it.",
+        "featured": false,
+        "format": "editorial",
+        "id": "383dd62d-4e8a-4199-88b8-1b118b2d5be5",
+        "published_at": "2026-11-06T08:41:21.795854+00:00",
+        "reading_minutes": 4,
+        "slug": "the-antidote-to-modern-burnout",
+        "status": "published",
+        "subtitle": "The Stoics had a cure for exhaustion 2,000 years ago.",
+        "title": "The Antidote to Modern Burnout",
+        "updated_at": "2026-11-06T08:41:21.795854+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "The myth of the lone genius is one of the most persistent narratives in Western culture. We imagine Steve Jobs in his garage, Einstein at his desk, Newton under an apple tree. But the reality of innovation is far more social.",
+            "type": "p"
+          },
+          {
+            "text": "The Coffeehouse Effect",
+            "type": "h2"
+          },
+          {
+            "text": "The Enlightenment didn't happen because a few individuals suddenly got smarter. It happened because the printing press and the coffeehouse created spaces where ideas could collide. The same is true today ΓÇö Silicon Valley, Cambridge, and the internet itself are all engines for accidental collisions.",
+            "type": "p"
+          },
+          {
+            "attribution": "Isaac Newton",
+            "text": "If I have seen further, it is by standing on the shoulders of giants.",
+            "type": "quote"
+          },
+          {
+            "text": "Building Your Collision Space",
+            "type": "h2"
+          },
+          {
+            "text": "If innovation is social, then the most important thing you can do is surround yourself with people who think differently from you. Not just in your field, but outside it. The best ideas often come from the friction between disciplines.",
+            "type": "p"
+          },
+          {
+            "text": "Stop trying to be the lone genius. Start building the room where genius can happen.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1b580f4-0e6d-47e2-9e53-fdcaf2f68aff",
+        "cover_image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "We love the story of the solitary genius inventing in a garage. But history shows that real breakthroughs happen at the intersection of minds.",
+        "featured": false,
+        "format": "analysis",
+        "id": "85fd52c9-7ca2-4a31-bcfa-d2231453d05a",
+        "published_at": "2026-11-06T08:41:21.795854+00:00",
+        "reading_minutes": 5,
+        "slug": "the-myth-of-the-lone-genius",
+        "status": "published",
+        "subtitle": "Why the greatest innovations are always collaborative.",
+        "title": "The Myth of the Lone Genius",
+        "updated_at": "2026-11-06T08:41:21.795854+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "The printing press is often cited as one of the most important inventions in human history. But it is more than a historical curiosity. It was the first information technology revolution, and it shares eerie parallels with the internet today.",
+            "type": "p"
+          },
+          {
+            "text": "The First Information Explosion",
+            "type": "h2"
+          },
+          {
+            "text": "Before the press, a single book could take a scribe months to produce. After the press, a single press could produce hundreds of pages a day. The cost of knowledge plummeted. Literacy rates soared. The Reformation, the Scientific Revolution, and the Enlightenment all depended on the rapid spread of printed ideas.",
+            "type": "p"
+          },
+          {
+            "attribution": "Wendell Phillips",
+            "text": "What gunpowder did for war, the printing press has done for the mind.",
+            "type": "quote"
+          },
+          {
+            "text": "Every major information technologyΓÇöthe printing press, the telegraph, the internetΓÇöcreates massive disruption and then a new equilibrium. We are living through the latter.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "1edc8005-2b25-4083-96de-97120875bfcd",
+        "cover_image": "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Before 1440, books were copied by hand. After Gutenberg, knowledge became cheap, fast, and dangerous.",
+        "featured": false,
+        "format": "explainer",
+        "id": "0651af68-80bf-4697-bae1-e6ec7b911cc5",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 5,
+        "slug": "how-the-printing-press-changed-everything",
+        "status": "published",
+        "subtitle": "The 15th-century invention that created the modern world.",
+        "title": "How the Printing Press Changed Everything",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Why do we find some buildings beautiful and others depressing? Alain de Botton suggests that we respond to architecture not just on an aesthetic level, but on a psychological one. We see in buildings the qualities we wish we had ourselves.",
+            "type": "p"
+          },
+          {
+            "text": "Buildings as Psychological Tools",
+            "type": "h2"
+          },
+          {
+            "text": "A cathedral might inspire awe and humility. A glass skyscraper might inspire ambition and transparency. A small cottage might inspire peace and simplicity. We are drawn to environments that reflect our inner ideals.",
+            "type": "p"
+          },
+          {
+            "attribution": "Alain de Botton",
+            "text": "We are, for the most part, unaware of how much we are affected by our surroundings.",
+            "type": "quote"
+          },
+          {
+            "text": "Look around the room you are in right now. Does it reflect the person you want to be? If not, change the room.",
+            "type": "callout"
+          }
+        ],
+        "category_id": null,
+        "cover_image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "We spend 90% of our lives indoors. Alain de Botton argues that the buildings we inhabit have a profound effect on our psychological state.",
+        "featured": false,
+        "format": "editorial",
+        "id": "6147adf4-8a0c-4da7-b278-af86d700e2f6",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 5,
+        "slug": "the-architecture-of-happiness",
+        "status": "published",
+        "subtitle": "How the buildings around us shape the way we feel.",
+        "title": "The Architecture of Happiness",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Clayton Christensen''s theory of disruptive innovation explains why market leaders consistently lose to upstarts. It is not because they are lazy or stupid. It is because they listen too closely to their best customers.",
+            "type": "p"
+          },
+          {
+            "text": "The Trap of Listening to Customers",
+            "type": "h2"
+          },
+          {
+            "text": "When customers ask for a faster horse, they mean a better version of what already exists. They rarely ask for the automobile. Companies that optimize purely for current demand create a blind spot for the innovations that will eventually destroy them.",
+            "type": "p"
+          },
+          {
+            "attribution": "Clayton Christensen",
+            "text": "The reason why it is so difficult for existing firms to capitalize on disruptive innovations is that their processes and their business model that make them good at the existing business actually make them bad at competing for the disruption.",
+            "type": "quote"
+          },
+          {
+            "text": "If you are building something, do not just ask what your users want today. Ask what job they are hiring your product to do.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "75ab3f4f-a213-480d-b042-c0d673774f63",
+        "cover_image": "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "The most dangerous thing for a successful company is doing exactly what made it successful in the first place.",
+        "featured": false,
+        "format": "analysis",
+        "id": "a1e3abe5-ab1d-4d60-b4c3-e8ba9eab0f18",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 6,
+        "slug": "the-innovators-dilemma",
+        "status": "published",
+        "subtitle": "Why great companies fail at the exact moment they should succeed.",
+        "title": "The Innovator's Dilemma",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Imagine you walk into a store to buy a pair of jeans. There are three options. You pick the one you like and leave happy. Now imagine there are thirty options. You spend an hour comparing, worrying about the ones you didn''t pick, and leave feeling anxious.",
+            "type": "p"
+          },
+          {
+            "text": "Maximizers vs. Satisficers",
+            "type": "h2"
+          },
+          {
+            "text": "Schwartz distinguishes between 'maximizers' (people who seek the absolute best option) and 'satisficers' (people who seek a good enough option). Maximizers often get better objective results, but they are significantly less happy.",
+            "type": "p"
+          },
+          {
+            "attribution": "Barry Schwartz",
+            "text": "The more options there are, the easier it is to regret anything at all about the option you chose.",
+            "type": "quote"
+          },
+          {
+            "text": "Try to be a satisficer for one week. Choose the first good option that meets your criteria and move on. You will reclaim hours of time and energy.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "ca5d0704-3ac0-4fb6-976f-d56b64010713",
+        "cover_image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "We assume that more choice means more freedom and more happiness. Barry Schwartz argues that the opposite is true.",
+        "featured": false,
+        "format": "explainer",
+        "id": "ec7b6165-2459-49e9-9b87-270ba4321067",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 4,
+        "slug": "the-paradox-of-choice",
+        "status": "published",
+        "subtitle": "Why more options make us miserable.",
+        "title": "The Paradox of Choice",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "In her famous TED talk, Bren├⌐ Brown defines vulnerability as uncertainty, risk, and emotional exposure. It is the feeling we get when we say 'I love you' first, or when we admit we made a mistake, or when we try something new.",
+            "type": "p"
+          },
+          {
+            "text": "The Armor We Wear",
+            "type": "h2"
+          },
+          {
+            "text": "To protect ourselves from the pain of rejection or failure, we build armor. We become perfectionists. We numb ourselves. We pretend not to care. But the armor that keeps us safe from pain also keeps us safe from connection and creativity.",
+            "type": "p"
+          },
+          {
+            "attribution": "Bren├⌐ Brown",
+            "text": "Vulnerability is not winning or losing; it''s having the courage to show up and be seen when we have no control over the outcome.",
+            "type": "quote"
+          },
+          {
+            "text": "The next time you are afraid to speak up, ask yourself: what is the cost of staying silent? Usually, it is higher than the cost of being vulnerable.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "We are taught to hide our fears, our mistakes, and our insecurities. Bren├⌐ Brown's research suggests that this is the exact opposite of what we should be doing.",
+        "featured": false,
+        "format": "editorial",
+        "id": "1b7ae781-ae10-4644-8f4e-c0991230be6d",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 5,
+        "slug": "the-power-of-vulnerability",
+        "status": "published",
+        "subtitle": "Why showing weakness is the ultimate form of strength.",
+        "title": "The Power of Vulnerability",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "For the past few years, AI has been mostly reactive. You ask a question, it gives an answer. But the industry is moving rapidly toward 'agentic' AIΓÇömodels that can take actions, use tools, and complete multi-step goals with minimal human intervention.",
+            "type": "p"
+          },
+          {
+            "text": "From Chatbots to Agents",
+            "type": "h2"
+          },
+          {
+            "text": "An agent might be given the goal: 'Find a flight to Amsterdam, check the weather, and book a hotel.' Instead of just giving you links, the agent will search the web, compare prices, and execute the booking using an API. This requires memory, planning, and tool use.",
+            "type": "p"
+          },
+          {
+            "attribution": "Sam Altman",
+            "text": "Agents are the next major frontier in artificial intelligence.",
+            "type": "quote"
+          },
+          {
+            "text": "The value of AI will shift from 'how well it talks' to 'how well it executes'. This is why understanding systems and workflows is more important than ever.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "c004186d-0bed-4d3c-97b7-310a30ad99b4",
+        "cover_image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "The next wave of AI is not about talking to a bot. It is about bots that can browse, code, and execute multi-step tasks on their own.",
+        "featured": false,
+        "format": "analysis",
+        "id": "593afba0-b819-43ee-bd2c-796534746b53",
+        "published_at": "2026-11-06T08:43:29.066678+00:00",
+        "reading_minutes": 6,
+        "slug": "the-rise-of-agentic-ai",
+        "status": "published",
+        "subtitle": "Beyond chatbots: AI that actually does things.",
+        "title": "The Rise of Agentic AI",
+        "updated_at": "2026-11-06T08:43:29.066678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "When we think about government, we think about presidents and parliaments. We rarely think about the supreme courts. But the judiciary is the backbone of the legal system, and it touches every aspect of your life.",
+            "type": "p"
+          },
+          {
+            "text": "The Power of Precedent",
+            "type": "h2"
+          },
+          {
+            "text": "Courts do not just interpret the law; they create it through precedent. A single ruling can change the definition of marriage, the limits of free speech, or the power of tech monopolies. These rulings are binding for decades.",
+            "type": "p"
+          },
+          {
+            "attribution": "John Marshall",
+            "text": "The courts are the last refuge of the citizen against the state.",
+            "type": "quote"
+          },
+          {
+            "text": "Democracy is not just about voting. It is about the rule of law. Pay attention to your courts.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "2a6e6d7c-053c-4d72-b144-61f6aae01429",
+        "cover_image": "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Most people ignore the judiciary. But the courts decide what you can do, what companies can sell you, and what your rights actually are.",
+        "featured": false,
+        "format": "explainer",
+        "id": "df6bf9b2-792b-443f-9a05-967eda74c16c",
+        "published_at": "2026-11-06T09:11:19.11919+00:00",
+        "reading_minutes": 5,
+        "slug": "how-courts-shape-your-life",
+        "status": "published",
+        "subtitle": "The invisible system that governs everything.",
+        "title": "How Courts Shape Your Life",
+        "updated_at": "2026-11-06T09:11:19.11919+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "In 2006, Nicholas Stern, a former chief economist at the World Bank, published a review that changed the conversation. He concluded that the benefits of strong, early action on climate change vastly outweigh the economic costs of doing nothing.",
+            "type": "p"
+          },
+          {
+            "text": "The Cost of Inaction",
+            "type": "h2"
+          },
+          {
+            "text": "Extreme weather events, crop failures, mass migration, and infrastructure damage all carry massive economic costs. The Stern Review estimated that failing to act would cost at least 5% of global GDP every year. In the worst-case scenarios, that number jumps to 20%.",
+            "type": "p"
+          },
+          {
+            "attribution": "Nicholas Stern",
+            "text": "The costs of inaction are far higher than the costs of action.",
+            "type": "quote"
+          },
+          {
+            "text": "Sustainability is not a cost center. It is the largest investment opportunity of the 21st century.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "774c0193-b3ca-4d55-8ac8-a8721bb74472",
+        "cover_image": "https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Climate change is often framed as a moral issue. But the economic models are even more devastating.",
+        "featured": false,
+        "format": "analysis",
+        "id": "0a2a56ed-38a7-43aa-a5eb-4837be549b75",
+        "published_at": "2026-11-06T09:11:19.11919+00:00",
+        "reading_minutes": 7,
+        "slug": "the-economics-of-climate-change",
+        "status": "published",
+        "subtitle": "Why saving the planet is cheaper than destroying it.",
+        "title": "The Economics of Climate Change",
+        "updated_at": "2026-11-06T09:11:19.11919+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "In 1950, Enrico Fermi asked a simple question: Where is everybody? Given the billions of stars in our galaxy and the billions of galaxies in the universe, even a conservative estimate suggests there should be thousands of advanced civilizations. So why do we see no evidence of them?",
+            "type": "p"
+          },
+          {
+            "text": "The Great Filter",
+            "type": "h2"
+          },
+          {
+            "text": "One of the most compelling explanations is the Great Filter. It suggests that somewhere in the evolutionary path from single-celled organisms to space-faring civilizations, there is a step that is incredibly improbable. It could be the origin of life, the evolution of complex cells, or the development of intelligence.",
+            "type": "p"
+          },
+          {
+            "attribution": "Arthur C. Clarke",
+            "text": "Two possibilities exist: either we are alone in the Universe or we are not. Both are equally terrifying.",
+            "type": "quote"
+          },
+          {
+            "text": "If we are past the Great Filter, we are the most advanced species in the galaxy. If we are before it, our existence is a ticking time bomb.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "9238b62c-81f4-4e1d-b50b-ee7c9a68272e",
+        "cover_image": "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Given the age and size of the universe, we should have found alien life by now. The fact that we haven't is one of the most profound and terrifying questions in science.",
+        "featured": false,
+        "format": "analysis",
+        "id": "95ecb190-4ace-4662-ab92-92a4d06b1112",
+        "published_at": "2026-11-06T09:11:19.11919+00:00",
+        "reading_minutes": 6,
+        "slug": "the-fermi-paradox",
+        "status": "published",
+        "subtitle": "If the universe is teeming with life, where is everybody?",
+        "title": "The Fermi Paradox",
+        "updated_at": "2026-11-06T09:11:19.11919+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Every habit you haveΓÇögood or badΓÇöis a physical structure in your brain. It is a neural loop that has been myelinated over time. The more you repeat it, the thicker the insulation becomes, and the faster the signal travels.",
+            "type": "p"
+          },
+          {
+            "text": "The Basal Ganglia",
+            "type": "h2"
+          },
+          {
+            "text": "Deep in the center of your brain sits a cluster of nuclei called the basal ganglia. It is responsible for pattern recognition and routine automation. When you first learn to drive, your prefrontal cortex is fully engaged. But after a few months, the basal ganglia takes over. You can drive home while thinking about something else entirely.",
+            "type": "p"
+          },
+          {
+            "attribution": "Donald Hebb",
+            "text": "Neurons that fire together, wire together.",
+            "type": "quote"
+          },
+          {
+            "text": "You cannot delete a bad habit. You can only overwrite it with a stronger, better habit. This is the law of neuroplasticity.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "7b5647c7-6756-4db9-81c5-cf40b8e98f25",
+        "cover_image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Habits are not about willpower. They are about neural pathways. Understanding the basal ganglia is the key to breaking bad habits and building good ones.",
+        "featured": false,
+        "format": "explainer",
+        "id": "78cbccba-0f80-4fec-b0a7-419efb540a80",
+        "published_at": "2026-11-06T09:11:19.11919+00:00",
+        "reading_minutes": 5,
+        "slug": "the-neuroscience-of-habit",
+        "status": "published",
+        "subtitle": "How your brain actually forms routines (and how to hack it).",
+        "title": "The Neuroscience of Habit",
+        "updated_at": "2026-11-06T09:11:19.11919+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Richard Feynman, the Nobel Prize-winning physicist, had a simple rule: 'The first principle is that you must not fool yourself, and you are the easiest person to fool.'",
+            "type": "p"
+          },
+          {
+            "text": "Falsification",
+            "type": "h2"
+          },
+          {
+            "text": "Science is not about proving a hypothesis true. It is about trying to prove it false. If it survives your attempts to destroy it, you can temporarily accept it as true. This is called falsification.",
+            "type": "p"
+          },
+          {
+            "attribution": "Richard Feynman",
+            "text": "If it disagrees with experiment, it is wrong.",
+            "type": "quote"
+          },
+          {
+            "text": "The next time you believe something strongly, ask yourself: What evidence would prove me wrong? If the answer is 'nothing,' you are not thinking scientifically. You are just holding a belief.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "a1889715-a6a1-4098-9137-aed2e5a26dcb",
+        "cover_image": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "You don't need a PhD to think scientifically. You just need to stop trying to prove yourself right and start trying to prove yourself wrong.",
+        "featured": false,
+        "format": "guide",
+        "id": "01f85b3d-f4aa-42dd-aafe-1cd076e9c584",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 6,
+        "slug": "how-to-think-like-a-scientist",
+        "status": "published",
+        "subtitle": "The scientific method is not for labs. It is for life.",
+        "title": "How to Think Like a Scientist",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Stoicism is often misunderstood as suppressing emotions. In reality, it is about acknowledging emotions while refusing to let them dictate your actions.",
+            "type": "p"
+          },
+          {
+            "text": "The Obstacle Is the Way",
+            "type": "h2"
+          },
+          {
+            "text": "Marcus Aurelius wrote: 'The impediment to action advances action. What stands in the way becomes the way.' Every obstacle is an opportunity to practice virtue.",
+            "type": "p"
+          },
+          {
+            "attribution": "Marcus Aurelius",
+            "text": "You have power over your mind - not outside events. Realize this, and you will find strength.",
+            "type": "quote"
+          },
+          {
+            "text": "When you face a problem today, ask: 'What would a Stoic do?' They would accept what they cannot control, and take action on what they can.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "ca5d0704-3ac0-4fb6-976f-d56b64010713",
+        "cover_image": "https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Marcus Aurelius ruled the Roman Empire. You can't even control your inbox. His philosophy is exactly what you need.",
+        "featured": false,
+        "format": "editorial",
+        "id": "0df7903b-91db-49b5-a2e8-48c217632274",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 4,
+        "slug": "stoicism-in-the-modern-world",
+        "status": "published",
+        "subtitle": "Ancient wisdom for modern chaos.",
+        "title": "Stoicism in the Modern World",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Chris Voss, a former FBI hostage negotiator, teaches that negotiation is about empathy. You need to understand the other person''s emotions and perspective before you can change their mind.",
+            "type": "p"
+          },
+          {
+            "text": "Tactical Empathy",
+            "type": "h2"
+          },
+          {
+            "text": "Label the other person''s emotions. Say 'It sounds like you are worried about the timeline' instead of 'You are wrong about the timeline.' This lowers their defenses.",
+            "type": "p"
+          },
+          {
+            "author": "Robert Estabrook",
+            "text": "He who has learned to disagree without being disagreeable has discovered the most valuable secret of negotiation.",
+            "type": "quote"
+          },
+          {
+            "text": "The goal of negotiation is not to win. It is to get what you want. Often, letting the other person feel like they won is the best way to achieve that.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "75ab3f4f-a213-480d-b042-c0d673774f63",
+        "cover_image": "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Negotiation is not a battle. It is a conversation where you try to find the maximum overlap of interests.",
+        "featured": false,
+        "format": "guide",
+        "id": "314362d3-d849-433b-8500-e31c522949ea",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 5,
+        "slug": "the-art-of-negotiation",
+        "status": "published",
+        "subtitle": "How to get what you want without taking what isn't yours.",
+        "title": "The Art of Negotiation",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "The internet created an age of information abundance. But attention, trust, and synthesis remain scarce. That is why the most valuable people in the 21st century are not those who can access information, but those who can curate it.",
+            "type": "p"
+          },
+          {
+            "text": "The Scarcity Multiplier",
+            "type": "h2"
+          },
+          {
+            "text": "When something becomes abundant, the price of the complementary good rises. Information is abundant. Therefore, the price of attention, curation, and synthesis has skyrocketed.",
+            "type": "p"
+          },
+          {
+            "attribution": "Herbert Simon",
+            "text": "In a world of abundance, the only scarcity is attention.",
+            "type": "quote"
+          },
+          {
+            "text": "Don''t compete on access to information. Everyone has that. Compete on the ability to turn information into insight.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "75ab3f4f-a213-480d-b042-c0d673774f63",
+        "cover_image": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "When something becomes abundant, its value collapses. But what happens when everything becomes abundant?",
+        "featured": false,
+        "format": "analysis",
+        "id": "61d81f0e-b6ab-4187-aa71-93b0280267f6",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 7,
+        "slug": "the-economics-of-abundance",
+        "status": "published",
+        "subtitle": "Why free is the most expensive price.",
+        "title": "The Economics of Abundance",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "On October 29, 1969, the first message was sent over ARPANET, the precursor to the internet. The message was 'LO' because the system crashed after the first two letters.",
+            "type": "p"
+          },
+          {
+            "text": "The Open Standard",
+            "type": "h2"
+          },
+          {
+            "text": "What made the internet different was not the technology, but the protocol. TCP/IP was designed to be open and decentralized. Anyone could build on it. This allowed the web to grow exponentially.",
+            "type": "p"
+          },
+          {
+            "author": "David Clark, IETF",
+            "text": "We reject: kings, presidents and voting. We believe in: rough consensus and running code.",
+            "type": "quote"
+          },
+          {
+            "text": "The internet works because it is open. The next time a company tries to wall off the internet (like AOL in the 90s or Facebook's metaverse today), remember that the open web always wins.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "1edc8005-2b25-4083-96de-97120875bfcd",
+        "cover_image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "The internet was not built by corporations. It was built by researchers, hackers, and hobbyists who believed in a decentralized world.",
+        "featured": false,
+        "format": "explainer",
+        "id": "c2f6d3ff-49e0-4591-80ba-3b2d0b8fe51e",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 6,
+        "slug": "the-history-of-the-internet",
+        "status": "published",
+        "subtitle": "From ARPANET to the Metaverse.",
+        "title": "The History of the Internet",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Matthew Walker, a neuroscientist at UC Berkeley, has a radical claim: sleep is the single most effective thing we can do to reset our brain and body health each day.",
+            "type": "p"
+          },
+          {
+            "text": "The Glymphatic System",
+            "type": "h2"
+          },
+          {
+            "text": "When you sleep, your brain cells shrink, creating space for the glymphatic system to wash away metabolic waste, including beta-amyloid, a protein associated with Alzheimer''s.",
+            "type": "p"
+          },
+          {
+            "author": "Matthew Walker",
+            "text": "Sleep is the Swiss Army knife of health.",
+            "type": "quote"
+          },
+          {
+            "text": "You cannot cheat sleep. If you sleep 6 hours instead of 8, your cognitive performance drops by up to 30%, even if you don''t feel tired.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "7b5647c7-6756-4db9-81c5-cf40b8e98f25",
+        "cover_image": "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Sleep is not a waste of time. It is the most critical process your brain performs.",
+        "featured": false,
+        "format": "explainer",
+        "id": "0c6ec405-27a7-42d8-b775-64e2d590bca0",
+        "published_at": "2026-11-06T09:52:55.79361+00:00",
+        "reading_minutes": 8,
+        "slug": "why-we-sleep",
+        "status": "published",
+        "subtitle": "The most powerful performance enhancer is free.",
+        "title": "Why We Sleep",
+        "updated_at": "2026-11-06T09:52:55.79361+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "You sit down to work. Five minutes later, you are cleaning your desk, checking your phone, or reorganizing your bookshelf. You are not lazy. You are avoiding a negative emotion.",
+            "type": "p"
+          },
+          {
+            "text": "The Emotional Root",
+            "type": "h2"
+          },
+          {
+            "text": "Procrastination is an emotional coping mechanism. We delay tasks that make us feel anxious, bored, overwhelmed, or inadequate. The act of delaying gives us immediate reliefΓÇöbut it creates long-term stress.",
+            "type": "p"
+          },
+          {
+            "author": "Tim Pychyl",
+            "text": "Procrastination is the avoidance of the emotions associated with a task, not the task itself.",
+            "type": "quote"
+          },
+          {
+            "text": "The next time you procrastinate, ask yourself: What emotion am I trying to avoid right now? Naming it takes away its power.",
+            "type": "callout"
+          }
+        ],
+        "category_id": "da96fdba-26dd-4e7d-8bfb-536dc82b5809",
+        "cover_image": "https://images.unsplash.com/photo-1506543730435-e2c1d4553a84?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Procrastination is not a time management problem. It is a mood management problem. Here is the psychology behind why you delay, and how to fix it.",
+        "featured": false,
+        "format": "explainer",
+        "id": "2e2fdccf-f320-4d81-b7dd-0d57cce4fa15",
+        "published_at": "2026-11-06T10:23:05.123407+00:00",
+        "reading_minutes": 6,
+        "slug": "why-we-procrastinate",
+        "status": "published",
+        "subtitle": "It is not laziness. It is emotional regulation.",
+        "title": "Why We Procrastinate",
+        "updated_at": "2026-11-06T10:23:05.123407+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Most people read a book linearly, from page 1 to the end. This is incredibly inefficient if your goal is to extract knowledge, not just finish the book.",
+            "type": "p"
+          },
+          {
+            "text": "The Three-Pass Read",
+            "type": "h2"
+          },
+          {
+            "text": "First, read the table of contents, the introduction, and the conclusion. Second, skim the chapters that seem most relevant. Only on the third pass do you read the book deeply, if it passed the test.",
+            "type": "p"
+          },
+          {
+            "attribution": "Naval Ravikant",
+            "text": "Read what you love until you love to read.",
+            "type": "quote"
+          },
+          {
+            "text": "You are allowed to abandon a book. If the author is wasting your time, put it down. There are too many great books to suffer through a mediocre one.",
+            "type": "callout"
+          }
+        ],
+        "category_id": null,
+        "cover_image": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "It is not about speed reading. It is about prioritization, skimming, and knowing exactly what you are looking for.",
+        "featured": false,
+        "format": "guide",
+        "id": "de9cd388-aec0-46c7-8e5c-b81586f46411",
+        "published_at": "2026-11-06T10:39:23.494678+00:00",
+        "reading_minutes": 4,
+        "slug": "how-to-read-a-book-a-week",
+        "status": "published",
+        "subtitle": "The system for consuming knowledge at scale.",
+        "title": "How to Read a Book a Week",
+        "updated_at": "2026-11-06T10:39:23.494678+00:00",
+        "views": 0
+      },
+      {
+        "body": [
+          {
+            "text": "Cal Newport, a computer science professor at Georgetown, argues that the ability to focus is the superpower of the 21st century. In a world of constant notifications, the ability to sit down and do hard things is vanishingly rare.",
+            "type": "p"
+          },
+          {
+            "text": "The Cost of Shallow Work",
+            "type": "h2"
+          },
+          {
+            "text": "Shallow work is the logistical, easy-to-replicate tasks we do while distracted. Emails, Slack messages, administrative tasks. They feel productive, but they do not create value. Deep work creates value.",
+            "type": "p"
+          },
+          {
+            "attribution": "Cal Newport",
+            "text": "Clarity about what matters provides clarity about what does not.",
+            "type": "quote"
+          },
+          {
+            "text": "Block out two hours tomorrow. No phone, no tabs, no Slack. Just one task. See what happens to your output.",
+            "type": "callout"
+          }
+        ],
+        "category_id": null,
+        "cover_image": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600\u0026q=80\u0026auto=format\u0026fit=crop",
+        "excerpt": "Deep work is the ability to focus without distraction on a cognitively demanding task. It is becoming increasingly rare, and therefore increasingly valuable.",
+        "featured": false,
+        "format": "guide",
+        "id": "1e459ddc-b02f-47c0-8c05-6f685852a0bd",
+        "published_at": "2026-11-06T10:39:23.494678+00:00",
+        "reading_minutes": 5,
+        "slug": "the-art-of-deep-work",
+        "status": "published",
+        "subtitle": "How to focus in a world designed to distract you.",
+        "title": "The Art of Deep Work",
+        "updated_at": "2026-11-06T10:39:23.494678+00:00",
+        "views": 0
+      }
+    ]
+  }
+]

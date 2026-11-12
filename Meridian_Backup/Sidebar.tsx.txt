@@ -1,0 +1,298 @@
+﻿'use client'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import ThemeToggle from './ThemeToggle'
+import LogoEmblem from './LogoEmblem'
+import { createClient } from '@/lib/supabase/client'
+import { triggerNav } from './NavLoader'
+import { unlockAudio, playSelectSound, playConfirmSound } from '@/lib/sounds'
+import { getActiveZone, onZoneChange } from '@/lib/navZone'
+
+const NAV = [
+  { href: '/dashboard', label: 'OVERVIEW' },
+  { href: '/courses', label: 'MY COURSES' },
+  { href: '/community', label: 'COMMUNITY' },
+  { href: '/library', label: 'LIBRARY' },
+  { href: '/profile', label: 'PROFILE' },
+]
+
+export default function Sidebar({ userEmail }: { userEmail?: string }) {
+  const path = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+  const [selected, setSelected] = useState(0)
+  const [zoneActive, setZoneActive] = useState(getActiveZone() === 'sidebar')
+  const [hovered, setHovered] = useState<number | null>(null)
+
+  const selectedRef = useRef(0)
+  const routerRef = useRef(router)
+
+  useEffect(() => { selectedRef.current = selected }, [selected])
+  useEffect(() => { routerRef.current = router }, [router])
+
+  useEffect(() => {
+    const idx = NAV.findIndex(n => path === n.href || path?.startsWith(n.href + '/'))
+    if (idx >= 0) setSelected(idx)
+  }, [path])
+
+  useEffect(() => {
+    return onZoneChange(z => setZoneActive(z === 'sidebar'))
+  }, [])
+
+  useEffect(() => {
+    if (!zoneActive) return
+
+    function onKey(e: KeyboardEvent) {
+      const active = document.activeElement as HTMLElement | null
+      if (active) {
+        const tag = active.tagName.toLowerCase()
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable) {
+          return
+        }
+      }
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        unlockAudio()
+        playSelectSound()
+        setSelected(s => {
+          const next = (s + 1) % NAV.length
+          selectedRef.current = next
+          return next
+        })
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        unlockAudio()
+        playSelectSound()
+        setSelected(s => {
+          const next = (s - 1 + NAV.length) % NAV.length
+          selectedRef.current = next
+          return next
+        })
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        unlockAudio()
+        playConfirmSound()
+        const item = NAV[selectedRef.current]
+        if (item) {
+          triggerNav()
+          routerRef.current.push(item.href)
+        }
+      }
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [zoneActive])
+
+  async function quitToMainMenu() {
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
+  return (
+    <aside
+      data-nav-zone="sidebar"
+      className="hidden md:flex md:flex-col w-64 shrink-0 h-full relative overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, rgba(8,12,20,0.72) 0%, rgba(6,10,16,0.62) 40%, rgba(4,8,14,0.85) 100%)',
+        borderRight: '1px solid rgba(34,211,238,0.12)',
+        backdropFilter: 'blur(14px)',
+      }}
+    >
+      {/* Top scan line */}
+      <span
+        className="pointer-events-none absolute left-0 right-0 top-0 h-px z-20"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, rgba(34,211,238,0.85) 50%, transparent 100%)',
+          opacity: 0.75,
+        }}
+      />
+
+      {/* Top-left corner bracket */}
+      <span
+        className="pointer-events-none absolute top-0 left-0 w-3 h-3 z-20"
+        style={{ borderTop: '1.5px solid rgba(34,211,238,0.6)', borderLeft: '1.5px solid rgba(34,211,238,0.6)' }}
+      />
+      {/* Bottom-right corner bracket */}
+      <span
+        className="pointer-events-none absolute bottom-0 right-0 w-3 h-3 z-20"
+        style={{ borderBottom: '1.5px solid rgba(34,211,238,0.6)', borderRight: '1.5px solid rgba(34,211,238,0.6)' }}
+      />
+
+      {/* LOGO / HEADER */}
+      <div className="p-4 border-b shrink-0 relative z-10" style={{ borderColor: 'rgba(34,211,238,0.10)' }}>
+        <Link
+          href="/"
+          onClick={() => {
+            unlockAudio()
+            playConfirmSound()
+            triggerNav()
+          }}
+          className="flex items-center gap-3 group relative rounded-md px-2 py-2 -mx-1 transition-all hover:bg-[rgba(34,211,238,0.04)]"
+        >
+          <span className="relative shrink-0">
+            <span
+              className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(34,211,238,0.28) 0%, transparent 70%)',
+                filter: 'blur(10px)',
+              }}
+            />
+            <LogoEmblem size={44} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="text-xs font-bold tracking-[0.22em] text-[#e5e9f0] leading-none">
+              MERIDIAN
+            </div>
+            <div className="text-[9px] font-mono tracking-[0.42em] text-[#22d3ee] mt-1">
+              ACADEMY
+            </div>
+          </div>
+        </Link>
+
+        {/* HUD strip */}
+        <div
+          className="mt-3 flex items-center justify-between px-2 py-1.5 rounded"
+          style={{
+            border: '1px solid rgba(34,211,238,0.14)',
+            background: 'rgba(34,211,238,0.03)',
+          }}
+        >
+          <div className="flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full" style={{ background: '#10b981', boxShadow: '0 0 6px rgba(16,185,129,0.8)' }} />
+            <span className="text-[9px] font-mono tracking-[0.25em] text-[#566074]">ONLINE</span>
+          </div>
+          <span className="text-[9px] font-mono tracking-[0.2em] text-[#3a4250]">v1.0</span>
+        </div>
+      </div>
+
+      {/* SECTION LABEL */}
+      <div className="px-5 pt-4 pb-2 relative z-10">
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] font-mono tracking-[0.35em] text-[#3a4250]">PRIMARY NAV</span>
+          <span className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.35) 0%, transparent 100%)' }} />
+        </div>
+      </div>
+
+      {/* NAV */}
+      <nav className="flex-1 px-3 pb-4 space-y-1 overflow-y-auto no-scrollbar relative z-10">
+        {NAV.map((item, i) => {
+          const active = path === item.href || path?.startsWith(item.href + '/')
+          const isSelected = selected === i
+          const showSelected = isSelected && zoneActive
+          const isHover = hovered === i
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => {
+                unlockAudio()
+                playConfirmSound()
+                triggerNav()
+              }}
+              onMouseEnter={() => {
+                setHovered(i)
+                if (selected !== i) setSelected(i)
+              }}
+              onMouseLeave={() => setHovered(null)}
+              className="group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold tracking-[0.18em] transition-all duration-200"
+              style={{
+                color: showSelected || active ? '#e5e9f0' : isHover ? '#c8d0dd' : '#8892a6',
+                background: showSelected
+                  ? 'linear-gradient(90deg, rgba(34,211,238,0.18) 0%, rgba(139,92,246,0.05) 100%)'
+                  : active
+                  ? 'linear-gradient(90deg, rgba(34,211,238,0.10) 0%, rgba(139,92,246,0.03) 100%)'
+                  : isHover
+                  ? 'rgba(34,211,238,0.04)'
+                  : 'transparent',
+                border: showSelected
+                  ? '1px solid rgba(34,211,238,0.55)'
+                  : active
+                  ? '1px solid rgba(34,211,238,0.25)'
+                  : '1px solid transparent',
+                boxShadow: showSelected ? '0 0 20px rgba(34,211,238,0.20), inset 0 0 20px rgba(34,211,238,0.03)' : 'none',
+                transform: showSelected || isHover ? 'translateX(2px)' : 'translateX(0)',
+              }}
+            >
+              <span
+                className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] rounded-full transition-all duration-300"
+                style={{
+                  height: showSelected || active ? 18 : isHover ? 10 : 0,
+                  background: showSelected || active ? '#22d3ee' : 'rgba(34,211,238,0.5)',
+                  boxShadow: showSelected ? '0 0 10px rgba(34,211,238,0.9)' : 'none',
+                }}
+              />
+              {showSelected && (
+                <>
+                  <span className="pointer-events-none absolute top-0 left-0 w-1.5 h-1.5" style={{ borderTop: '1.5px solid #22d3ee', borderLeft: '1.5px solid #22d3ee' }} />
+                  <span className="pointer-events-none absolute bottom-0 right-0 w-1.5 h-1.5" style={{ borderBottom: '1.5px solid #22d3ee', borderRight: '1.5px solid #22d3ee' }} />
+                </>
+              )}
+              <span
+                className="text-[9px] font-mono transition-colors shrink-0 w-4 tabular-nums"
+                style={{
+                  color: showSelected ? '#22d3ee' : active ? '#22d3ee' : isHover ? '#8892a6' : '#3a4250',
+                  textShadow: showSelected ? '0 0 8px rgba(34,211,238,0.7)' : 'none',
+                }}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="transition-transform group-hover:translate-x-0.5 flex-1 truncate">
+                {item.label}
+              </span>
+              {showSelected ? (
+                <span className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[9px] font-mono tracking-[0.2em] text-[#22d3ee]">▸</span>
+                  <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: '#22d3ee', boxShadow: '0 0 6px rgba(34,211,238,0.9)' }} />
+                </span>
+              ) : active ? (
+                <span className="w-1 h-1 rounded-full shrink-0 animate-pulse" style={{ background: '#22d3ee', boxShadow: '0 0 6px rgba(34,211,238,0.9)' }} />
+              ) : isHover ? (
+                <span className="text-[10px] text-[#22d3ee] shrink-0 opacity-60">▸</span>
+              ) : null}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* FOOTER */}
+      <div className="p-4 border-t shrink-0 relative z-10" style={{ borderColor: 'rgba(34,211,238,0.10)' }}>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center gap-1.5 px-2 py-1 rounded-md" style={{ border: '1px solid rgba(34,211,238,0.18)', background: 'rgba(34,211,238,0.03)' }}>
+            <span className="text-[10px] leading-none text-[#22d3ee]">←↑↓→</span>
+            <span className="text-[9px] font-mono tracking-[0.2em] text-[#566074]">NAV</span>
+          </span>
+          <span className="flex items-center gap-1.5 px-2 py-1 rounded-md" style={{ border: '1px solid rgba(34,211,238,0.18)', background: 'rgba(34,211,238,0.03)' }}>
+            <span className="text-[10px] leading-none text-[#22d3ee]">↵</span>
+            <span className="text-[9px] font-mono tracking-[0.2em] text-[#566074]">GO</span>
+          </span>
+        </div>
+
+        <button
+          onClick={quitToMainMenu}
+          className="w-full text-left px-3 py-2.5 rounded-md transition-all group relative overflow-hidden mb-3 flex items-center gap-2.5"
+          style={{ border: '1px solid rgba(239,68,68,0.18)', background: 'rgba(239,68,68,0.02)', color: '#566074' }}
+        >
+          <span className="absolute left-0 top-0 bottom-0 w-[2px] transition-opacity opacity-0 group-hover:opacity-100" style={{ background: '#ef4444', boxShadow: '0 0 10px rgba(239,68,68,0.8)' }} />
+          <span className="text-base leading-none text-[#ef4444] opacity-70 group-hover:opacity-100 transition-opacity">⏻</span>
+          <span className="text-[10px] font-mono tracking-[0.25em] group-hover:text-[#fca5a5] transition-colors">QUIT TO MAIN MENU</span>
+        </button>
+
+        <div className="rounded-md px-3 py-2.5 flex items-center justify-between gap-2" style={{ border: '1px solid rgba(34,211,238,0.14)', background: 'rgba(34,211,238,0.02)' }}>
+          <ThemeToggle />
+          {userEmail && (
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#10b981', boxShadow: '0 0 6px rgba(16,185,129,0.7)' }} />
+              <div className="text-[10px] font-mono truncate max-w-[110px] tracking-wider" style={{ color: '#8892a6' }}>
+                {userEmail.split('@')[0]}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </aside>
+  )
+}

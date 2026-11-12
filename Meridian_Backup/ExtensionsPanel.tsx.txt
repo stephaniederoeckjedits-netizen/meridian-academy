@@ -1,0 +1,161 @@
+'use client'
+
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import PomodoroTimer from './PomodoroTimer'
+import QuickNotes from './QuickNotes'
+import StudyStreak from './StudyStreak'
+import DailyGoal from './DailyGoal'
+import QuickFlashcard from './QuickFlashcard'
+import SkillTree from './SkillTree'
+import { triggerNav } from './NavLoader'
+
+export default function ExtensionsPanel() {
+  const pathname = usePathname()
+  const [collapsed, setCollapsed] = useState(false)
+
+  const isLibrary = pathname?.startsWith('/library')
+  const isCourse = pathname?.startsWith('/courses') || pathname?.startsWith('/dashboard')
+
+  useEffect(() => {
+    if (isLibrary || isCourse) {
+      setCollapsed(false)
+    } else {
+      setCollapsed(true)
+    }
+  }, [pathname, isLibrary, isCourse])
+
+  if (collapsed) {
+    return (
+      <aside className="hidden xl:flex flex-col w-14 h-full shrink-0" style={{ background: '#050810', borderLeft: '1px solid rgba(30,38,51,0.6)' }}>
+        <button
+          onClick={() => setCollapsed(false)}
+          className="p-4 text-[#22d3ee] hover:bg-[#22d3ee]/10 transition-colors flex items-center justify-center animate-pulse"
+        >
+          <span className="text-2xl">◂</span>
+        </button>
+        <div className="text-[10px] font-mono text-[#3a4250] rotate-90 mt-10 whitespace-nowrap tracking-[0.3em]">
+          OPEN PORTAL
+        </div>
+      </aside>
+    )
+  }
+
+  return (
+    <aside className="hidden xl:flex flex-col w-80 h-full overflow-y-auto no-scrollbar shrink-0" style={{ background: '#050810', borderLeft: '1px solid rgba(30,38,51,0.6)' }}>
+      
+      <div className="flex items-center justify-between px-5 py-4 border-b shrink-0" style={{ borderColor: 'rgba(30,38,51,0.6)' }}>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="w-2 h-2 rounded-full bg-[#22d3ee] animate-pulse shrink-0 shadow-[0_0_10px_#22d3ee]" />
+          <div className="text-[11px] font-mono tracking-[0.2em] text-white font-bold">
+            {isLibrary ? 'LIBRARY PORTAL' : 'ACADEMIC PORTAL'}
+          </div>
+        </div>
+        <button
+          onClick={() => setCollapsed(true)}
+          className="text-[#22d3ee] hover:text-white transition text-xl bg-[#22d3ee]/10 px-2 rounded"
+        >
+          ▸
+        </button>
+      </div>
+
+      <div className="p-4 space-y-5">
+        
+        <div className="m-hud-panel p-4">
+          <span className="m-hud-scan" />
+          <div className="m-hud-header mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-[#8b5cf6] animate-pulse" />
+              ARCHITECT PROGRESS
+            </div>
+          </div>
+          <SkillTree />
+        </div>
+
+        {isLibrary && (
+          <>
+            <div className="m-hud-panel">
+              <span className="m-hud-scan" />
+              <div className="m-hud-header">
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#f59e0b]" />
+                  CONTINUE READING
+                </div>
+              </div>
+              <div className="p-4 space-y-3">
+                {/* 🎯 FIXED URLS WITH ?resume=true */}
+                <Link 
+                  href="/library/ebooks/the-language-architect/read?resume=true" 
+                  onClick={triggerNav}
+                  className="flex items-start gap-2 group"
+                >
+                  <span className="text-[#f59e0b] text-xs mt-0.5 group-hover:translate-x-1 transition-transform">▸</span>
+                  <div>
+                    <div className="text-[11px] text-white font-bold leading-tight group-hover:text-[#f59e0b] transition-colors">The Language Architect</div>
+                    <div className="text-[9px] text-[#8892a6] font-mono mt-1">RESUME</div>
+                  </div>
+                </Link>
+                <Link 
+                  href="/library/ebooks/systems-and-structure/read?resume=true" 
+                  onClick={triggerNav}
+                  className="flex items-start gap-2 group opacity-70 hover:opacity-100 transition-opacity"
+                >
+                  <span className="text-[#566074] text-xs mt-0.5 group-hover:translate-x-1 transition-transform">▸</span>
+                  <div>
+                    <div className="text-[11px] text-[#8892a6] leading-tight group-hover:text-white transition-colors">Systems & Structure</div>
+                    <div className="text-[9px] text-[#566074] font-mono mt-1">START</div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            <div className="m-hud-panel">
+              <span className="m-hud-scan" />
+              <div className="m-hud-header">
+                <div className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-[#22d3ee]" />
+                  QUICK VAULT
+                </div>
+              </div>
+              <div className="p-4">
+                 <p className="text-[10px] text-[#8892a6]">New entry on AI Engineering available in the Vault.</p>
+                 <Link href="/library/vault" onClick={triggerNav} className="mt-3 block text-[9px] font-mono text-[#22d3ee] hover:text-white">OPEN VAULT →</Link>
+              </div>
+            </div>
+          </>
+        )}
+
+        {isCourse && (
+          <>
+            <StudyStreak />
+            <DailyGoal />
+            <PomodoroTimer />
+            <QuickFlashcard />
+            <QuickNotes />
+          </>
+        )}
+
+        <div className="m-hud-panel">
+          <span className="m-hud-scan" />
+          <div className="m-hud-header">
+            <div className="flex items-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-[#22d3ee]" />
+              RECENT ACTIVITY
+            </div>
+          </div>
+          <div className="p-4 space-y-3">
+             <div className="flex items-center justify-between text-[10px]">
+                <span className="text-[#8892a6]">Bookmark Saved</span>
+                <span className="text-[#10b981] font-mono">+50 XP</span>
+             </div>
+          </div>
+        </div>
+
+        <div className="text-[10px] font-mono text-[#3a4250] text-center pt-2 pb-4 tracking-[0.3em]">
+          MERIDIAN v1.0
+        </div>
+      </div>
+    </aside>
+  )
+}

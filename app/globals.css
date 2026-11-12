@@ -1,148 +1,271 @@
+/* ===== GLOBAL SCROLLBAR HIDER ===== */
+html, body, * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+/* =================================== */
+
 @import "tailwindcss";
 
-/* ─── Meridian design tokens — DARK (default) ─── */
-:root, [data-theme="dark"] {
-  --m-bg: #0a0e14;
-  --m-surface: #0f141c;
-  --m-surface-2: #141b26;
-  --m-border: #1e2633;
-  --m-border-bright: #2d3748;
-  --m-text: #e5e9f0;
-  --m-text-muted: #8892a6;
-  --m-text-dim: #566074;
-  --m-cyan: #22d3ee;
-  --m-cyan-soft: rgba(34, 211, 238, 0.12);
-  --m-blue: #3b82f6;
-  --m-green: #10b981;
-  --m-amber: #f59e0b;
-  --m-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+/* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Meridian Global Reset & Variables ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
+:root {
+  color-scheme: dark;
 }
 
-/* ─── Meridian design tokens — LIGHT ─── */
-[data-theme="light"] {
-  --m-bg: #f6f7fa;
-  --m-surface: #ffffff;
-  --m-surface-2: #f0f2f6;
-  --m-border: #e2e6ee;
-  --m-border-bright: #c8d0dd;
-  --m-text: #0a0e14;
-  --m-text-muted: #4b5563;
-  --m-text-dim: #8a94a3;
-  --m-cyan: #0891b2;
-  --m-cyan-soft: rgba(8, 145, 178, 0.1);
-  --m-blue: #2563eb;
-  --m-green: #059669;
-  --m-amber: #d97706;
-  --m-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08);
+html,
+body {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-html, body {
-  background-color: var(--m-bg);
-  color: var(--m-text);
-  -webkit-font-smoothing: antialiased;
-  transition: background-color 200ms ease, color 200ms ease;
+body {
+  overflow-x: hidden;
 }
 
-.m-panel {
-  background-color: var(--m-surface);
-  border: 1px solid var(--m-border);
-  border-radius: 0.875rem;
-  transition: background-color 200ms ease, border-color 200ms ease;
+/* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Tactical Buttons ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
+.tactical-btn-outline {
+  background: transparent;
+  color: var(--accent-color, #22d3ee);
+  border: 1px solid var(--accent-color, #22d3ee);
+  box-shadow: inset 0 0 10px rgba(34, 211, 238, 0.1);
 }
 
-.m-panel-raised {
-  background-color: var(--m-surface-2);
-  border: 1px solid var(--m-border);
-  border-radius: 0.875rem;
+.tactical-btn-outline:hover {
+  background: rgba(34, 211, 238, 0.1);
 }
 
-.m-panel-interactive { transition: border-color 150ms ease; }
-.m-panel-interactive:hover { border-color: var(--m-border-bright); }
+/* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ AAA Game Cards & Buttons ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
+.game-card {
+  background: linear-gradient(180deg, #0f172a 0%, #050810 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
 
-.m-label {
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 211, 238, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 20px 40px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+.game-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--accent-color, #22d3ee);
+  box-shadow: 0 0 15px var(--accent-color, #22d3ee);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.game-card:hover::before {
+  opacity: 1;
+}
+
+/* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ 3D Game Button ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
+.game-btn {
+  position: relative;
+  background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%);
+  color: #000;
+  font-family: ui-monospace, monospace;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--m-text-muted);
-}
-
-.m-label-cyan { color: var(--m-cyan); }
-
-.m-grid-bg {
-  background-image:
-    linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-[data-theme="light"] .m-grid-bg {
-  background-image:
-    linear-gradient(rgba(8, 145, 178, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 145, 178, 0.05) 1px, transparent 1px);
-}
-
-.m-progress-track {
-  height: 4px;
-  background: var(--m-surface-2);
-  border-radius: 999px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 4px solid #0e7490;
+  box-shadow:
+    0 0 20px rgba(34, 211, 238, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.1s ease;
   overflow: hidden;
 }
 
-.m-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--m-cyan), var(--m-blue));
-  transition: width 400ms ease;
+.game-btn:hover {
+  background: linear-gradient(180deg, #67e8f9 0%, #22d3ee 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 30px rgba(34, 211, 238, 0.6),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6);
 }
 
-.m-current-glow {
-  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35),
-              0 0 24px -4px rgba(34, 211, 238, 0.35);
-}
-[data-theme="light"] .m-current-glow {
-  box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.35),
-              0 0 20px -6px rgba(8, 145, 178, 0.28);
-}
-
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--m-bg); }
-::-webkit-scrollbar-thumb { background: var(--m-border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--m-border-bright); }
-
-/* ─── HUD animations ─── */
-@keyframes m-pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.45),
-                0 0 24px -4px rgba(34, 211, 238, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(34, 211, 238, 0),
-                0 0 36px -2px rgba(34, 211, 238, 0.75);
-  }
+.game-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+  box-shadow:
+    0 0 10px rgba(34, 211, 238, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.m-pulse { animation: m-pulse-glow 2.4s ease-in-out infinite; }
-
-@keyframes m-bar {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+/* ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ Quick Action Tiles ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ */
+.game-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 8px;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
 }
-.m-bar { transform-origin: left center; animation: m-bar 0.8s ease-out forwards; }
 
-.m-hud-corners { position: relative; }
-.m-hud-corners::before,
-.m-hud-corners::after {
-  content: '';
+.game-action::before {
+  content: "";
   position: absolute;
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--m-cyan);
-  pointer-events: none;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(34, 211, 238, 0.06) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
-.m-hud-corners::before {
-  top: -1px; left: -1px;
-  border-right: none; border-bottom: none;
+
+.game-action:hover::before {
+  opacity: 1;
 }
-.m-hud-corners::after {
-  bottom: -1px; right: -1px;
-  border-left: none; border-top: none;
+
+.game-action:hover {
+  background: rgba(34, 211, 238, 0.04);
+}
+
+.game-action:active {
+  transform: scale(0.96);
+}
+
+.game-action-icon {
+  width: 20px;
+  height: 20px;
+  color: #8892a6;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.game-action:hover .game-action-icon {
+  color: #22d3ee;
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.6));
+  transform: scale(1.1);
+}
+
+.game-action-label {
+  font-family: ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8892a6;
+  font-weight: 700;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.game-action:hover .game-action-label {
+  color: #fff;
+}
+
+
+/* ===== MERIDIAN HOTFIX 003 - PS5 CONSOLE FEEL ===== */
+.ps5-panel, .brief-box, .dash-hero, .m-hud-panel, .game-btn, .dash-btn-primary { transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s, background .18s; }
+.ps5-panel:hover, .brief-box:hover, .dash-hero:hover, .m-hud-panel:hover { transform: translateY(-2px); border-color: rgba(34,211,238,.35); box-shadow: 0 12px 40px rgba(0,0,0,.45), 0 0 24px rgba(34,211,238,.08); }
+.game-btn:active, .dash-btn-primary:active, .m-row:active { transform: scale(.97); }
+.game-btn:focus-visible, .dash-btn-primary:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid rgba(34,211,238,.7); outline-offset: 2px; border-radius: 8px; }
+.ps5-row { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+.ps5-row > * { scroll-snap-align: start; flex: 0 0 auto; }
+.m-hud-panel { position: relative; overflow: hidden; }
+.m-hud-panel::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 40%, rgba(34,211,238,.06) 50%, transparent 60%); transform: translateX(-120%); transition: transform .7s ease; }
+.m-hud-panel:hover::after { transform: translateX(120%); }
+@media (prefers-reduced-motion: reduce) { .ps5-panel:hover, .brief-box:hover, .dash-hero:hover, .m-hud-panel:hover { transform: none; } .m-hud-panel::after { display: none; } }
+/* ===== END HOTFIX 003 ===== */
+/* ===== MERIDIAN HOTFIX 004 - SOCIAL + TRENDING VISUALIZATION ===== */
+.chip { font-family: ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(34,211,238,.25); background: rgba(34,211,238,.06); color: #8892a6; transition: all .18s; }
+.chip:hover { color: #22d3ee; border-color: rgba(34,211,238,.5); background: rgba(34,211,238,.12); }
+.trend-item { display: flex; text-decoration: none; color: inherit; transition: background .18s, transform .18s; }
+.trend-item:hover { background: rgba(34,211,238,.05); transform: translateX(4px); }
+.trend-num { font-family: ui-monospace, monospace; font-size: 16px; font-weight: 700; color: #1e2633; -webkit-text-stroke: 1px rgba(34,211,238,.45); min-width: 28px; }
+.trend-item:hover .trend-num { color: rgba(34,211,238,.25); }
+.avatar-ring { --ac: #22d3ee; background: color-mix(in srgb, var(--ac) 18%, #050810); color: var(--ac); border: 1.5px solid var(--ac); box-shadow: 0 0 14px color-mix(in srgb, var(--ac) 45%, transparent); }
+.profile-banner { height: 120px; --ac: #22d3ee; background: linear-gradient(120deg, color-mix(in srgb, var(--ac) 35%, #050810) 0%, #0a1018 55%, rgba(139,92,246,.25) 100%); border: 1px solid rgba(255,255,255,.06); border-bottom: 0; }
+.msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-family: var(--font-sans, sans-serif); }
+.msg-own { margin-left: auto; background: linear-gradient(135deg, rgba(34,211,238,.18), rgba(139,92,246,.18)); border: 1px solid rgba(34,211,238,.3); border-bottom-right-radius: 4px; color: #e5e9f0; }
+.msg-other { margin-right: auto; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-bottom-left-radius: 4px; color: #c8d0dd; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+/* ===== END HOTFIX 004 ===== */
+/* ===== MERIDIAN HOTFIX 006 - EXTRAVAGANT GAME MAP ===== */
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(34,211,238,0.3); box-shadow: inset 0 0 20px rgba(34,211,238,0.05); }
+  50% { border-color: rgba(34,211,238,0.8); box-shadow: inset 0 0 30px rgba(34,211,238,0.15); }
+}
+.active-glow {
+  animation: borderGlow 3s infinite;
+}
+/* ===== END HOTFIX 006 ===== */
+
+/* ===== FORCE HORIZONTAL SCROLLBAR ===== */
+.custom-scrollbar::-webkit-scrollbar {
+  display: block !important;
+  height: 8px !important;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.5) !important;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.8) !important;
+}
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+}
+/* ===== END FORCE SCROLLBAR ===== */
+
+/* Loading Screen Background */
+.nav-loader-bg {
+  background-image: url('/loading-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.nav-loader-bg {
+  background-image: url('/loading-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

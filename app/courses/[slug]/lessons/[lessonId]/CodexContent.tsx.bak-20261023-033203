@@ -1,0 +1,709 @@
+'use client'
+import { Fragment, type ReactNode } from 'react'
+
+function repair(raw: string): string {
+  let s = raw
+  s = s.replace(/\|\s+\|/g, '|\n|')
+  s = s.replace(/([^\n])\s+(\*\s+\*[A-Za-z])/g, '$1\n$2')
+  s = s.replace(/([^\n])\s+(#{1,3}\s)/g, '$1\n$2')
+  s = s.replace(/([^\n])\s+(>\s)/g, '$1\n$2')
+  s = s.replace(/\n{3,}/g, '\n\n')
+  return s
+}
+
+/** Strip everything from "# 🎉 ..." onward — the "Side Quest Complete" banner. */
+function stripCompleteBanner(raw: string): string {
+  const idx = raw.search(/^#\s*🎉/m)
+  return idx >= 0 ? raw.slice(0, idx).trimEnd() : raw
+}
+
+function inline(text: string, keyBase: string): ReactNode[] {
+  const out: ReactNode[] = []
+  const regex = /(\*\*[^*]+\*\*|\*[^*\n]+\*|`[^`]+`)/g
+  text.split(regex).forEach((part, idx) => {
+    if (!part) return
+    const k = `${keyBase}-${idx}`
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      const word = part.slice(2, -2)
+      const isKeyword = /^[A-Z][A-Z\s\-]{0,22}$/.test(word) && word.length <= 24
+      if (isKeyword) {
+        out.push(
+          <span key={k} className="font-bold tracking-[0.04em]"
+            style={{ color: '#a5f3fc', textShadow: '0 0 8px rgba(34,211,238,0.25)' }}>
+            {word}
+          </span>
+        )
+      } else {
+        out.push(
+          <strong key={k} style={{ color: '#ffffff', fontWeight: 700 }}>{word}</strong>
+        )
+      }
+    }
+    else if (part.startsWith('*') && part.endsWith('*') && part.length > 2)
+      out.push(<em key={k} style={{ color: '#a5f3fc', fontStyle: 'italic' }}>{part.slice(1, -1)}</em>)
+    else if (part.startsWith('`') && part.endsWith('`'))
+      out.push(
+        <code key={k} className="px-1.5 py-0.5 rounded text-[0.9em] font-mono"
+          style={{ background: 'var(--m-surface-2)', color: '#a5f3fc' }}>
+          {part.slice(1, -1)}
+        </code>
+      )
+    else out.push(<span key={k}>{part}</span>)
+  })
+  return out
+}
+
+function isTableRow(line: string) {
+  const t = line.trim()
+  return t.startsWith('|') && t.endsWith('|') && t.length > 2
+}
+function isTableSeparator(line: string) {
+  return /^\|[\s:|-]+\|$/.test(line.trim()) && line.includes('-')
+}
+function splitRow(line: string): string[] {
+  return line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim())
+}
+
+const ARROW_RE = /^[↓↑→←⬇⬆↳]+$/
+const ARROW_SPLIT_RE = /^(.*?)\s*→\s*(.*)$/
+const EQ_SPLIT_RE = /^([^=\n]+?)\s*=\s*([^=\n]+?)$/
+const EMDASH_PAIR_RE = /^(.*?)\s+—\s+(.+)$/
+const NUMBERED_RE = /^(\d+)\.\s+(.*)$/
+const BULLET_PREFIX_RE = /^[-*]\s+/
+const H2_SPLIT_RE = /^(.*?)(\d+)\.?\s+(.*)$/
+const CIRCLED_RE = /^([①②③④⑤⑥⑦⑧⑨⑩])\s*(.*)$/
+
+const CIRCLE_MAP: Record<string, string> = {
+  '①': '01', '②': '02', '③': '03', '④': '04', '⑤': '05',
+  '⑥': '06', '⑦': '07', '⑧': '08', '⑨': '09', '⑩': '10',
+}
+
+function stripBulletPrefix(line: string): string {
+  if (BULLET_PREFIX_RE.test(line)) return line.replace(BULLET_PREFIX_RE, '').trim()
+  return line
+}
+
+/** ✍️ Write-This-Down special callout */
+function WriteDownBlock({ text, k }: { text: string; k: string }) {
+  return (
+    <div
+      className="my-6 md:my-8 relative rounded-xl p-5 md:p-6 overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, rgba(245,158,11,0.10) 0%, rgba(34,211,238,0.04) 100%)',
+        border: '1px solid rgba(245,158,11,0.35)',
+        boxShadow: '0 0 30px rgba(245,158,11,0.08), inset 0 0 30px rgba(245,158,11,0.03)',
+      }}
+    >
+      <span className="pointer-events-none absolute left-0 top-0 bottom-0 w-[3px]"
+        style={{ background: '#f59e0b', boxShadow: '0 0 14px rgba(245,158,11,0.6)' }} />
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-base leading-none">✍️</span>
+        <span className="text-[10px] font-mono tracking-[0.35em] font-bold"
+          style={{ color: '#f59e0b', textShadow: '0 0 10px rgba(245,158,11,0.5)' }}>
+          WRITE THIS DOWN
+        </span>
+      </div>
+      <p className="text-[15px] md:text-base leading-relaxed font-semibold"
+        style={{ color: '#ffffff' }}>
+        {inline(text, k)}
+      </p>
+    </div>
+  )
+}
+
+function VerticalSequence({ pairs, k }: { pairs: { value: string; label: string }[]; k: string }) {
+  return (
+    <div
+      className="my-6 md:my-8 rounded-xl p-5 md:p-7 relative"
+      style={{
+        background: 'linear-gradient(135deg, rgba(15,20,28,0.65) 0%, rgba(22,32,44,0.5) 100%)',
+        border: '1px solid var(--m-border)',
+        borderLeft: '2px solid rgba(34,211,238,0.6)',
+      }}
+    >
+      {pairs.map((p, i) => (
+        <Fragment key={i}>
+          <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-4 gap-0.5">
+            <span className="text-lg md:text-xl font-semibold tracking-tight" style={{ color: '#ffffff' }}>
+              {inline(p.value, `${k}-${i}-v`)}
+            </span>
+            <span className="text-[10px] font-mono tracking-[0.28em] uppercase"
+              style={{ color: '#a5f3fc', opacity: 0.75 }}>
+              {inline(p.label, `${k}-${i}-l`)}
+            </span>
+          </div>
+          {i < pairs.length - 1 && (
+            <div className="flex items-center justify-center gap-2 py-2" aria-hidden>
+              <span className="w-[1px] h-5" style={{ background: 'rgba(34,211,238,0.35)' }} />
+              <span className="text-[10px] leading-none" style={{ color: 'rgba(34,211,238,0.55)' }}>▼</span>
+            </div>
+          )}
+        </Fragment>
+      ))}
+    </div>
+  )
+}
+
+function Pairs({ items, k }: { items: { left: string; right: string }[]; k: string }) {
+  return (
+    <div className="my-6 md:my-8 rounded-xl overflow-hidden"
+      style={{ border: '1px solid var(--m-border)', background: 'var(--m-surface)' }}>
+      {items.map((it, i) => (
+        <div key={i} className="grid grid-cols-2"
+          style={{ borderTop: i === 0 ? 'none' : '1px solid var(--m-border)' }}>
+          <div className="px-4 py-3 md:px-5 md:py-3.5" style={{ borderRight: '1px solid var(--m-border)' }}>
+            <div className="text-base md:text-lg font-semibold tracking-tight" style={{ color: '#ffffff' }}>
+              {inline(it.left, `${k}-${i}-l`)}
+            </div>
+          </div>
+          <div className="px-4 py-3 md:px-5 md:py-3.5">
+            <div className="text-base md:text-lg tracking-tight font-semibold"
+              style={{ color: '#a5f3fc' }}>
+              {inline(it.right, `${k}-${i}-r`)}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ChainBlock({ parts, k, compact = false }: { parts: string[]; k: string; compact?: boolean }) {
+  return (
+    <div className={compact ? 'my-3 md:my-4 flex flex-wrap items-center gap-x-2 gap-y-1.5' : 'my-5 md:my-7 flex flex-wrap items-center gap-x-2 gap-y-1.5'}>
+      {parts.map((p, i) => (
+        <Fragment key={i}>
+          <span
+            className={compact ? 'px-2.5 py-1 rounded-md text-sm font-semibold tracking-tight' : 'px-3 py-1.5 rounded-md text-sm md:text-base font-semibold tracking-tight'}
+            style={{
+              background: 'rgba(34,211,238,0.06)',
+              border: '1px solid rgba(34,211,238,0.22)',
+              color: '#ffffff',
+            }}
+          >
+            {inline(p, `${k}-${i}`)}
+          </span>
+          {i < parts.length - 1 && (
+            <span className="text-sm leading-none" style={{ color: 'rgba(34,211,238,0.55)' }}>→</span>
+          )}
+        </Fragment>
+      ))}
+    </div>
+  )
+}
+
+function CompactLabel({ text, k }: { text: string; k: string }) {
+  return (
+    <div className="my-6 flex items-center gap-3">
+      <span className="inline-block w-1 h-4 rounded-full shrink-0"
+        style={{ background: 'rgba(34,211,238,0.6)' }} />
+      <span className="text-xs md:text-sm font-mono tracking-[0.25em] uppercase"
+        style={{ color: '#a5f3fc' }}>
+        {inline(text, k)}
+      </span>
+      <span className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.25) 0%, transparent 100%)' }} />
+    </div>
+  )
+}
+
+function DataTable({ headers, rows, k }: { headers: string[]; rows: string[][]; k: string }) {
+  return (
+    <>
+      <div className="hidden md:block my-8 overflow-x-auto rounded-xl"
+        style={{ border: '1px solid var(--m-border)', background: 'var(--m-surface)' }}>
+        <table className="w-full text-sm min-w-[420px]">
+          <thead>
+            <tr style={{ background: 'var(--m-surface-2)' }}>
+              {headers.map((h, hi) => (
+                <th key={hi} className="text-left px-4 py-3.5 font-mono text-[11px] tracking-[0.15em] uppercase"
+                  style={{ color: '#a5f3fc', borderBottom: '1px solid var(--m-border)' }}>
+                  {inline(h, `th-${k}-${hi}`)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, ri) => (
+              <tr key={ri} style={{ borderTop: ri === 0 ? 'none' : '1px solid var(--m-border)' }}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className="px-4 py-3 align-top" style={{ color: '#ffffff' }}>
+                    {inline(cell, `td-${k}-${ri}-${ci}`)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="md:hidden my-6 space-y-2">
+        {rows.map((row, ri) => (
+          <div key={ri} className="relative rounded-xl p-4"
+            style={{
+              border: '1px solid var(--m-border)',
+              background: 'var(--m-surface)',
+              borderLeft: '2px solid rgba(34,211,238,0.5)',
+            }}>
+            <span className="absolute top-3 right-3 text-[9px] font-mono tracking-widest" style={{ color: 'var(--m-text-dim)' }}>
+              {String(ri + 1).padStart(2, '0')}
+            </span>
+            <div className="space-y-2.5 pr-8">
+              {row.map((cell, ci) => (
+                <div key={ci}>
+                  <div className="text-[9px] font-mono tracking-[0.22em] uppercase mb-1"
+                    style={{ color: '#a5f3fc', opacity: 0.75 }}>
+                    {headers[ci] ?? ''}
+                  </div>
+                  <div className="text-[15px] leading-snug font-medium" style={{ color: '#ffffff' }}>
+                    {inline(cell, `mtd-${k}-${ri}-${ci}`)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
+function BulletItem({ text, k }: { text: string; k: string }) {
+  const m = text.match(ARROW_SPLIT_RE)
+  if (m && m[1].length > 0 && m[1].length < 70 && m[2].length > 0 && m[2].length < 90) {
+    return (
+      <div
+        className="rounded-lg px-4 py-4 md:py-5 flex flex-col items-center text-center"
+        style={{
+          background: 'rgba(15,20,28,0.55)',
+          border: '1px solid var(--m-border)',
+          borderLeft: '2px solid rgba(34,211,238,0.6)',
+        }}
+      >
+        <div className="text-[15px] md:text-base font-semibold tracking-wide leading-snug" style={{ color: '#ffffff' }}>
+          {inline(m[1], `${k}-a`)}
+        </div>
+        <div className="my-2 text-base leading-none" style={{ color: 'rgba(34,211,238,0.7)' }}>↓</div>
+        <div className="text-[15px] md:text-base leading-snug" style={{ color: '#a5f3fc' }}>
+          {inline(m[2], `${k}-b`)}
+        </div>
+      </div>
+    )
+  }
+  return (
+    <p className="text-[15px] md:text-base leading-relaxed py-1.5" style={{ color: '#ffffff' }}>
+      {inline(text, k)}
+    </p>
+  )
+}
+
+function tryVerticalSequence(lines: string[], start: number): { pairs: { value: string; label: string }[]; end: number } | null {
+  const pairs: { value: string; label: string }[] = []
+  let i = start
+  while (i + 2 < lines.length) {
+    const v = lines[i].trim()
+    const arrow = lines[i + 1].trim()
+    const label = lines[i + 2].trim()
+    if (!v || !label) break
+    if (!ARROW_RE.test(arrow)) break
+    if (v.startsWith('#') || v.startsWith('>') || /^[-*] /.test(v)) break
+    if (isTableRow(v)) break
+    if (v.length > 40 || label.length > 30) break
+    pairs.push({ value: v, label })
+    i += 3
+    while (i < lines.length && lines[i].trim() === '') i++
+  }
+  if (pairs.length < 2) return null
+  return { pairs, end: i }
+}
+
+function tryEqualsGroup(lines: string[], start: number): { items: { left: string; right: string }[]; end: number } | null {
+  const items: { left: string; right: string }[] = []
+  let i = start
+  while (i < lines.length) {
+    const raw = lines[i].trim()
+    if (raw === '') { i++; continue }
+    const line = stripBulletPrefix(raw)
+    const m = line.match(EQ_SPLIT_RE)
+    if (!m) break
+    const left = m[1].trim()
+    const right = m[2].trim()
+    if (!left || !right) break
+    if (left.length > 40 || right.length > 40) break
+    items.push({ left, right })
+    i++
+    while (i < lines.length && lines[i].trim() === '') i++
+  }
+  if (items.length < 2) return null
+  return { items, end: i }
+}
+
+function tryEmDashPairs(lines: string[], start: number): { items: { left: string; right: string }[]; end: number } | null {
+  const items: { left: string; right: string }[] = []
+  let i = start
+  while (i < lines.length) {
+    const raw = lines[i].trim()
+    if (raw === '') { i++; continue }
+    const line = stripBulletPrefix(raw)
+    const m = line.match(EMDASH_PAIR_RE)
+    if (!m) break
+    const left = m[1].trim()
+    const right = m[2].trim()
+    if (!left || !right) break
+    if (left.length > 60 || right.length > 60) break
+    if (left.includes('→') || right.includes('→')) break
+    items.push({ left, right })
+    i++
+    while (i < lines.length && lines[i].trim() === '') i++
+  }
+  if (items.length < 2) return null
+  return { items, end: i }
+}
+
+function tryNumberedList(lines: string[], start: number): { items: string[]; end: number } | null {
+  const items: string[] = []
+  let i = start
+  while (i < lines.length) {
+    const line = lines[i].trim()
+    if (line === '') { i++; continue }
+    const m = line.match(NUMBERED_RE)
+    if (!m) break
+    items.push(m[2].trim())
+    i++
+    while (i < lines.length && lines[i].trim() === '') i++
+  }
+  if (items.length < 2) return null
+  return { items, end: i }
+}
+
+function SectionHeading({ text, k }: { text: string; k: string }) {
+  const m = text.match(H2_SPLIT_RE)
+  const prefix = m ? m[1].trim() : ''
+  const number = m ? m[2] : ''
+  const titleText = m ? m[3] : text
+
+  return (
+    <div className="mt-12 md:mt-16 mb-6 md:mb-7">
+      <div className="flex items-center gap-3 md:gap-4">
+        {prefix && (
+          <span
+            className="shrink-0 flex items-center justify-center rounded-md"
+            style={{
+              width: 36,
+              height: 36,
+              background: 'rgba(34,211,238,0.06)',
+              border: '1px solid rgba(34,211,238,0.3)',
+              fontSize: 18,
+              lineHeight: 1,
+            }}
+          >
+            {prefix}
+          </span>
+        )}
+
+        {number && (
+          <span
+            className="shrink-0 font-mono tabular-nums"
+            style={{
+              color: '#a5f3fc',
+              fontSize: 11,
+              letterSpacing: '0.15em',
+              fontWeight: 700,
+              opacity: 0.9,
+            }}
+          >
+            {number.padStart(2, '0')}
+          </span>
+        )}
+
+        <span className="w-px h-4 shrink-0" style={{ background: 'rgba(34,211,238,0.3)' }} />
+
+        <span
+          className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight"
+          style={{ color: '#ffffff' }}
+        >
+          {inline(titleText, 'h2t-' + k)}
+        </span>
+      </div>
+
+      <div className="mt-4 flex items-center gap-3">
+        <span className="w-6 h-px shrink-0" style={{ background: 'rgba(34,211,238,0.55)' }} />
+        <span className="flex-1 h-px"
+          style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.22) 0%, rgba(139,92,246,0.12) 55%, transparent 100%)' }} />
+      </div>
+    </div>
+  )
+}
+
+function StepHeading({ num, text, k }: { num: string; text: string; k: string }) {
+  return (
+    <div className="my-5 md:my-6 flex items-center gap-3 md:gap-4">
+      <div
+        className="shrink-0 flex items-center justify-center font-mono tabular-nums"
+        style={{
+          width: 30,
+          height: 30,
+          background: 'rgba(34,211,238,0.06)',
+          border: '1px solid rgba(34,211,238,0.35)',
+          borderRadius: 6,
+          color: '#a5f3fc',
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.06em',
+        }}
+      >
+        {num}
+      </div>
+      <span
+        className="text-sm md:text-base font-bold tracking-[0.14em] uppercase"
+        style={{ color: '#ffffff' }}
+      >
+        {inline(text, `step-${k}`)}
+      </span>
+      <span
+        className="h-px flex-1"
+        style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.28) 0%, transparent 100%)' }}
+      />
+    </div>
+  )
+}
+
+export default function CodexContent({ content }: { content: string }) {
+  // Strip the 🎉 side-quest-complete banner from all lessons
+  const trimmedContent = stripCompleteBanner(content)
+  const cleaned = repair(trimmedContent)
+  const lines = cleaned.split('\n')
+  const blocks: ReactNode[] = []
+  let i = 0
+  let key = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const trimmed = line.trim()
+
+    if (trimmed === '') { i++; continue }
+
+    if (isTableRow(line) && i + 1 < lines.length && isTableSeparator(lines[i + 1])) {
+      const headers = splitRow(line)
+      i += 2
+      const rows: string[][] = []
+      while (i < lines.length && isTableRow(lines[i])) {
+        const cells = splitRow(lines[i])
+        if (cells.some(c => c.length > 0)) rows.push(cells)
+        i++
+      }
+      blocks.push(<DataTable key={key++} headers={headers} rows={rows} k={String(key)} />)
+      continue
+    }
+
+    if (trimmed.startsWith('### ')) {
+      blocks.push(
+        <h3 key={key++} className="text-base md:text-lg font-bold tracking-wide mt-10 md:mt-12 mb-3"
+          style={{ color: '#ffffff' }}>
+          {inline(trimmed.slice(4), `h3-${key}`)}
+        </h3>
+      )
+      i++
+      continue
+    }
+    if (trimmed.startsWith('## ')) {
+      blocks.push(<SectionHeading key={key++} text={trimmed.slice(3)} k={String(key)} />)
+      i++
+      continue
+    }
+    if (trimmed.startsWith('# ')) {
+      blocks.push(
+        <h1 key={key++}
+          className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mt-4 md:mt-6 mb-5 md:mb-6"
+          style={{ color: '#ffffff' }}>
+          {inline(trimmed.slice(2), `h1-${key}`)}
+        </h1>
+      )
+      i++
+      continue
+    }
+
+    if (trimmed === '---') {
+      blocks.push(
+        <div key={key++} className="my-10 md:my-12 flex items-center gap-3" aria-hidden>
+          <span className="flex-1 h-px" style={{ background: 'var(--m-border)' }} />
+          <span className="w-1 h-1 rounded-full" style={{ background: 'rgba(34,211,238,0.6)' }} />
+          <span className="flex-1 h-px" style={{ background: 'var(--m-border)' }} />
+        </div>
+      )
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('> ')) {
+      const quoted: string[] = []
+      while (i < lines.length && lines[i].trim().startsWith('> ')) {
+        quoted.push(lines[i].trim().slice(2))
+        i++
+      }
+
+      const single = quoted.length === 1 ? quoted[0] : ''
+
+      // ✍️ WRITE THIS DOWN callout
+      if (quoted.length === 1 && /^✍️/.test(single)) {
+        const body = single.replace(/^✍️\s*(WRITE THIS DOWN[:\-—]?\s*)?/i, '').trim()
+        blocks.push(<WriteDownBlock key={key++} text={body} k={`wd-${key}`} />)
+        continue
+      }
+
+      const hasStructure = /[→←↓↑=]/.test(single)
+      const isCompact = quoted.length === 1 && single.length > 0 && single.length <= 55 && !hasStructure
+
+      if (quoted.length === 1 && single.includes('→') && single.length <= 90) {
+        const chainParts = single.split('→').map(s => s.trim()).filter(Boolean)
+        if (chainParts.length >= 2 && chainParts.length <= 6 && chainParts.every(p => p.length <= 30)) {
+          blocks.push(<ChainBlock key={key++} parts={chainParts} k={`ch-${key}`} />)
+          continue
+        }
+      }
+
+      if (isCompact) {
+        blocks.push(<CompactLabel key={key++} text={single} k={`cl-${key}`} />)
+        continue
+      }
+
+      blocks.push(
+        <blockquote key={key++}
+          className="my-6 md:my-8 relative rounded-xl px-5 md:px-6 py-4 md:py-5 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, rgba(34,211,238,0.07) 0%, rgba(59,130,246,0.02) 100%)',
+            border: '1px solid rgba(34,211,238,0.22)',
+          }}>
+          <span className="absolute left-0 top-0 bottom-0 w-[2px]"
+            style={{ background: 'rgba(34,211,238,0.55)' }} />
+          {quoted.map((q, qi) => (
+            <p key={qi} className="text-[15px] md:text-base leading-relaxed" style={{ color: '#ffffff' }}>
+              {inline(q, `q-${key}-${qi}`)}
+            </p>
+          ))}
+        </blockquote>
+      )
+      continue
+    }
+
+    const vs = tryVerticalSequence(lines, i)
+    if (vs) {
+      blocks.push(<VerticalSequence key={key++} pairs={vs.pairs} k={`vs-${key}`} />)
+      i = vs.end
+      continue
+    }
+
+    const eq = tryEqualsGroup(lines, i)
+    if (eq) {
+      blocks.push(<Pairs key={key++} items={eq.items} k={`eq-${key}`} />)
+      i = eq.end
+      continue
+    }
+
+    const ed = tryEmDashPairs(lines, i)
+    if (ed) {
+      blocks.push(<Pairs key={key++} items={ed.items} k={`ed-${key}`} />)
+      i = ed.end
+      continue
+    }
+
+    const nl = tryNumberedList(lines, i)
+    if (nl) {
+      blocks.push(
+        <ol key={key++} className="my-5 md:my-6 space-y-2.5 md:space-y-3">
+          {nl.items.map((it, ii) => (
+            <li key={ii} className="flex items-start gap-3 md:gap-4">
+              <span className="text-[11px] font-mono tracking-widest shrink-0 pt-[3px] w-6 tabular-nums"
+                style={{ color: '#a5f3fc', opacity: 0.9 }}>
+                {String(ii + 1).padStart(2, '0')}
+              </span>
+              <span className="text-[15px] md:text-base leading-relaxed flex-1" style={{ color: '#ffffff' }}>
+                {inline(it, `nl-${key}-${ii}`)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )
+      i = nl.end
+      continue
+    }
+
+    if (/^[-*] /.test(trimmed)) {
+      const items: string[] = []
+      while (i < lines.length && /^[-*] /.test(lines[i].trim()) && !isTableRow(lines[i])) {
+        items.push(lines[i].trim().slice(2))
+        i++
+      }
+      blocks.push(
+        <div key={key++} className="my-5 md:my-6 relative pl-6 md:pl-8 space-y-2"
+          style={{ borderLeft: '1px solid var(--m-border-bright)' }}>
+          {items.map((it, ii) => (
+            <div key={ii} className="relative">
+              <span className="absolute -left-[27px] md:-left-[35px] top-[18px] w-1.5 h-1.5 rounded-full"
+                style={{ background: 'rgba(34,211,238,0.75)' }} />
+              <BulletItem text={it} k={`li-${key}-${ii}`} />
+            </div>
+          ))}
+        </div>
+      )
+      continue
+    }
+
+    if (ARROW_RE.test(trimmed)) {
+      blocks.push(
+        <div key={key++} className="flex my-3 pl-4">
+          <span className="text-xl leading-none" style={{ color: 'rgba(34,211,238,0.5)' }}>↓</span>
+        </div>
+      )
+      i++
+      continue
+    }
+
+    const circM = trimmed.match(CIRCLED_RE)
+    if (circM) {
+      const num = CIRCLE_MAP[circM[1]] ?? circM[1]
+      const label = circM[2].replace(/\*\*/g, '').replace(/\*/g, '').trim()
+      if (label.length > 0 && label.length <= 40) {
+        blocks.push(<StepHeading key={key++} num={num} text={label} k={String(key)} />)
+        i++
+        continue
+      }
+    }
+
+    const chainParts = trimmed.split('→').map(s => s.trim())
+    const isCompact2 = chainParts.length === 2 &&
+      chainParts[0].length > 0 && chainParts[0].length <= 25 &&
+      chainParts[1].length > 0 && chainParts[1].length <= 25
+    const isBigChain = chainParts.length >= 3 &&
+      chainParts.length <= 5 &&
+      chainParts.every(p => p.length > 0 && p.length < 40)
+    if (isBigChain || isCompact2) {
+      blocks.push(<ChainBlock key={key++} parts={chainParts} k={`ch-${key}`} compact={isCompact2} />)
+      i++
+      continue
+    }
+
+    const para: string[] = [trimmed]
+    i++
+    while (
+      i < lines.length &&
+      lines[i].trim() !== '' &&
+      !lines[i].trim().startsWith('#') &&
+      !lines[i].trim().startsWith('>') &&
+      !/^[-*] /.test(lines[i].trim()) &&
+      lines[i].trim() !== '---' &&
+      !isTableRow(lines[i]) &&
+      !ARROW_RE.test(lines[i].trim()) &&
+      !CIRCLED_RE.test(lines[i].trim())
+    ) {
+      para.push(lines[i].trim())
+      i++
+    }
+    blocks.push(
+      <p key={key++} className="my-4 md:my-5 text-[15px] md:text-base leading-relaxed" style={{ color: '#ffffff' }}>
+        {inline(para.join(' '), `p-${key}`)}
+      </p>
+    )
+  }
+
+  return <div className="max-w-[68ch]">{blocks}</div>
+}

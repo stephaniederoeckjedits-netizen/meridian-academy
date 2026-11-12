@@ -1,0 +1,1986 @@
+﻿MERIDIAN LINT FIX INPUT - 11/09/2026 03:52:57
+
+
+========== FILE: components/DisciplineScreen.tsx ==========
+// FILE: components/DisciplineScreen.tsx
+'use client'
+import { useEffect, useState } from 'react'
+import { pickQuote, type DisciplineQuote } from '@/lib/discipline'
+import LogoEmblem from './LogoEmblem'
+
+export default function DisciplineScreen({
+  onDone,
+  duration = 6000,
+}: {
+  onDone: () => void
+  duration?: number
+}) {
+  const [quote, setQuote] = useState<DisciplineQuote | null>(null)
+  const [fading, setFading] = useState(false)
+  const [dots, setDots] = useState('')
+
+  useEffect(() => {
+    setQuote(pickQuote())
+    const id = setInterval(() => {
+      setDots((d) => (d.length >= 3 ? '' : d + '.'))
+    }, 400)
+    return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    if (!quote) return
+    const fadeTimer = setTimeout(() => setFading(true), duration - 900)
+    const doneTimer = setTimeout(onDone, duration)
+    return () => { clearTimeout(fadeTimer); clearTimeout(doneTimer) }
+  }, [quote, duration, onDone])
+
+  if (!quote) return null
+
+  return (
+    <div className="fixed inset-0 flex flex-col items-center justify-center px-8 pointer-events-none">
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at center, #0a1620 0%, #050810 60%, #000 100%)',
+          opacity: fading ? 0 : 1,
+          transition: 'opacity 0.9s ease-out',
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at center, rgba(34,211,238,0.06) 0%, transparent 55%)',
+          opacity: fading ? 0 : 1,
+          transition: 'opacity 0.9s ease-out',
+        }}
+      />
+
+      <div
+        className="relative flex flex-col items-center max-w-3xl text-center"
+        style={{ opacity: fading ? 0 : 1, transition: 'opacity 0.9s ease-out' }}
+      >
+        <LogoEmblem size={200} className="mb-6" />
+        <div
+          className="text-2xl md:text-3xl leading-relaxed italic mb-8"
+          style={{
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            color: '#e5e9f0',
+            textShadow: '0 0 24px rgba(34,211,238,0.15)',
+          }}
+        >
+          &ldquo;{quote.text}&rdquo;
+        </div>
+        <div className="text-sm tracking-widest uppercase" style={{ color: '#22d3ee', letterSpacing: '0.3em' }}>
+          â€” {quote.author}
+        </div>
+      </div>
+
+      <div
+        className="absolute bottom-16 flex flex-col items-center gap-3"
+        style={{ opacity: fading ? 0 : 1, transition: 'opacity 0.9s ease-out' }}
+      >
+        <div
+          style={{
+            fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase',
+            color: '#566074', fontWeight: 500,
+          }}
+        >
+          LOADING NEXT MISSION{dots}
+        </div>
+        <div className="h-px w-40 overflow-hidden" style={{ background: '#1e2633' }}>
+          <div className="h-full discipline-bar-fill" style={{ background: '#22d3ee', width: '100%' }} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/DynamicResumeMission.tsx ==========
+'use client'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { useEffect, useState, useCallback } from 'react'
+import { getResume, ResumeType } from '@/lib/resume'
+
+export default function DynamicResumeMission() {
+  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+  const [mission, setMission] = useState({ label: 'START MISSION', title: 'Dutch Mastery', href: '/courses/english-to-dutch-mastery' })
+
+  const getContextType = useCallback((): ResumeType => {
+    if (pathname.startsWith('/courses')) return 'course'
+    if (pathname.startsWith('/library/prompts')) return 'spec'
+    if (pathname.startsWith('/library/vault')) return 'vault'
+    // FIX: Library defaults to Ebook
+    if (pathname.startsWith('/library')) return 'ebook' 
+    return 'course' // Dashboard defaults to Course
+  }, [pathname])
+
+  const resolveContext = useCallback(async () => {
+    const type = getContextType()
+    const saved = await getResume(type)
+
+    if (saved) {
+      const labels = { course: 'RESUME COURSE', ebook: 'RESUME READING', spec: 'RESUME SPEC', vault: 'RESUME VAULT' }
+      setMission({ label: labels[type], title: saved.title, href: saved.href })
+    } else {
+      const fallbacks = {
+        course: { label: 'START COURSE', title: 'Dutch Mastery', href: '/courses/english-to-dutch-mastery' },
+        ebook: { label: 'EXPLORE LIBRARY', title: 'Browse Ebooks', href: '/library/ebooks' },
+        spec: { label: 'EXPLORE SPECS', title: 'Browse Prompts', href: '/library/prompts' },
+        vault: { label: 'EXPLORE VAULT', title: 'Browse Vault', href: '/library/vault' }
+      }
+      setMission(fallbacks[type])
+    }
+  }, [getContextType])
+
+  useEffect(() => {
+    setMounted(true)
+    resolveContext()
+    const handleUpdate = () => resolveContext()
+    window.addEventListener('meridian-resume-updated', handleUpdate)
+    return () => window.removeEventListener('meridian-resume-updated', handleUpdate)
+  }, [pathname, resolveContext])
+
+  if (!mounted) return <div className="h-[60px] w-full bg-[#0a0f16] border border-white/5 rounded-xl animate-pulse" />
+
+  return (
+    <Link href={mission.href} className="group/btn flex items-center justify-between w-full px-4 py-3 rounded-lg bg-[#050810] border border-[#22d3ee]/30 hover:border-[#22d3ee] hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all pulse-cyan relative z-10 overflow-hidden">
+      <div className="absolute left-0 top-0 w-1 h-full bg-[#22d3ee] opacity-50 group-hover/btn:opacity-100 shadow-[0_0_10px_#22d3ee] transition-opacity" />
+      <div className="flex flex-col min-w-0 pl-1">
+        <span className="text-[8px] font-mono text-[#8892a6] tracking-widest mb-1">{mission.label}</span>
+        <span className="text-xs text-white truncate font-[family-name:var(--font-cinzel)] tracking-wide group-hover/btn:text-[#22d3ee] transition-colors">{mission.title}</span>
+      </div>
+      <span className="text-[#22d3ee] text-lg group-hover/btn:translate-x-1 transition-transform drop-shadow-[0_0_5px_#22d3ee]">â†’</span>
+    </Link>
+  )
+}
+
+
+========== FILE: components/LiveDashboardMissions.tsx ==========
+'use client'
+
+import { useState, useEffect } from 'react'
+
+interface Mission {
+  id: number
+  text: string
+  completed: boolean
+}
+
+export default function LiveDashboardMissions() {
+  const [missions, setMissions] = useState<Mission[]>([])
+  const [shards, setShards] = useState(0)
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    // Read the live state from the Command Center extension
+    const savedMissions = localStorage.getItem('meridian_missions')
+    const savedShards = localStorage.getItem('meridian_shards')
+    
+    if (savedMissions) setMissions(JSON.parse(savedMissions))
+    if (savedShards) setShards(parseInt(savedShards))
+    
+    setLoaded(true)
+  }, [])
+
+  if (!loaded) return <div className="h-64 animate-pulse bg-white/5 rounded-lg" />
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-[family-name:var(--font-cinzel)] font-bold text-white tracking-[0.1em] uppercase">
+          Active Directives
+        </h2>
+        <div className="text-[10px] font-mono text-[#22d3ee] bg-[#22d3ee]/10 px-2 py-1 rounded border border-[#22d3ee]/20 flex items-center gap-1">
+          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.8l7.5 14.2H4.5L12 5.8zM11 16h2v2h-2v-2zm0-6h2v4h-2v-4z"/></svg>
+          {shards} SHARDS
+        </div>
+      </div>
+      
+      <div className="uni-panel flex-1 overflow-hidden flex flex-col">
+        <div className="p-2 border-b border-white/10 bg-white/[0.02]">
+          <span className="text-[9px] font-mono text-[#8892a6] tracking-widest uppercase px-2">Daily Protocol Sync</span>
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar">
+          {missions.length === 0 ? (
+            <div className="p-4 text-center text-xs font-mono text-[#566074]">
+              Open the Command Center to view directives.
+            </div>
+          ) : (
+            missions.map(mission => (
+              <div key={mission.id} className="mission-row">
+                <div className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${mission.completed ? 'bg-[#10b981]/20 border-[#10b981] text-[#10b981]' : 'border-white/20 text-transparent'}`}>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <span className={`text-xs font-mono tracking-wide ${mission.completed ? 'text-[#e5e9f0]' : 'text-[#8892a6]'}`}>
+                  {mission.text}
+                </span>
+                {mission.completed && (
+                  <span className="ml-auto text-[10px] font-mono text-[#10b981] font-bold">+25 XP</span>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/PomodoroTimer.tsx ==========
+'use client'
+import { useEffect, useRef, useState } from 'react'
+import { addPracticeSeconds } from '@/lib/activity'
+
+type SessionType = 'quick' | 'focus' | 'deep'
+const SESSIONS: Record<SessionType, { label: string; mins: number; accent: string }> = {
+  quick: { label: '15', mins: 15, accent: '#10b981' },
+  focus: { label: '25', mins: 25, accent: '#22d3ee' },
+  deep:  { label: '50', mins: 50, accent: '#8b5cf6' },
+}
+const BREAK_MINS = 5
+
+export default function PomodoroTimer({ userEmail }: { userEmail?: string }) {
+  const prefix = userEmail ? userEmail + '_' : 'guest_'
+  const [type, setType] = useState<SessionType>('focus')
+  const [mode, setMode] = useState<'work' | 'break'>('work')
+  const [seconds, setSeconds] = useState(SESSIONS.focus.mins * 60)
+  const [running, setRunning] = useState(false)
+  const [sessions, setSessions] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (!prefix || prefix === 'guest_') return
+    const today = new Date().toDateString()
+    const storedDate = localStorage.getItem(prefix + 'm-pomo-date')
+    const storedCount = localStorage.getItem(prefix + 'm-pomo-count')
+    if (storedDate === today && storedCount) {
+      setSessions(parseInt(storedCount))
+    } else {
+      localStorage.setItem(prefix + 'm-pomo-date', today)
+      localStorage.setItem(prefix + 'm-pomo-count', '0')
+      setSessions(0)
+    }
+    setMounted(true)
+  }, [prefix])
+
+  useEffect(() => {
+    if (!running) return
+    intervalRef.current = setInterval(() => {
+      if (mode === 'work') { addPracticeSeconds(1, userEmail) }
+      setSeconds((s) => {
+        if (s <= 1) {
+          if (mode === 'work') {
+            const today = new Date().toDateString()
+            const storedDate = localStorage.getItem(prefix + 'm-pomo-date')
+            const storedCount = localStorage.getItem(prefix + 'm-pomo-count')
+            const current = storedDate === today && storedCount ? parseInt(storedCount) : 0
+            const next = current + 1
+            localStorage.setItem(prefix + 'm-pomo-date', today)
+            localStorage.setItem(prefix + 'm-pomo-count', String(next))
+            setSessions(next)
+            setMode('break')
+            return BREAK_MINS * 60
+          } else {
+            setMode('work')
+            return SESSIONS[type].mins * 60
+          }
+        }
+        return s - 1
+      })
+    }, 1000)
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [running, mode, type, prefix])
+
+  function selectType(t: SessionType) {
+    setRunning(false); setType(t); setMode('work'); setSeconds(SESSIONS[t].mins * 60)
+  }
+  function toggle() { setRunning((r) => !r) }
+  function reset() { setRunning(false); setMode('work'); setSeconds(SESSIONS[type].mins * 60) }
+
+  if (!mounted) return null
+
+  const total = mode === 'work' ? SESSIONS[type].mins * 60 : BREAK_MINS * 60
+  const elapsed = total - seconds
+  const pct = (elapsed / total) * 100
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  const isWork = mode === 'work'
+  const accent = isWork ? SESSIONS[type].accent : '#f59e0b'
+  const R = 40
+  const C = 2 * Math.PI * R
+  const dash = (pct / 100) * C
+
+  return (
+    <div className="brief-box p-4" style={{ '--accent-color': accent } as any}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: accent }} />
+          <span className="text-[10px] font-mono uppercase tracking-widest font-bold" style={{ color: accent }}>{isWork ? 'FOCUS' : 'BREAK'}</span>
+        </div>
+        <span className="text-[10px] font-mono text-[#566074]">{sessions} DONE</span>
+      </div>
+      <div className="grid grid-cols-3 gap-1 mb-4">
+        {(Object.keys(SESSIONS) as SessionType[]).map((k) => {
+          const s = SESSIONS[k]; const active = k === type
+          return (
+            <button key={k} onClick={() => selectType(k)} className="text-[9px] font-mono tracking-[0.2em] py-1.5 rounded transition-all" style={{ color: active ? s.accent : '#566074', background: active ? 'rgba(34,211,238,0.06)' : 'transparent', border: '1px solid ' + (active ? s.accent + '55' : 'rgba(34,211,238,0.12)') }}>{s.label} MIN</button>
+          )
+        })}
+      </div>
+      <div className="relative flex items-center justify-center mb-4" style={{ height: 110 }}>
+        <svg width="110" height="110" className="absolute -rotate-90">
+          <circle cx="55" cy="55" r={R} fill="none" stroke="rgba(30,38,51,0.9)" strokeWidth="3" />
+          <circle cx="55" cy="55" r={R} fill="none" stroke={accent} strokeWidth="3" strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C - dash} style={{ transition: 'stroke-dashoffset 0.5s linear', filter: 'drop-shadow(0 0 6px ' + accent + 'aa)' }} />
+        </svg>
+        <div className="text-center relative">
+          <div className="text-3xl font-bold tabular-nums leading-none" style={{ color: '#a5f3fc', textShadow: '0 0 20px ' + accent + '66' }}>{String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}</div>
+          <div className="text-[9px] font-mono tracking-[0.25em] text-[#3a4250] mt-1.5">{isWork ? 'WORK' : 'REST'}</div>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <button onClick={toggle} className="flex-1 text-black text-[11px] font-bold tracking-[0.2em] uppercase rounded-md py-2.5 transition" style={{ background: accent }}>{running ? 'Pause' : 'Start'}</button>
+        <button onClick={reset} className="px-3 border border-[#2d3748] text-[#8892a6] hover:text-[#e5e9f0] hover:border-[#22d3ee]/40 text-xs rounded-md py-2 transition">â†º</button>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/QuickFlashcard.tsx ==========
+'use client'
+
+import { useCallback, useMemo, useState } from 'react'
+import { markFlashcardUsed } from '@/lib/activity'
+
+type Cat = 'verbs' | 'nouns' | 'phrases'
+
+const CAT_LABELS: Record<Cat, string> = {
+  verbs: 'VERBS',
+  nouns: 'NOUNS',
+  phrases: 'PHRASES',
+}
+
+const WORDS: Record<Cat, { nl: string; en: string }[]> = {
+  verbs: [
+    { nl: 'leren',    en: 'to learn' },
+    { nl: 'spreken',  en: 'to speak' },
+    { nl: 'denken',   en: 'to think' },
+    { nl: 'werken',   en: 'to work' },
+    { nl: 'wonen',    en: 'to live' },
+    { nl: 'lezen',    en: 'to read' },
+    { nl: 'schrijven',en: 'to write' },
+    { nl: 'drinken',  en: 'to drink' },
+    { nl: 'eten',     en: 'to eat' },
+    { nl: 'slapen',   en: 'to sleep' },
+  ],
+  nouns: [
+    { nl: 'water',  en: 'water' },
+    { nl: 'boek',   en: 'book' },
+    { nl: 'huis',   en: 'house' },
+    { nl: 'hand',   en: 'hand' },
+    { nl: 'school', en: 'school' },
+    { nl: 'vriend', en: 'friend' },
+    { nl: 'morgen', en: 'morning' },
+    { nl: 'avond',  en: 'evening' },
+    { nl: 'tijd',   en: 'time' },
+    { nl: 'wereld', en: 'world' },
+  ],
+  phrases: [
+    { nl: 'goedemorgen',   en: 'good morning' },
+    { nl: 'dank je',       en: 'thank you' },
+    { nl: 'alsjeblieft',   en: 'please' },
+    { nl: 'tot ziens',     en: 'goodbye' },
+    { nl: 'hoe gaat het?', en: 'how are you?' },
+    { nl: 'goedenavond',   en: 'good evening' },
+    { nl: 'het spijt me',  en: 'I am sorry' },
+    { nl: 'geen probleem', en: 'no problem' },
+  ],
+}
+
+export default function QuickFlashcard({ userEmail }: { userEmail?: string }) {
+  const [cat, setCat] = useState<Cat>('verbs')
+  const [index, setIndex] = useState(0)
+  const [flipped, setFlipped] = useState(false)
+  const [seen, setSeen] = useState<Record<Cat, Set<number>>>({
+    verbs: new Set(),
+    nouns: new Set(),
+    phrases: new Set(),
+  })
+
+  const list = WORDS[cat]
+  const card = list[index % list.length]
+  const seenCount = seen[cat].size
+
+  const next = useCallback(() => {
+    setIndex((i) => (i + 1) % list.length)
+    setFlipped(false)
+  }, [list.length])
+
+  function selectCat(c: Cat) {
+    setCat(c)
+    setIndex(0)
+    setFlipped(false)
+  }
+
+  function flip() {
+    markFlashcardUsed(userEmail)
+    setFlipped((f) => !f)
+    // mark as seen when revealed
+    setSeen((prev) => {
+      const nextSets = { ...prev }
+      const s = new Set(nextSets[cat])
+      s.add(index)
+      nextSets[cat] = s
+      return nextSets
+    })
+  }
+
+  const progress = (seenCount / list.length) * 100
+
+  return (
+    <div className="m-hud-panel">
+      <span className="m-hud-scan" />
+      <div className="m-hud-header">
+        <div className="flex items-center gap-2">
+          <span className="w-1 h-1 rounded-full bg-[#22d3ee]" />
+          FLASHCARD
+        </div>
+        <span style={{ color: '#566074' }}>{String(index + 1).padStart(2, '0')}/{String(list.length).padStart(2, '0')}</span>
+      </div>
+
+      <div className="p-4">
+        {/* Category tabs */}
+        <div className="grid grid-cols-3 gap-1 mb-3">
+          {(Object.keys(CAT_LABELS) as Cat[]).map((k) => {
+            const active = k === cat
+            return (
+              <button
+                key={k}
+                onClick={() => selectCat(k)}
+                className="text-[9px] font-mono tracking-[0.2em] py-1.5 rounded transition-all"
+                style={{
+                  color: active ? '#a5f3fc' : '#566074',
+                  background: active ? 'rgba(34,211,238,0.08)' : 'transparent',
+                  border: '1px solid ' + (active ? 'rgba(34,211,238,0.45)' : 'rgba(34,211,238,0.12)'),
+                }}
+              >
+                {CAT_LABELS[k]}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Card */}
+        <button
+          onClick={flip}
+          className="w-full h-28 rounded-md flex items-center justify-center px-4 transition mb-3 group"
+          style={{
+            border: '1px solid rgba(34,211,238,0.25)',
+            background: flipped
+              ? 'rgba(139,92,246,0.05)'
+              : 'rgba(34,211,238,0.03)',
+          }}
+        >
+          <div className="text-center">
+            {flipped ? (
+              <div className="text-base font-semibold text-[#c4b5fd]">
+                {card.en}
+              </div>
+            ) : (
+              <div
+                className="text-2xl font-bold text-[#a5f3fc]"
+                style={{ textShadow: '0 0 16px rgba(34,211,238,0.55)' }}
+              >
+                {card.nl}
+              </div>
+            )}
+            <div className="text-[9px] font-mono text-[#3a4250] mt-2.5 tracking-[0.25em] group-hover:text-[#566074] transition">
+              {flipped ? 'CLICK TO FLIP BACK' : 'CLICK TO REVEAL'}
+            </div>
+          </div>
+        </button>
+
+        {/* Progress + next */}
+        <div className="flex items-center gap-3 mb-1">
+          <span className="text-[9px] font-mono tracking-[0.25em] text-[#566074] shrink-0">
+            {seenCount}/{list.length}
+          </span>
+          <div className="flex-1 h-[2px] rounded-full overflow-hidden"
+            style={{ background: 'rgba(30,38,51,0.9)' }}>
+            <div
+              className="h-full transition-all duration-500"
+              style={{
+                width: progress + '%',
+                background: 'linear-gradient(90deg, #22d3ee, #8b5cf6)',
+              }}
+            />
+          </div>
+          <button
+            onClick={next}
+            className="text-[10px] font-mono tracking-[0.25em] text-[#22d3ee] hover:text-white transition shrink-0"
+          >
+            NEXT â†’
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/QuickNotes.tsx ==========
+'use client'
+import { useEffect, useState } from 'react'
+
+type Tab = 'notes' | 'dutch' | 'business'
+const TABS: Record<Tab, { label: string; placeholder: string }> = {
+  notes: { label: 'NOTES', placeholder: 'Jot down thoughts, questions, ideas...' },
+  dutch: { label: 'DUTCH', placeholder: 'New words, phrases, grammar rules...' },
+  business: { label: 'BUSINESS', placeholder: 'Concepts, frameworks, insights...' },
+}
+
+export default function QuickNotes({ userEmail }: { userEmail?: string }) {
+  const prefix = userEmail ? userEmail + '_' : 'guest_'
+  const [tab, setTab] = useState<Tab>('notes')
+  const [texts, setTexts] = useState<Record<Tab, string>>({ notes: '', dutch: '', business: '' })
+  const [saved, setSaved] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    if (!prefix || prefix === 'guest_') return
+    const loaded: Record<Tab, string> = {
+      notes: localStorage.getItem(prefix + 'm-notes-notes') || '',
+      dutch: localStorage.getItem(prefix + 'm-notes-dutch') || '',
+      business: localStorage.getItem(prefix + 'm-notes-business') || '',
+    }
+    setTexts(loaded)
+    setMounted(true)
+  }, [prefix])
+
+  useEffect(() => {
+    if (!mounted || !prefix || prefix === 'guest_') return
+    setSaved(false)
+    const t = setTimeout(() => {
+      localStorage.setItem(prefix + 'm-notes-notes', texts.notes)
+      localStorage.setItem(prefix + 'm-notes-dutch', texts.dutch)
+      localStorage.setItem(prefix + 'm-notes-business', texts.business)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 1200)
+    }, 600)
+    return () => clearTimeout(t)
+  }, [texts, mounted, prefix])
+
+  if (!mounted) return null
+
+  const current = texts[tab]
+  const words = current.trim() ? current.trim().split(/\s+/).length : 0
+
+  function clear() {
+    if (!window.confirm('Clear this note?')) return
+    setTexts((t) => ({ ...t, [tab]: '' }))
+  }
+
+  return (
+    <div className="brief-box p-4" style={{ '--accent-color': '#22d3ee' } as any}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee]" />
+          <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-[#8892a6]">QUICK NOTES</span>
+        </div>
+        {saved ? <span className="text-[10px] font-mono text-[#10b981]">SAVED</span> : <span className="text-[10px] font-mono text-[#3a4250]">{words}w</span>}
+      </div>
+      <div className="grid grid-cols-3 gap-1 mb-3">
+        {(Object.keys(TABS) as Tab[]).map((k) => {
+          const active = k === tab
+          const hasContent = texts[k].trim().length > 0
+          return (
+            <button key={k} onClick={() => setTab(k)} className="text-[9px] font-mono tracking-[0.2em] py-1.5 rounded transition-all relative" style={{ color: active ? '#a5f3fc' : '#566074', background: active ? 'rgba(34,211,238,0.08)' : 'transparent', border: '1px solid ' + (active ? 'rgba(34,211,238,0.45)' : 'rgba(34,211,238,0.12)') }}>
+              {TABS[k].label}
+              {hasContent && !active && <span className="absolute top-1 right-1 rounded-full bg-[#22d3ee]" style={{ width: 4, height: 4 }} />}
+            </button>
+          )
+        })}
+      </div>
+      <textarea value={current} onChange={(e) => setTexts((t) => ({ ...t, [tab]: e.target.value }))} placeholder={TABS[tab].placeholder} rows={6} className="w-full rounded-md px-3 py-2 text-xs text-[#e5e9f0] placeholder:text-[#3a4250] outline-none resize-none font-mono leading-relaxed transition-colors mb-2 bg-black/40 border border-[#22d3ee]/20 focus:border-[#22d3ee]/50" />
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] font-mono tracking-[0.25em] text-[#3a4250]">{words} WORDS Â· {current.length} CHARS</span>
+        <button onClick={clear} className="text-[9px] font-mono tracking-[0.25em] text-[#566074] hover:text-red-400 transition">CLEAR</button>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/ResumeTracker.tsx ==========
+'use client'
+import { useEffect } from 'react'
+import { trackResume, ResumeType } from '@/lib/resume'
+
+export default function ResumeTracker({ type, id, title, href, progressData }: { 
+  type: ResumeType, id: string, title: string, href: string, progressData?: any 
+}) {
+  useEffect(() => {
+    trackResume(type, id, title, href, progressData)
+  }, [type, id, title, href, progressData])
+  return null
+}
+
+
+========== FILE: components/SiblingNav.tsx ==========
+import Link from 'next/link'
+
+interface NavItem {
+  id: string
+  title: string
+}
+
+interface SiblingNavProps {
+  prev: NavItem | null
+  next: NavItem | null
+  basePath: string
+  accent?: 'cyan' | 'gold'
+}
+
+export default function SiblingNav({ prev, next, basePath, accent = 'cyan' }: SiblingNavProps) {
+  const isCyan = accent === 'cyan'
+  const hoverText = isCyan ? 'group-hover:text-[#22d3ee]' : 'group-hover:text-[#f59e0b]'
+  const borderColor = isCyan ? 'group-hover:border-[#22d3ee]' : 'group-hover:border-[#f59e0b]'
+  const glow = isCyan ? 'group-hover:shadow-[0_0_30px_rgba(34,211,238,0.25)]' : 'group-hover:shadow-[0_0_30px_rgba(245,158,11,0.25)]'
+  const textAccent = isCyan ? 'text-[#22d3ee]' : 'text-[#f59e0b]'
+  const bgHover = isCyan ? 'group-hover:bg-[#22d3ee]/5' : 'group-hover:bg-[#f59e0b]/5'
+  const lineColor = isCyan ? 'bg-[#22d3ee]' : 'bg-[#f59e0b]'
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-24 pt-12 border-t border-white/5 w-full">
+      {prev ? (
+        <Link 
+          href={`${basePath}/${prev.id}`}
+          className={`group relative flex flex-col justify-center p-8 bg-[#050810]/80 backdrop-blur-md border border-white/10 transition-all duration-500 ${borderColor} ${glow} ${bgHover} overflow-hidden`}
+          style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }}
+        >
+          {/* Animated Side Bar */}
+          <div className={`absolute top-0 left-0 w-[3px] h-full ${lineColor} opacity-30 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_15px_currentColor]`} />
+          
+          <span className={`text-[10px] font-mono tracking-[0.3em] mb-3 flex items-center gap-3 text-[#8892a6] transition-colors ${hoverText}`}>
+            <span className="text-xl transition-transform duration-300 group-hover:-translate-x-2">{'\u2190'}</span> PREVIOUS DATA
+          </span>
+          <span className={`text-2xl font-bold text-white transition-all duration-300 ${hoverText} font-[family-name:var(--font-cinzel)] tracking-wide`}>
+            {prev.title}
+          </span>
+        </Link>
+      ) : <div className="hidden md:block" />}
+
+      {next ? (
+        <Link 
+          href={`${basePath}/${next.id}`}
+          className={`group relative flex flex-col justify-center p-8 bg-[#050810]/80 backdrop-blur-md border border-white/10 transition-all duration-500 ${borderColor} ${glow} ${bgHover} overflow-hidden text-right`}
+          style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px))' }}
+        >
+          {/* Animated Side Bar */}
+          <div className={`absolute top-0 right-0 w-[3px] h-full ${lineColor} opacity-30 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_15px_currentColor]`} />
+          
+          <span className={`text-[10px] font-mono tracking-[0.3em] mb-3 flex items-center justify-end gap-3 text-[#8892a6] transition-colors ${hoverText}`}>
+            NEXT DATA <span className="text-xl transition-transform duration-300 group-hover:translate-x-2">{'\u2192'}</span>
+          </span>
+          <span className={`text-2xl font-bold text-white transition-all duration-300 ${hoverText} font-[family-name:var(--font-cinzel)] tracking-wide`}>
+            {next.title}
+          </span>
+        </Link>
+      ) : <div className="hidden md:block" />}
+    </div>
+  )
+}
+
+
+========== FILE: components/Sidebar.tsx ==========
+'use client'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import LogoEmblem from './LogoEmblem'
+import DynamicResumeMission from './DynamicResumeMission'
+import { createClient } from '@/lib/supabase/client'
+import { triggerNav } from './NavLoader'
+import { unlockAudio, playSelectSound, playConfirmSound } from '@/lib/sounds'
+import { getActiveZone, onZoneChange } from '@/lib/navZone'
+
+const NAV = [
+  { href: '/dashboard', label: 'OVERVIEW' },
+  { href: '/courses', label: 'MY COURSES' },
+  { href: '/community', label: 'COMMUNITY' },
+  { href: '/library', label: 'LIBRARY' },
+  { href: '/profile', label: 'PROFILE' },
+]
+
+export default function Sidebar({ userEmail }: { userEmail?: string }) {
+  const path = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+  const [selected, setSelected] = useState(0)
+  const [zoneActive, setZoneActive] = useState(getActiveZone() === 'sidebar')
+  const [hovered, setHovered] = useState<number | null>(null)
+  
+  const [userStats, setUserStats] = useState({ xp: 0, level: 'Novice' })
+
+  const selectedRef = useRef(0)
+  const routerRef = useRef(router)
+
+  useEffect(() => { selectedRef.current = selected }, [selected])
+  useEffect(() => { routerRef.current = router }, [router])
+
+  useEffect(() => {
+    async function fetchStats() {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+      
+      const { data: profile } = await supabase.from('profiles').select('xp').eq('id', session.user.id).single()
+      
+      let lvl = 'Novice'
+      if (profile?.xp > 2500) lvl = 'Avid Reader'
+      if (profile?.xp > 6000) lvl = 'Builder'
+      if (profile?.xp > 12000) lvl = 'Systems Thinker'
+      
+      setUserStats({ xp: profile?.xp || 0, level: lvl })
+    }
+    fetchStats()
+  }, [supabase])
+
+  useEffect(() => {
+    const idx = NAV.findIndex(n => path === n.href || path?.startsWith(n.href + '/'))
+    if (idx >= 0) setSelected(idx)
+  }, [path])
+
+  useEffect(() => {
+    return onZoneChange(z => setZoneActive(z === 'sidebar'))
+  }, [])
+
+  useEffect(() => {
+    if (!zoneActive) return
+
+    function onKey(e: KeyboardEvent) {
+      const active = document.activeElement as HTMLElement | null
+      if (active) {
+        const tag = active.tagName.toLowerCase()
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || active.isContentEditable) {
+          return
+        }
+      }
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        unlockAudio()
+        playSelectSound()
+        setSelected(s => {
+          const next = (s + 1) % NAV.length
+          selectedRef.current = next
+          return next
+        })
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        unlockAudio()
+        playSelectSound()
+        setSelected(s => {
+          const next = (s - 1 + NAV.length) % NAV.length
+          selectedRef.current = next
+          return next
+        })
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        unlockAudio()
+        playConfirmSound()
+        const item = NAV[selectedRef.current]
+        if (item) {
+          triggerNav()
+          routerRef.current.push(item.href)
+        }
+      }
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [zoneActive])
+
+  async function quitToMainMenu() {
+    await supabase.auth.signOut()
+    router.push('/')
+    router.refresh()
+  }
+
+  return (
+    <aside
+      data-nav-zone="sidebar"
+      className="hidden md:flex md:flex-col w-72 shrink-0 h-full relative overflow-hidden bg-[#080c14] z-50 border-r border-white/5"
+    >
+      <span className="pointer-events-none absolute left-0 right-0 top-0 h-[2px] z-20" style={{ background: 'linear-gradient(90deg, transparent 0%, #22d3ee 50%, transparent 100%)', opacity: 0.8 }} />
+      <span className="pointer-events-none absolute top-0 left-0 w-4 h-4 z-20 border-t-2 border-l-2 border-[#22d3ee]/50" />
+      <span className="pointer-events-none absolute bottom-0 right-0 w-4 h-4 z-20 border-b-2 border-r-2 border-[#22d3ee]/50" />
+
+      <div className="p-5 border-b border-white/5 shrink-0 relative z-10">
+        <Link
+          href="/"
+          onClick={() => { unlockAudio(); playConfirmSound(); triggerNav(); }}
+          className="flex items-center gap-3 group relative rounded-md transition-all hover:bg-white/5 p-2 -m-2"
+        >
+          <span className="relative shrink-0">
+            <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.3) 0%, transparent 70%)', filter: 'blur(10px)' }} />
+            <LogoEmblem size={40} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-bold tracking-[0.2em] text-white leading-none font-[family-name:var(--font-cinzel)]">MERIDIAN</div>
+            <div className="text-[9px] font-mono tracking-[0.4em] text-[#22d3ee] mt-1">ACADEMY</div>
+          </div>
+        </Link>
+      </div>
+
+      {/* TACTICAL HUD (XP & DYNAMIC RESUME) */}
+      <div className="px-4 pt-6 pb-2 relative z-10">
+        <div className="rounded-xl p-4 epic-card epic-card-cyan bg-[#0a0f16] relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#22d3ee]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          
+          <div className="flex items-center justify-between mb-3 relative z-10">
+            <span className="text-[10px] font-mono tracking-[0.2em] text-[#22d3ee]">RANK: {userStats.level.toUpperCase()}</span>
+            <span className="text-[10px] font-mono text-[#f59e0b] font-bold">{userStats.xp} XP</span>
+          </div>
+          
+          <DynamicResumeMission />
+        </div>
+      </div>
+
+      <div className="px-5 pt-4 pb-2 relative z-10">
+        <div className="flex items-center gap-3">
+          <span className="text-[9px] font-mono tracking-[0.3em] text-[#3a4250]">PRIMARY NAV</span>
+          <span className="flex-1 h-px bg-gradient-to-r from-[#22d3ee]/20 to-transparent" />
+        </div>
+      </div>
+
+      <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto no-scrollbar relative z-10 pt-2">
+        {NAV.map((item, i) => {
+          const active = path === item.href || path?.startsWith(item.href + '/')
+          const isSelected = selected === i
+          const showSelected = isSelected && zoneActive
+          const isHover = hovered === i
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => { unlockAudio(); playConfirmSound(); triggerNav(); }}
+              onMouseEnter={() => { setHovered(i); if (selected !== i) setSelected(i); }}
+              onMouseLeave={() => setHovered(null)}
+              className={`group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-bold tracking-[0.15em] transition-all duration-300 ${
+                showSelected ? 'bg-[#22d3ee]/10 text-white border border-[#22d3ee]/50 shadow-[0_0_20px_rgba(34,211,238,0.15)] scanline-active' : 
+                active ? 'bg-[#22d3ee]/5 text-white border border-[#22d3ee]/20' : 
+                isHover ? 'bg-white/5 text-[#c8d0dd]' : 'text-[#8892a6] border border-transparent'
+              }`}
+            >
+              <span className={`text-[9px] font-mono transition-colors w-5 ${showSelected || active ? 'text-[#22d3ee]' : 'text-[#3a4250]'}`}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="flex-1 truncate">{item.label}</span>
+              {showSelected && (
+                <span className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[10px] text-[#22d3ee]">â–¸</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee] animate-pulse shadow-[0_0_8px_#22d3ee]" />
+                </span>
+              )}
+            </Link>
+          )
+        })}
+      </nav>
+
+      <div className="p-5 border-t border-white/5 shrink-0 relative z-10">
+        <button onClick={quitToMainMenu} className="w-full text-left px-4 py-3 rounded-lg transition-all group relative overflow-hidden mb-4 flex items-center gap-3 border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 hover:border-red-500/50">
+          <span className="text-base leading-none text-red-500 opacity-70 group-hover:opacity-100">â»</span>
+          <span className="text-[10px] font-mono tracking-[0.2em] text-red-400 group-hover:text-red-300">TERMINATE SESSION</span>
+        </button>
+
+        {userEmail && (
+          <div className="rounded-lg px-4 py-3 flex items-center justify-between gap-3 epic-card bg-[#0a0f16] border-white/5">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981] animate-pulse" />
+              <div className="text-[10px] font-mono truncate max-w-[110px] tracking-widest text-[#8892a6]">
+                {userEmail.split('@')[0]}
+              </div>
+            </div>
+            <span className="text-[9px] font-mono text-[#3a4250]">v1.0</span>
+          </div>
+        )}
+      </div>
+    </aside>
+  )
+}
+
+
+========== FILE: components/StudyStreak.tsx ==========
+'use client'
+import { useEffect, useState } from 'react'
+
+const TIERS = [
+  { min: 0,  label: 'INITIATE', accent: '#566074' },
+  { min: 1,  label: 'BRONZE',   accent: '#cd7c4a' },
+  { min: 3,  label: 'SILVER',   accent: '#a5b4c4' },
+  { min: 7,  label: 'GOLD',     accent: '#f59e0b' },
+  { min: 14, label: 'PLATINUM', accent: '#22d3ee' },
+  { min: 30, label: 'MERIDIAN', accent: '#a5f3fc' },
+]
+const WEEK_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+
+function getTier(days: number) {
+  let t = TIERS[0]
+  for (const tier of TIERS) if (days >= tier.min) t = tier
+  return t
+}
+
+export default function StudyStreak({ userEmail }: { userEmail?: string }) {
+  const prefix = userEmail ? userEmail + '_' : 'guest_'
+  const [streak, setStreak] = useState(0)
+  const [best, setBest] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [checkedIn, setCheckedIn] = useState(false)
+  const [week, setWeek] = useState<boolean[]>(Array(7).fill(false))
+  const [mounted, setMounted] = useState(false)
+
+  function buildWeek(streakVal: number, todayDone: boolean) {
+    const w = Array(7).fill(false)
+    const jsDay = new Date().getDay()
+    const displayIdx = jsDay === 0 ? 6 : jsDay - 1
+    const effective = todayDone ? streakVal : Math.max(0, streakVal)
+    for (let i = 0; i < 7 && i <= displayIdx; i++) {
+      if (i < effective) w[displayIdx - i] = true
+    }
+    return w
+  }
+
+  useEffect(() => {
+    if (!prefix || prefix === 'guest_') return
+    const today = new Date().toDateString()
+    const stored = localStorage.getItem(prefix + 'm-streak')
+    const lastCheck = localStorage.getItem(prefix + 'm-streak-last')
+    const storedBest = localStorage.getItem(prefix + 'm-streak-best')
+    const storedTotal = localStorage.getItem(prefix + 'm-streak-total')
+    const parsed = stored ? parseInt(stored) : 0
+    const bestVal = storedBest ? parseInt(storedBest) : 0
+    const totalVal = storedTotal ? parseInt(storedTotal) : 0
+
+    setBest(bestVal); setTotal(totalVal)
+
+    if (lastCheck === today) {
+      setStreak(parsed); setCheckedIn(true); setWeek(buildWeek(parsed, true))
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toDateString()
+      const carried = lastCheck === yesterday ? parsed : 0
+      setStreak(carried); setCheckedIn(false); setWeek(buildWeek(carried, false))
+    }
+    setMounted(true)
+  }, [prefix])
+
+  function checkIn() {
+    if (!prefix || prefix === 'guest_') return
+    const today = new Date().toDateString()
+    const lastCheck = localStorage.getItem(prefix + 'm-streak-last')
+    const stored = localStorage.getItem(prefix + 'm-streak')
+    const parsed = stored ? parseInt(stored) : 0
+    const yesterday = new Date(Date.now() - 86400000).toDateString()
+    const nextStreak = lastCheck === yesterday ? parsed + 1 : 1
+
+    const newBest = Math.max(nextStreak, best)
+    const newTotal = total + 1
+
+    localStorage.setItem(prefix + 'm-streak', String(nextStreak))
+    localStorage.setItem(prefix + 'm-streak-last', today)
+    localStorage.setItem(prefix + 'm-streak-best', String(newBest))
+    localStorage.setItem(prefix + 'm-streak-total', String(newTotal))
+
+    setStreak(nextStreak); setBest(newBest); setTotal(newTotal); setCheckedIn(true); setWeek(buildWeek(nextStreak, true))
+  }
+
+  if (!mounted) return null
+  const tier = getTier(streak)
+
+  return (
+    <div className="brief-box p-4" style={{ '--accent-color': tier.accent } as any}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: tier.accent }} />
+          <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-[#8892a6]">STUDY STREAK</span>
+        </div>
+        <span className="text-[10px] font-mono font-bold" style={{ color: tier.accent }}>{tier.label}</span>
+      </div>
+      <div className="text-center mb-3">
+        <div className="flex items-baseline justify-center gap-2">
+          <div className="text-4xl font-bold tabular-nums leading-none" style={{ color: tier.accent, textShadow: '0 0 22px ' + tier.accent + '88' }}>{streak}</div>
+          <div className="text-[10px] font-mono tracking-[0.2em] text-[#566074]">{streak === 1 ? 'DAY' : 'DAYS'}</div>
+        </div>
+        <div className="text-[10px] font-mono tracking-[0.3em] text-[#3a4250] mt-1.5">CURRENT STREAK</div>
+      </div>
+      <div className="flex items-center justify-between gap-1 mb-3 px-1">
+        {WEEK_LABELS.map((label, i) => (
+          <div key={i} className="flex flex-col items-center gap-1">
+            <div className="rounded-full transition-all" style={{ width: 8, height: 8, background: week[i] ? tier.accent : 'rgba(34,211,238,0.12)', boxShadow: week[i] ? '0 0 8px ' + tier.accent : 'none' }} />
+            <span className="text-[8px] font-mono tracking-widest" style={{ color: week[i] ? tier.accent : '#3a4250' }}>{label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <div className="rounded-md px-3 py-2 bg-white/[0.04] border border-white/10">
+          <div className="text-[9px] font-mono tracking-[0.25em] text-[#566074] mb-0.5">BEST</div>
+          <div className="text-sm font-bold text-[#a5f3fc] tabular-nums">{best} d</div>
+        </div>
+        <div className="rounded-md px-3 py-2 bg-white/[0.04] border border-white/10">
+          <div className="text-[9px] font-mono tracking-[0.25em] text-[#566074] mb-0.5">TOTAL</div>
+          <div className="text-sm font-bold text-[#c4b5fd] tabular-nums">{total} d</div>
+        </div>
+      </div>
+      {checkedIn ? (
+        <div className="text-[11px] font-mono tracking-[0.15em] text-center text-[#10b981] rounded-md py-2 border border-[#10b981]/40 bg-[#10b981]/10">âœ“ CHECKED IN</div>
+      ) : (
+        <button onClick={checkIn} className="w-full bg-[#22d3ee] text-black text-[11px] font-bold tracking-[0.2em] uppercase rounded-md py-2.5 hover:bg-cyan-300 transition">Check In Today</button>
+      )}
+    </div>
+  )
+}
+
+
+========== FILE: components/SyllabusProgress.tsx ==========
+'use client'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+interface CourseProgress { id: string; title: string; pct: number; href: string }
+
+export default function SyllabusProgress({ userEmail }: { userEmail?: string }) {
+  const [courses, setCourses] = useState<CourseProgress[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoading(false); return }
+
+      const { data: enrollments } = await supabase
+        .from('enrollments').select('course_id').eq('user_id', user.id)
+
+      if (!enrollments || enrollments.length === 0) { setLoading(false); return }
+
+      const { data: completedLessons } = await supabase
+        .from('lesson_progress').select('lesson_id')
+        .eq('user_id', user.id).eq('completed', true)
+      const completedSet = new Set((completedLessons || []).map((l: any) => l.lesson_id))
+
+      const list: CourseProgress[] = []
+      for (const enroll of enrollments) {
+        const { data: course } = await supabase
+          .from('courses').select('id, title, slug').eq('id', enroll.course_id).single()
+        if (!course) continue
+
+        const { data: modules } = await supabase
+          .from('modules').select(`id, missions ( id, lessons ( id ) )`).eq('course_id', course.id)
+
+        let total = 0, done = 0
+        modules?.forEach((m: any) => {
+          m.missions?.forEach((mission: any) => {
+            total += mission.lessons?.length || 0
+            mission.lessons?.forEach((lesson: any) => {
+              if (completedSet.has(lesson.id)) done++
+            })
+          })
+        })
+
+        list.push({ id: course.id, title: course.title, pct: total > 0 ? Math.round((done / total) * 100) : 0, href: `/courses/${course.slug}` })
+      }
+      setCourses(list)
+      setLoading(false)
+    }
+    load()
+  }, [supabase, userEmail])
+
+  if (loading) return <div className="brief-box p-4 h-24 animate-pulse" style={{ '--accent-color': '#10b981' } as any} />
+
+  if (courses.length === 0) {
+    return (
+      <div className="brief-box p-4" style={{ '--accent-color': '#10b981' } as any}>
+        <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] mb-3" style={{ color: '#10b981' }}>Syllabus</h3>
+        <p className="text-xs font-mono text-[#c8d0dd] mb-3">Not enrolled in any course.</p>
+        <a href="/courses" className="block text-center py-2 text-[9px] font-mono tracking-widest uppercase text-[#10b981] border border-[#10b981]/30 rounded hover:bg-[#10b981]/10 transition">Browse Courses</a>
+      </div>
+    )
+  }
+
+  return (
+    <div className="brief-box p-4" style={{ '--accent-color': '#10b981' } as any}>
+      <h3 className="text-[10px] font-mono uppercase tracking-[0.2em] mb-3" style={{ color: '#10b981' }}>Syllabus Progress</h3>
+      <div className="space-y-3">
+        {courses.map(c => (
+          <a key={c.id} href={c.href} className="block group">
+            <div className="text-xs font-bold text-white mb-1.5 group-hover:text-[#10b981] transition-colors">{c.title}</div>
+            <div className="w-full h-1.5 bg-black rounded-full overflow-hidden border border-white/5 mb-1">
+              <div className="h-full bg-[#10b981] shadow-[0_0_10px_#10b981] transition-all duration-500" style={{ width: c.pct + '%' }} />
+            </div>
+            <div className="text-right text-[10px] font-mono text-[#10b981] font-bold">{c.pct}% COMPLETE</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/ThemeToggle.tsx ==========
+// FILE: components/ThemeToggle.tsx
+
+'use client'
+
+import { useEffect, useState } from 'react'
+
+export default function ThemeToggle({ compact = false }: { compact?: boolean }) {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const stored = (localStorage.getItem('m-theme') as 'dark' | 'light') || 'dark'
+    setTheme(stored)
+    setMounted(true)
+  }, [])
+
+  function toggle() {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    localStorage.setItem('m-theme', next)
+    document.documentElement.setAttribute('data-theme', next)
+  }
+
+  if (!mounted) return null
+
+  if (compact) {
+    return (
+      <button
+        onClick={toggle}
+        aria-label="Toggle theme"
+        className="p-2 rounded-lg text-[var(--m-text-muted)] hover:text-[var(--m-text)] hover:bg-white/[0.03] transition text-lg"
+      >
+        {theme === 'dark' ? 'â˜€' : 'â˜¾'}
+      </button>
+    )
+  }
+
+  return (
+    <button
+      onClick={toggle}
+      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--m-text-muted)] hover:text-[var(--m-text)] hover:bg-white/[0.03] transition"
+    >
+      <span className="text-base w-5 text-center opacity-80">
+        {theme === 'dark' ? 'â˜€' : 'â˜¾'}
+      </span>
+      <span className="font-medium">
+        {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+      </span>
+    </button>
+  )
+}
+
+
+========== FILE: components/journal/ArticleBody.tsx ==========
+interface Block {
+  type: string
+  text?: string
+  level?: number
+  items?: string[]
+  ordered?: boolean
+  attribution?: string
+  src?: string
+  caption?: string
+}
+
+export default function ArticleBody({ blocks }: { blocks: Block[] }) {
+  if (!blocks || !Array.isArray(blocks)) return null
+
+  return (
+    <div className="article-body">
+      {blocks.map((block, i) => {
+        switch (block.type) {
+          case 'h2':
+            return (
+              <h2 key={i} className="text-2xl md:text-3xl font-bold text-white mb-5 mt-12 first:mt-0 leading-tight tracking-tight">
+                {block.text}
+              </h2>
+            )
+          case 'h3':
+            return (
+              <h3 key={i} className="text-xl md:text-2xl font-bold text-white mb-4 mt-8 leading-tight">
+                {block.text}
+              </h3>
+            )
+          case 'p':
+            return (
+              <p key={i} className="text-[17px] md:text-[19px] leading-[1.75] text-[#c8d0dd] mb-6">
+                {block.text}
+              </p>
+            )
+          case 'quote':
+            return (
+              <blockquote key={i} className="my-10 pl-6 md:pl-8 border-l-2 border-[#22d3ee]">
+                <p className="text-xl md:text-2xl leading-relaxed italic text-white font-[family-name:var(--font-garamond)] mb-3">
+                  "{block.text}"
+                </p>
+                {block.attribution && (
+                  <cite className="text-sm font-mono tracking-widest text-[#8892a6] uppercase not-italic">
+                    â€” {block.attribution}
+                  </cite>
+                )}
+              </blockquote>
+            )
+          case 'callout':
+            return (
+              <div key={i} className="my-8 p-6 rounded-lg border-l-4 border-[#22d3ee] bg-[#22d3ee]/5">
+                <div className="text-[10px] font-mono tracking-[0.3em] text-[#22d3ee] uppercase mb-2">Editor's Note</div>
+                <p className="text-base md:text-lg leading-relaxed text-white italic">
+                  {block.text}
+                </p>
+              </div>
+            )
+          case 'list':
+            if (!block.items) return null
+            return (
+              <ul key={i} className={`my-6 space-y-3 ${block.ordered ? 'list-decimal' : 'list-disc'} pl-6 md:pl-8`}>
+                {block.items.map((item, j) => (
+                  <li key={j} className="text-[17px] md:text-[19px] leading-relaxed text-[#c8d0dd]">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )
+          case 'image':
+            return (
+              <figure key={i} className="my-10">
+                <img
+                  src={block.src}
+                  alt={block.caption || ''}
+                  className="w-full rounded-lg border border-white/5"
+                />
+                {block.caption && (
+                  <figcaption className="mt-3 text-sm text-[#8892a6] italic text-center font-[family-name:var(--font-garamond)]">
+                    {block.caption}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          case 'divider':
+            return <hr key={i} className="my-12 border-white/10" />
+          default:
+            return null
+        }
+      })}
+    </div>
+  )
+}
+
+
+========== FILE: components/journal/ReadingProgressTracker.tsx ==========
+'use client'
+import { useEffect, useRef, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+export default function ReadingProgressTracker({ articleId, userId }: { articleId: string; userId: string }) {
+  const [progress, setProgress] = useState(0)
+  const [completed, setCompleted] = useState(false)
+  const lastSave = useRef<number>(0)
+  const supabase = createClient()
+
+  useEffect(() => {
+    if (!userId) return
+
+    // Load existing progress
+    async function load() {
+      const { data } = await supabase
+        .from('journal_reading_progress')
+        .select('scroll_percentage, completed')
+        .eq('user_id', userId)
+        .eq('article_id', articleId)
+        .maybeSingle()
+      if (data) {
+        setProgress(data.scroll_percentage || 0)
+        setCompleted(data.completed || false)
+      }
+    }
+    load()
+
+    // Track scroll
+    function onScroll() {
+      const article = document.querySelector('[data-article-body]') as HTMLElement
+      if (!article) return
+      const rect = article.getBoundingClientRect()
+      const total = article.offsetHeight
+      const scrolled = Math.max(0, -rect.top + window.innerHeight * 0.3)
+      const pct = Math.min(100, Math.round((scrolled / (total - window.innerHeight * 0.7)) * 100))
+      
+      if (pct > progress) {
+        setProgress(pct)
+        if (pct >= 90 && !completed) setCompleted(true)
+        
+        // Debounced save (max once per 3s)
+        const now = Date.now()
+        if (now - lastSave.current > 3000) {
+          lastSave.current = now
+          supabase.from('journal_reading_progress').upsert({
+            user_id: userId,
+            article_id: articleId,
+            scroll_percentage: pct,
+            completed: pct >= 90,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: 'user_id,article_id' })
+        }
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [articleId, userId, supabase])
+
+  // Top progress bar
+  return (
+    <div className="fixed top-0 left-0 right-0 h-[3px] z-50 pointer-events-none bg-white/5">
+      <div
+        className="h-full bg-gradient-to-r from-[#f59e0b] via-[#8b5cf6] to-[#ec4899] transition-[width] duration-150 shadow-[0_0_12px_#f59e0b]"
+        style={{ width: progress + '%' }}
+      />
+    </div>
+  )
+}
+
+
+========== FILE: components/news/NewsFeed.tsx ==========
+'use client'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+const CATEGORIES = [
+  { key: 'ALL', label: 'All Latest', color: '#22d3ee', icon: 'âš¡' },
+  { key: 'AI', label: 'AI & Tech', color: '#22d3ee', icon: 'ðŸ¤–' },
+  { key: 'Business', label: 'Business', color: '#f59e0b', icon: 'ðŸ“ˆ' },
+  { key: 'Startups', label: 'Startups', color: '#fb923c', icon: 'ðŸš€' },
+  { key: 'Science', label: 'Science', color: '#10b981', icon: 'ðŸ§¬' },
+  { key: 'Cybersecurity', label: 'Cybersecurity', color: '#ef4444', icon: 'ðŸ›¡ï¸' },
+  { key: 'Psychology', label: 'Psychology', color: '#ec4899', icon: 'ðŸ§ ' },
+  { key: 'Philosophy', label: 'Philosophy', color: '#a855f7', icon: 'ðŸ“–' },
+  { key: 'Architecture', label: 'Architecture', color: '#f97316', icon: 'ðŸ›ï¸' },
+  { key: 'Design', label: 'Design', color: '#8b5cf6', icon: 'ðŸŽ¨' },
+  { key: 'Liberal Arts', label: 'Liberal Arts', color: '#3b82f6', icon: 'ðŸ“š' },
+  { key: 'Gaming', label: 'Gaming', color: '#06b6d4', icon: 'ðŸŽ®' },
+  { key: 'Marketing', label: 'Marketing', color: '#eab308', icon: 'ðŸ“£' },
+  { key: 'Social Media', label: 'Social Media', color: '#ec4899', icon: 'ðŸ’¬' },
+  { key: 'Productivity', label: 'Productivity', color: '#14b8a6', icon: 'â±ï¸' },
+  { key: 'Space', label: 'Space', color: '#6366f1', icon: 'ðŸŒŒ' },
+  { key: 'Environment', label: 'Environment', color: '#22c55e', icon: 'ðŸŒ' },
+  { key: 'Law', label: 'Law', color: '#dc2626', icon: 'âš–ï¸' },
+  { key: 'Neuroscience', label: 'Neuroscience', color: '#06b6d4', icon: 'ðŸ§ ' },
+]
+
+export default function NewsFeed() {
+  const [news, setNews] = useState<any[]>([])
+  const [activeTab, setActiveTab] = useState('ALL')
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    setLoading(true)
+    async function load() {
+      let query = supabase.from('daily_news').select('*')
+      if (activeTab !== 'ALL') {
+        query = query.eq('category', activeTab)
+      }
+      const { data } = await query
+        .order('published_at', { ascending: false })
+        .limit(activeTab === 'ALL' ? 12 : 8)
+      setNews(data || [])
+      setLoading(false)
+    }
+    load()
+  }, [activeTab, supabase])
+
+  return (
+    <div className="mb-24">
+      <div className="flex items-center gap-4 mb-6">
+        <h2 className="text-3xl md:text-4xl font-[family-name:var(--font-cinzel)] font-bold text-white tracking-widest uppercase">
+          Today's Briefing
+        </h2>
+        <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+        <span className="text-xs font-mono text-[#566074] tracking-widest">WORLD INTELLIGENCE</span>
+      </div>
+
+      {/* FIX: Changed to flex-wrap so buttons never get cut off */}
+      <div className="flex flex-wrap items-center gap-2 mb-8">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.key}
+            onClick={() => setActiveTab(cat.key)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all text-[11px] font-mono tracking-widest uppercase font-bold"
+            style={{
+              borderColor: activeTab === cat.key ? cat.color : '#ffffff15',
+              backgroundColor: activeTab === cat.key ? `${cat.color}15` : 'transparent',
+              color: activeTab === cat.key ? cat.color : '#8892a6',
+              boxShadow: activeTab === cat.key ? `0 0 20px ${cat.color}30` : 'none',
+            }}
+          >
+            <span className="text-base">{cat.icon}</span>
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-48 animate-pulse bg-white/5 rounded-2xl" />
+          ))}
+        </div>
+      ) : news.length === 0 ? (
+        <div className="p-12 rounded-2xl border border-white/10 bg-[#0a0f16] text-center">
+          <div className="text-sm font-mono text-[#8892a6]">No news in this channel yet. Try another category.</div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {news.map((item) => {
+            const cat = CATEGORIES.find(c => c.key === item.category)
+            return (
+              <a
+                key={item.id}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block p-8 rounded-2xl border border-white/10 bg-[#0a0f16] hover:border-white/30 transition-all hover:-translate-y-1 overflow-hidden flex flex-col justify-between"
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-1.5" style={{ backgroundColor: cat?.color || '#22d3ee' }} />
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-mono tracking-widest uppercase px-3 py-1 rounded-md border font-bold" style={{ color: cat?.color, borderColor: (cat?.color || '#22d3ee') + '40', backgroundColor: (cat?.color || '#22d3ee') + '10' }}>
+                      {item.source}
+                    </span>
+                    <span className="text-[11px] font-mono text-[#566074]">
+                      {new Date(item.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#22d3ee] transition-colors leading-tight mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-[#8892a6] leading-relaxed line-clamp-3 mb-6">
+                    {item.excerpt}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-mono text-[#22d3ee] uppercase tracking-widest font-bold group-hover:gap-3 transition-all mt-auto">
+                  Read Full Story <span className="text-lg leading-none">â†’</span>
+                </div>
+              </a>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+========== FILE: components/social/CommentsSection.tsx ==========
+'use client'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+export default function CommentsSection({ articleId, userId, accent = '#f59e0b' }: { articleId: string; userId: string; accent?: string }) {
+  const [comments, setComments] = useState<any[]>([])
+  const [text, setText] = useState('')
+  const [replyTo, setReplyTo] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  async function load() {
+    const { data } = await supabase.from('blog_comments').select('id, content, created_at, user_id, parent_id').eq('article_id', articleId).order('created_at')
+    if (data && data.length > 0) {
+      const ids = [...new Set(data.map((c: any) => c.user_id))]
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, email').in('id', ids)
+      const names = new Map((profiles || []).map((p: any) => [p.id, p.full_name || p.email?.split('@')[0] || 'Architect']))
+      setComments(data.map((c: any) => ({ ...c, author_name: names.get(c.user_id) || 'Architect' })))
+    } else setComments([])
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [articleId])
+
+  async function post() {
+    if (!text.trim() || !userId) return
+    await supabase.from('blog_comments').insert({ article_id: articleId, user_id: userId, content: text.trim(), parent_id: replyTo })
+    setText(''); setReplyTo(null); load()
+  }
+
+  const roots = comments.filter(c => !c.parent_id)
+  const repliesOf = (id: string) => comments.filter(c => c.parent_id === id)
+
+  if (loading) return <div className="mt-16 h-32 animate-pulse bg-white/5 rounded-xl" />
+
+  return (
+    <div className="mt-16 pt-10 border-t border-white/10">
+      <div className="flex items-center gap-4 mb-6">
+        <h2 className="text-lg font-[family-name:var(--font-cinzel)] font-bold text-white tracking-widest uppercase">Comments Â· {comments.length}</h2>
+        <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
+      </div>
+      <div className="mb-8">
+        {replyTo && <div className="mb-2 text-[10px] font-mono" style={{ color: accent }}>Replying... <button onClick={() => setReplyTo(null)} className="text-[#8892a6] ml-2">âœ•</button></div>}
+        <textarea value={text} onChange={e => setText(e.target.value)} placeholder="Share your thoughts..." rows={3} className="w-full bg-[#0a0f16] border border-white/10 rounded-lg p-4 text-sm text-white placeholder-[#566074] focus:outline-none resize-none" />
+        <div className="flex justify-end mt-2"><button onClick={post} disabled={!text.trim()} className="game-btn px-6 py-2 text-xs disabled:opacity-40">Post Comment</button></div>
+      </div>
+      <div className="space-y-4">
+        {roots.map(c => (
+          <div key={c.id} className="p-4 rounded-lg border border-white/10 bg-[#0a0f16]">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-black" style={{ backgroundColor: accent }}>{c.author_name?.charAt(0)}</div>
+              <span className="text-xs font-bold text-white">{c.author_name}</span>
+              <span className="text-[10px] font-mono text-[#566074]">{new Date(c.created_at).toLocaleDateString()}</span>
+            </div>
+            <p className="text-sm text-[#c8d0dd] mb-2">{c.content}</p>
+            <button onClick={() => setReplyTo(c.id)} className="text-[10px] font-mono uppercase tracking-widest" style={{ color: accent }}>Reply</button>
+            {repliesOf(c.id).length > 0 && (
+              <div className="ml-6 mt-3 space-y-3 border-l border-white/10 pl-4">
+                {repliesOf(c.id).map(r => (
+                  <div key={r.id}>
+                    <div className="flex items-center gap-2 mb-1"><span className="text-xs font-bold text-white">{r.author_name}</span></div>
+                    <p className="text-sm text-[#c8d0dd]">{r.content}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+        {roots.length === 0 && <div className="text-center py-8 text-[#566074] font-mono text-xs">Be the first to comment.</div>}
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: components/social/MessageFeed.tsx ==========
+'use client'
+import { useEffect, useRef, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
+export default function MessageFeed({ channelId, userId, accent }: { channelId: string; userId: string; accent: string }) {
+  const [messages, setMessages] = useState<any[]>([])
+  const [polls, setPolls] = useState<any[]>([])
+  const [text, setText] = useState('')
+  const [showPoll, setShowPoll] = useState(false)
+  const [pollQ, setPollQ] = useState('')
+  const [pollOpts, setPollOpts] = useState(['', ''])
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const supabase = createClient()
+
+  async function load() {
+    const { data: msgs } = await supabase.from('channel_messages').select('id, content, created_at, user_id').eq('channel_id', channelId).order('created_at', { ascending: false }).limit(100)
+    if (msgs && msgs.length > 0) {
+      const ids = [...new Set(msgs.map((m: any) => m.user_id))]
+      const { data: profiles } = await supabase.from('profiles').select('id, full_name, email').in('id', ids)
+      const names = new Map((profiles || []).map((p: any) => [p.id, p.full_name || p.email?.split('@')[0] || 'Architect']))
+      setMessages(msgs.reverse().map((m: any) => ({ ...m, author_name: names.get(m.user_id) })))
+    } else setMessages([])
+
+    const { data: pls } = await supabase.from('channel_polls').select('id, question, options, user_id, created_at').eq('channel_id', channelId).order('created_at', { ascending: false }).limit(10)
+    if (pls && pls.length > 0) {
+      const pollIds = pls.map((p: any) => p.id)
+      const { data: votes } = await supabase.from('channel_poll_votes').select('poll_id, option_index, user_id').in('poll_id', pollIds)
+      setPolls(pls.map((p: any) => ({ ...p, votes: (votes || []).filter((v: any) => v.poll_id === p.id) })))
+    } else setPolls([])
+  }
+
+  useEffect(() => { load() }, [channelId])
+
+  useEffect(() => {
+    const ch = supabase.channel('msg-' + channelId)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'channel_messages', filter: `channel_id=eq.${channelId}` }, () => load())
+      .subscribe()
+    return () => { supabase.removeChannel(ch) }
+  }, [channelId])
+
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages.length])
+
+  async function send() {
+    if (!text.trim() || !userId) return
+    await supabase.from('channel_messages').insert({ channel_id: channelId, user_id: userId, content: text.trim() })
+    setText(''); load()
+  }
+
+  async function createPoll() {
+    if (!pollQ.trim() || !userId) return
+    const opts = pollOpts.filter(o => o.trim())
+    if (opts.length < 2) return
+    await supabase.from('channel_polls').insert({ channel_id: channelId, user_id: userId, question: pollQ.trim(), options: opts })
+    setPollQ(''); setPollOpts(['', '']); setShowPoll(false); load()
+  }
+
+  async function vote(pollId: string, idx: number) {
+    if (!userId) return
+    await supabase.from('channel_poll_votes').upsert({ poll_id: pollId, user_id: userId, option_index: idx }, { onConflict: 'poll_id,user_id' })
+    load()
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto space-y-3 py-4 px-4">
+        {polls.map(p => {
+          const total = p.votes.length
+          const myVote = p.votes.find((v: any) => v.user_id === userId)
+          return (
+            <div key={p.id} className="p-4 rounded-lg border border-white/10 bg-[#0a0f16]" style={{ borderTopColor: accent, borderTopWidth: 2 }}>
+              <div className="text-[10px] font-mono uppercase mb-2" style={{ color: accent }}>ðŸ“Š Poll</div>
+              <div className="text-sm font-bold text-white mb-3">{p.question}</div>
+              <div className="space-y-2">
+                {(p.options as string[]).map((opt: string, idx: number) => {
+                  const count = p.votes.filter((v: any) => v.option_index === idx).length
+                  const pct = total > 0 ? (count / total) * 100 : 0
+                  const isMine = myVote?.option_index === idx
+                  return (
+                    <button key={idx} onClick={() => vote(p.id, idx)} className="w-full text-left relative rounded border border-white/10 p-2 overflow-hidden">
+                      <div className="absolute inset-0 opacity-20" style={{ width: pct + '%', backgroundColor: accent }} />
+                      <div className="relative flex justify-between"><span className="text-xs text-white">{opt} {isMine && 'âœ“'}</span><span className="text-[10px] font-mono text-[#8892a6]">{count} Â· {Math.round(pct)}%</span></div>
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="mt-2 text-[9px] font-mono text-[#566074] uppercase">{total} votes</div>
+            </div>
+          )
+        })}
+        {messages.length === 0 && polls.length === 0 && <div className="text-center py-12 text-[#566074] font-mono text-xs">No messages yet. Start the conversation.</div>}
+        {messages.map(m => (
+          <div key={m.id} className="flex gap-3">
+            <div className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold text-black" style={{ backgroundColor: accent }}>{m.author_name?.charAt(0)}</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline gap-2 mb-1"><span className="text-xs font-bold text-white">{m.author_name}</span><span className="text-[9px] font-mono text-[#566074]">{new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span></div>
+              <p className="text-sm text-[#c8d0dd] break-words">{m.content}</p>
+            </div>
+          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      {showPoll && (
+        <div className="border-t border-white/10 p-4 bg-[#0a0f16]">
+          <div className="text-[10px] font-mono uppercase text-[#f59e0b] mb-2">New Poll</div>
+          <input value={pollQ} onChange={e => setPollQ(e.target.value)} placeholder="Question" className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-sm text-white mb-2" />
+          {pollOpts.map((o, i) => <input key={i} value={o} onChange={e => { const n = [...pollOpts]; n[i] = e.target.value; setPollOpts(n) }} placeholder={`Option ${i + 1}`} className="w-full bg-black/40 border border-white/10 rounded px-3 py-2 text-sm text-white mb-1" />)}
+          <div className="flex gap-2 mt-2">
+            <button onClick={() => setPollOpts([...pollOpts, ''])} className="text-[10px] font-mono text-[#8892a6]">+ Option</button>
+            <button onClick={createPoll} className="game-btn px-4 py-1.5 text-[10px] ml-auto">Create</button>
+            <button onClick={() => setShowPoll(false)} className="px-3 py-1.5 text-[10px] text-[#8892a6]">Cancel</button>
+          </div>
+        </div>
+      )}
+
+      <div className="border-t border-white/10 p-3 flex gap-2 items-end bg-[#0a0f16]">
+        <button onClick={() => setShowPoll(true)} className="w-9 h-9 rounded border border-white/10 text-[#8892a6] hover:text-[#f59e0b] flex items-center justify-center" title="Create poll">ðŸ“Š</button>
+        <textarea value={text} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }} placeholder="Message..." rows={1} className="flex-1 bg-black/40 border border-white/10 rounded px-3 py-2 text-sm text-white placeholder-[#566074] resize-none" />
+        <button onClick={send} className="game-btn px-4 py-2 text-xs">Send</button>
+      </div>
+    </div>
+  )
+}
+
+
+========== FILE: lib/activity.ts ==========
+// Tracks daily activity flags used by auto-checked Daily Goals
+// Every key is prefixed by user email so accounts never leak into each other
+
+function prefix(userEmail?: string) {
+  return userEmail ? userEmail + '_' : 'guest_'
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10)
+}
+
+export function markCodexOpened(userEmail?: string) {
+  try {
+    localStorage.setItem(`${prefix(userEmail)}activity_codex_${todayKey()}`, '1')
+  } catch (e) {}
+}
+
+export function markFlashcardUsed(userEmail?: string) {
+  try {
+    localStorage.setItem(`${prefix(userEmail)}activity_flashcard_${todayKey()}`, '1')
+  } catch (e) {}
+}
+
+export function addPracticeSeconds(seconds: number, userEmail?: string) {
+  try {
+    const key = `${prefix(userEmail)}activity_practice_sec_${todayKey()}`
+    const current = parseInt(localStorage.getItem(key) || '0')
+    localStorage.setItem(key, String(current + seconds))
+  } catch (e) {}
+}
+
+export function getPracticeMinutes(userEmail?: string): number {
+  try {
+    const key = `${prefix(userEmail)}activity_practice_sec_${todayKey()}`
+    const seconds = parseInt(localStorage.getItem(key) || '0')
+    return Math.floor(seconds / 60)
+  } catch (e) { return 0 }
+}
+
+export function hasFlag(flag: 'codex' | 'flashcard', userEmail?: string): boolean {
+  try {
+    return localStorage.getItem(`${prefix(userEmail)}activity_${flag}_${todayKey()}`) === '1'
+  } catch (e) { return false }
+}
+
+
+========== FILE: lib/news/fetcher.ts ==========
+import { createClient } from '@supabase/supabase-js'
+
+function parseRSS(xml: string) {
+  const items: any[] = []
+  const rssRegex = /<item>([\s\S]*?)<\/item>/g
+  const atomRegex = /<entry>([\s\S]*?)<\/entry>/g
+  const regex = rssRegex.test(xml) ? /<item>([\s\S]*?)<\/item>/g : atomRegex
+  let match
+  while ((match = regex.exec(xml)) !== null) {
+    const itemContent = match[1]
+    const getTag = (tag: string) => {
+      const cdataMatch = itemContent.match(new RegExp(`<${tag}><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`))
+      if (cdataMatch) return cdataMatch[1]
+      const normalMatch = itemContent.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`))
+      return normalMatch ? normalMatch[1].replace(/<[^>]+>/g, '').trim() : ''
+    }
+    const linkMatch = itemContent.match(/<link[^>]*href="([^"]+)"/)
+    const link = linkMatch ? linkMatch[1] : getTag('link')
+    let pubDate = getTag('pubDate') || getTag('published') || getTag('updated')
+    try {
+      const d = new Date(pubDate)
+      if (isNaN(d.getTime())) pubDate = new Date().toISOString()
+      else pubDate = d.toISOString()
+    } catch { pubDate = new Date().toISOString() }
+
+    const title = getTag('title')
+    const url = link || getTag('guid')
+    if (title && url) {
+      items.push({
+        title,
+        url,
+        excerpt: getTag('description').substring(0, 280).replace(/<[^>]+>/g, '').trim() + '...',
+        published_at: pubDate,
+      })
+    }
+  }
+  return items
+}
+
+const FEEDS = [
+  // AI
+  { url: 'https://openai.com/news/rss.xml', source: 'OpenAI', category: 'AI' },
+  { url: 'https://blog.google/technology/ai/rss/', source: 'Google AI', category: 'AI' },
+  { url: 'https://www.anthropic.com/rss.xml', source: 'Anthropic', category: 'AI' },
+  { url: 'https://www.wired.com/feed/rss', source: 'Wired', category: 'AI' },
+  { url: 'https://www.theverge.com/rss/index.xml', source: 'The Verge', category: 'AI' },
+  
+  // Business
+  { url: 'https://feeds.hbr.org/harvardbusiness', source: 'HBR', category: 'Business' },
+  { url: 'https://www.economist.com/finance-and-economics/rss.xml', source: 'The Economist', category: 'Business' },
+  { url: 'https://www.forbes.com/business/feed/', source: 'Forbes', category: 'Business' },
+  
+  // Startups
+  { url: 'https://techcrunch.com/feed/', source: 'TechCrunch', category: 'Startups' },
+  { url: 'https://www.producthunt.com/feed', source: 'Product Hunt', category: 'Startups' },
+  { url: 'https://venturebeat.com/feed/', source: 'VentureBeat', category: 'Startups' },
+
+  // Science
+  { url: 'https://www.nature.com/nature.rss', source: 'Nature', category: 'Science' },
+  { url: 'https://www.sciencedaily.com/rss/top/science.xml', source: 'ScienceDaily', category: 'Science' },
+  { url: 'https://feeds.arstechnica.com/arstechnica/index', source: 'Ars Technica', category: 'Science' },
+  { url: 'https://www.livescience.com/feeds/all', source: 'Live Science', category: 'Science' },
+
+  // Cybersecurity
+  { url: 'https://krebsonsecurity.com/feed/', source: 'Krebs on Security', category: 'Cybersecurity' },
+  { url: 'https://feeds.feedburner.com/TheHackersNews', source: 'The Hacker News', category: 'Cybersecurity' },
+  { url: 'https://www.bleepingcomputer.com/feed/', source: 'BleepingComputer', category: 'Cybersecurity' },
+
+  // Psychology
+  { url: 'https://www.psychologytoday.com/us/feed/blog-posts', source: 'Psychology Today', category: 'Psychology' },
+  { url: 'https://digest.bps.org.uk/feed/', source: 'BPS Research Digest', category: 'Psychology' },
+
+  // Philosophy
+  { url: 'https://dailynous.com/feed/', source: 'Daily Nous', category: 'Philosophy' },
+  { url: 'https://psyche.co/feed', source: 'Psyche', category: 'Philosophy' },
+  { url: 'https://aeon.co/feed.rss', source: 'Aeon', category: 'Philosophy' },
+
+  // Architecture
+  { url: 'https://www.archdaily.com/rss', source: 'ArchDaily', category: 'Architecture' },
+  { url: 'https://www.dezeen.com/feed/', source: 'Dezeen', category: 'Architecture' },
+
+  // Design
+  { url: 'https://www.creativeboom.com/feed/', source: 'Creative Boom', category: 'Design' },
+  { url: 'https://www.itsnicethat.com/rss', source: "It's Nice That", category: 'Design' },
+
+  // Liberal Arts
+  { url: 'https://www.themarginalian.org/feed/', source: 'The Marginalian', category: 'Liberal Arts' },
+  { url: 'https://lithub.com/feed/', source: 'Literary Hub', category: 'Liberal Arts' },
+
+  // Gaming
+  { url: 'https://www.polygon.com/rss/index.xml', source: 'Polygon', category: 'Gaming' },
+  { url: 'https://kotaku.com/rss', source: 'Kotaku', category: 'Gaming' },
+  { url: 'https://feeds.ign.com/ign/all', source: 'IGN', category: 'Gaming' },
+
+  // Marketing
+  { url: 'https://moz.com/blog/feed', source: 'Moz', category: 'Marketing' },
+  { url: 'https://www.socialmediaexaminer.com/feed/', source: 'Social Media Examiner', category: 'Marketing' },
+
+  // Social Media
+  { url: 'https://www.socialmediatoday.com/feeds/news/', source: 'Social Media Today', category: 'Social Media' },
+
+  // Productivity
+  { url: 'https://zenhabits.net/feed/', source: 'Zen Habits', category: 'Productivity' },
+  { url: 'https://lifehacker.com/rss', source: 'Lifehacker', category: 'Productivity' },
+
+  // Space
+  { url: 'https://www.space.com/feeds/all', source: 'Space.com', category: 'Space' },
+  { url: 'https://www.nasa.gov/rss/dyn/breaking_news.rss', source: 'NASA', category: 'Space' },
+
+  // Environment
+  { url: 'https://www.nationalgeographic.com/environment/rss', source: 'Nat Geo', category: 'Environment' },
+  { url: 'https://insideclimatenews.org/feed/', source: 'Inside Climate News', category: 'Environment' },
+
+  // Law
+  { url: 'https://www.law.com/rss/', source: 'Law.com', category: 'Law' },
+
+  // Neuroscience
+  { url: 'https://neurosciencenews.com/feed/', source: 'Neuroscience News', category: 'Neuroscience' },
+]
+
+export async function fetchAndStoreNews() {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  // Purge older than 20 days
+  const twentyDaysAgo = new Date()
+  twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20)
+  await supabase.from('daily_news').delete().lt('published_at', twentyDaysAgo.toISOString())
+
+  // Fetch in parallel
+  const results = await Promise.allSettled(
+    FEEDS.map(async (feed) => {
+      try {
+        const response = await fetch(feed.url, {
+          headers: { 'User-Agent': 'MeridianAcademy/1.0 (RSS Reader)' },
+          signal: AbortSignal.timeout(6000),
+        })
+        if (!response.ok) return []
+        const xml = await response.text()
+        const items = parseRSS(xml)
+        // FETCH 5 PER FEED (Instead of 2) to guarantee coverage
+        return items.slice(0, 5).map(item => ({
+          ...item,
+          source: feed.source,
+          category: feed.category,
+        }))
+      } catch (e) {
+        return []
+      }
+    })
+  )
+
+  const allArticles: any[] = []
+  results.forEach(r => {
+    if (r.status === 'fulfilled') allArticles.push(...r.value)
+  })
+
+  if (allArticles.length === 0) return { count: 0 }
+
+  // Insert in chunks
+  let totalInserted = 0
+  for (let i = 0; i < allArticles.length; i += 50) {
+    const chunk = allArticles.slice(i, i + 50)
+    const { error } = await supabase.from('daily_news').upsert(chunk, { onConflict: 'url' })
+    if (!error) totalInserted += chunk.length
+  }
+
+  return { count: totalInserted, fetched: allArticles.length, sources: FEEDS.length }
+}
+
+
+========== FILE: lib/resume.ts ==========
+import { createClient } from '@/lib/supabase/client'
+
+export type ResumeType = 'course' | 'ebook' | 'spec' | 'vault';
+
+async function getPrefix(): Promise<string> {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user ? user.id + '_' : 'guest_'
+}
+
+export async function trackResume(
+  type: ResumeType, 
+  id: string, 
+  title: string, 
+  href: string, 
+  progressData: any = {}
+) {
+  const supabase = createClient()
+  const prefix = await getPrefix()
+  
+  try {
+    const record = { type, id, title, href, timestamp: Date.now(), progressData };
+    localStorage.setItem(prefix + 'meridian_resume_' + type, JSON.stringify(record));
+    window.dispatchEvent(new Event('meridian-resume-updated'));
+  } catch (e) {}
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase.from('user_resume_state').upsert({
+      user_id: user.id,
+      resource_type: type,
+      resource_id: id,
+      title: title,
+      href: href,
+      progress_data: progressData,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id, resource_type' })
+  } catch (err) {
+    console.error('[Meridian] DB Sync failed:', err);
+  }
+}
+
+export async function getResume(type: ResumeType) {
+  const prefix = await getPrefix()
+  
+  try {
+    const raw = localStorage.getItem(prefix + 'meridian_resume_' + type);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.href && parsed.title) return parsed;
+    }
+  } catch {}
+
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+
+    const { data } = await supabase
+      .from('user_resume_state')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('resource_type', type)
+      .single()
+
+    if (data) {
+      const record = { type, id: data.resource_id, title: data.title, href: data.href, timestamp: Date.now(), progressData: data.progress_data }
+      localStorage.setItem(prefix + 'meridian_resume_' + type, JSON.stringify(record))
+      return record
+    }
+  } catch {}
+  return null;
+}

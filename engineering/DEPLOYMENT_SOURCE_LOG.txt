@@ -1,0 +1,2 @@
+MERIDIAN ACADEMY ENGINEERING LOGBOOK - DEPLOYMENT_SOURCE_LOG.txt
+Private. Never publish. Never include secrets.

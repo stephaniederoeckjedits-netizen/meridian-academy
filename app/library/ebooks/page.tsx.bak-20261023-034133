@@ -1,0 +1,167 @@
+// FILE: app/library/ebooks/page.tsx
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/auth'
+import AppShell from '@/components/AppShell'
+import LogoEmblem from '@/components/LogoEmblem'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+export default async function EbooksPage() {
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+
+  const supabase = await createClient()
+
+  const { data: books } = await supabase
+    .from('library_books')
+    .select('*')
+    .eq('published', true)
+    .order('order_index', { ascending: true })
+
+  const { data: progress } = await supabase
+    .from('library_progress')
+    .select('book_id, chapter_id, scroll_percentage')
+    .eq('user_id', user.id)
+
+  const progressMap = new Map(progress?.map(p => [p.book_id, p]) || [])
+  const categories = Array.from(new Set(books?.map(b => b.category) || ['Languages and Communication']))
+
+  return (
+    <AppShell userEmail={user.email ?? undefined}>
+      <div className="max-w-6xl mx-auto pb-24">
+        <Link href="/library" className="inline-flex items-center gap-2 text-[10px] font-mono tracking-[0.25em] text-[#566074] hover:text-[#b87333] transition mb-8">
+          ← BACK TO LIBRARY
+        </Link>
+
+        <div className="mb-12 md:mb-16">
+          <div className="flex items-center gap-2 text-[10px] font-mono tracking-[0.3em] text-[#b87333] mb-3">
+            <span className="w-1 h-1 rounded-full bg-[#b87333] animate-pulse" />
+            LIBRARY
+            <span className="w-px h-3 mx-2" style={{ background: 'rgba(184,115,51,0.25)' }} />
+            <span className="text-[#3a4250]">DIGITAL RENAISSANCE / 01</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-[0.08em] text-[#e5e9f0] mb-4 leading-tight">
+            FOUNDATIONAL BOOKS
+          </h1>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-[#8892a6]">
+              {books?.length || 0} original manuscripts included with your membership.
+            </p>
+            <span className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(184,115,51,0.35) 0%, transparent 100%)' }} />
+          </div>
+        </div>
+
+        {categories.map(category => (
+          <div key={category} className="mb-16">
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-white tracking-wide">{category}</h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-[#b87333]/30 to-transparent" />
+              <span className="text-[10px] font-mono tracking-widest text-[#566074]">
+                {books?.filter(b => b.category === category).length} BOOKS
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+              {books?.filter(b => b.category === category).map((book, i) => {
+                const hasProgress = progressMap.has(book.id)
+                const prog = progressMap.get(book.id)
+
+                return (
+                  <Link 
+                    key={book.id} 
+                    href={`/library/ebooks/${book.slug}/read`}
+                    className="group block relative flex flex-col"
+                    style={{ perspective: '1000px' }}
+                  >
+                    
+                    {/* 🎯 UPDATED 3D BOOK COVER (Matches Reader) */}
+                    <div 
+                      className="relative aspect-[2/3] rounded-r-xl rounded-l-md overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.8)] transition-all duration-500 ease-out group-hover:rotate-y-[-15deg] group-hover:scale-105 group-hover:shadow-[0_30px_60px_rgba(184,115,51,0.2)]"
+                      style={{
+                        background: 'linear-gradient(180deg, #121922 0%, #080c12 100%)',
+                        border: '1px solid rgba(184,115,51,0.3)'
+                      }}
+                    >
+                      {/* Gold Nebula Glow */}
+                      <div className="absolute inset-0 opacity-40" style={{
+                        background: `radial-gradient(circle at 50% 30%, #b8733330 0%, transparent 70%)`
+                      }} />
+
+                      {/* Spine */}
+                      <div className="absolute top-0 bottom-0 left-0 w-3 bg-gradient-to-r from-black/95 to-transparent z-20 mix-blend-multiply" />
+                      <div className="absolute top-0 bottom-0 left-3 w-px bg-white/5 z-20" />
+
+                      {/* Foil Details */}
+                      <div className="absolute top-4 right-4 w-6 h-6 border-t border-r border-[#b87333]/50" />
+                      <div className="absolute bottom-4 left-4 w-6 h-6 border-b border-l border-[#b87333]/50" />
+
+                      {/* Cover Content */}
+                      <div className="relative z-10 flex flex-col items-center justify-between h-full p-5 md:p-7 text-center">
+                        <div className="text-[8px] font-mono tracking-[0.3em] text-[#b87333]/80 border-b border-[#b87333]/30 pb-2 w-full">
+                          MERIDIAN ACADEMY
+                        </div>
+
+                        {/* Logo (Removed black square) */}
+                        <div className="transform group-hover:scale-110 transition-transform duration-500 relative">
+                          <div className="absolute inset-0 bg-[#b87333] blur-[30px] opacity-20 rounded-full" />
+                          <LogoEmblem size={70} className="opacity-95 relative z-10" />
+                        </div>
+
+                        <div>
+                          <h3 className="text-base md:text-lg font-serif font-bold text-white leading-tight mb-2 tracking-wide"
+                            style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+                            {book.title}
+                          </h3>
+                          <div className="h-px w-8 mx-auto bg-[#b87333]" />
+                        </div>
+
+                        <div className="text-[9px] font-serif italic text-[#8892a6] leading-snug line-clamp-2 px-2">
+                          {book.subtitle}
+                        </div>
+                      </div>
+
+                      {/* HOVER OVERLAY */}
+                      <div className="absolute inset-0 bg-[#080c12]/95 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 flex flex-col items-center justify-center p-6 text-center border border-[#b87333]/50 rounded-r-xl rounded-l-md">
+                        <div className="w-12 h-12 rounded-full border border-[#b87333] flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(184,115,51,0.3)]">
+                          <span className="text-[#b87333] text-xl translate-x-0.5">▶</span>
+                        </div>
+                        <span className="text-[#b87333] font-mono tracking-[0.2em] text-[10px] mb-3">
+                          {hasProgress ? 'CONTINUE READING' : 'CLICK TO START READING'}
+                        </span>
+                        <div className="h-px w-full bg-[#b87333]/20 mb-3" />
+                        <p className="text-[11px] text-[#8892a6] font-sans leading-relaxed line-clamp-5">
+                          {book.description}
+                        </p>
+                      </div>
+
+                    </div>
+
+                    {/* Book Metadata */}
+                    <div className="mt-4 flex flex-col gap-2">
+                      {hasProgress ? (
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between text-[9px] font-mono tracking-wider">
+                            <span className="text-[#10b981]">IN PROGRESS</span>
+                            <span className="text-[#e5e9f0]">{prog?.scroll_percentage || 0}%</span>
+                          </div>
+                          <div className="w-full h-[2px] bg-[#1e2633] rounded-full overflow-hidden">
+                            <div className="h-full bg-[#10b981]" style={{ width: `${prog?.scroll_percentage || 0}%` }} />
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-[9px] font-mono tracking-[0.2em] text-[#566074]">UNREAD</span>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </AppShell>
+  )
+}

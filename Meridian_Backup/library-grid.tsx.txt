@@ -1,0 +1,200 @@
+﻿// FILE: app/library/ebooks/page.tsx
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/auth'
+import AppShell from '@/components/AppShell'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+type Book = {
+  id: string
+  slug: string
+  title: string
+  subtitle: string
+  description: string
+  accent_color: string
+  category: string
+}
+
+export default async function EbooksPage() {
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+
+  const supabase = await createClient()
+
+  // Fetch books
+  const { data: books } = await supabase
+    .from('library_books')
+    .select('*')
+    .eq('published', true)
+    .order('order_index', { ascending: true })
+
+  // Fetch progress
+  const { data: progress } = await supabase
+    .from('library_progress')
+    .select('book_id, scroll_percentage')
+    .eq('user_id', user.id)
+
+  const progressMap = new Map(progress?.map(p => [p.book_id, p.scroll_percentage]) || [])
+
+  // 🎯 SORT LOGIC: Unread/In-Progress first, Completed at the bottom
+  const sortedBooks = (books || []).sort((a, b) => {
+    const progA = progressMap.get(a.id) || 0
+    const progB = progressMap.get(b.id) || 0
+    
+    if (progA === 100 && progB !== 100) return 1
+    if (progB === 100 && progA !== 100) return -1
+    return 0
+  })
+
+  const categories = Array.from(new Set(sortedBooks?.map(b => b.category) || ['Languages and Communication']))
+
+  return (
+    <AppShell userEmail={user.email ?? undefined}>
+      <div className="max-w-7xl mx-auto pb-24">
+        <Link href="/library" className="inline-flex items-center gap-2 text-[10px] font-mono tracking-[0.25em] text-[#566074] hover:text-[#22d3ee] transition mb-8">
+          ← BACK TO LIBRARY
+        </Link>
+
+        <div className="mb-12 md:mb-16">
+          <div className="flex items-center gap-2 text-[10px] font-mono tracking-[0.3em] text-[#22d3ee] mb-3">
+            <span className="w-1 h-1 rounded-full bg-[#22d3ee] animate-pulse" />
+            LIBRARY
+            <span className="w-px h-3 mx-2" style={{ background: 'rgba(34,211,238,0.25)' }} />
+            <span className="text-[#3a4250]">DIGITAL RENAISSANCE / 01</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-[0.08em] text-[#e5e9f0] mb-4 leading-tight">
+            FOUNDATIONAL BOOKS
+          </h1>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-[#8892a6]">
+              {books?.length || 0} original manuscripts included with your membership.
+            </p>
+            <span className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(34,211,238,0.35) 0%, transparent 100%)' }} />
+          </div>
+        </div>
+
+        {categories.map(category => (
+          <div key={category} className="mb-20">
+            <div className="flex items-center gap-4 mb-10">
+              <h2 className="text-xl md:text-2xl font-bold font-serif text-white tracking-wide">{category}</h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-[#22d3ee]/30 to-transparent" />
+              <span className="text-[10px] font-mono tracking-widest text-[#566074]">
+                {sortedBooks?.filter(b => b.category === category).length} BOOKS
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10 md:gap-14">
+              {sortedBooks?.filter(b => b.category === category).map((book, i) => {
+                const progressPct = progressMap.get(book.id) || 0
+                const isCompleted = progressPct === 100
+                const isInProgress = progressPct > 0 && progressPct < 100
+
+                const coverGradient = 
+                  book.accent_color === '#22d3ee' ? 'linear-gradient(135deg, #052a38 0%, #010a0f 100%)' : 
+                  book.accent_color === '#f59e0b' ? 'linear-gradient(135deg, #3a1d0e 0%, #1a0e06 100%)' : 
+                  book.accent_color === '#8b5cf6' ? 'linear-gradient(135deg, #2a104a 0%, #0a0514 100%)' :
+                  book.accent_color === '#10b981' ? 'linear-gradient(135deg, #062b1f 0%, #010a08 100%)' :
+                  'linear-gradient(135deg, #111111 0%, #050505 100%)';
+
+                const glowColor = book.accent_color || '#d4af37';
+
+                return (
+                  <Link 
+                    key={book.id} 
+                    href={`/library/ebooks/${book.slug}/read`}
+                    className={`group block relative flex flex-col ${isCompleted ? 'opacity-70 hover:opacity-100 transition-opacity' : ''}`}
+                    style={{ perspective: '1500px' }}
+                  >
+                    <div className="relative w-full aspect-[2/3] transition-all duration-700 ease-out group-hover:rotate-y-[-10deg] group-hover:-translate-y-2 group-hover:translate-x-2">
+                      {/* Page Edges */}
+                      <div className="absolute top-1 bottom-1 -right-1.5 w-2 bg-[#e0d8c8] rounded-r-sm border-y border-r border-[#c0b8a8] shadow-[inset_-1px_0_2px_rgba(0,0,0,0.1)] z-0" />
+                      <div className="absolute top-2 bottom-2 -right-3 w-2 bg-[#d4ccbc] rounded-r-sm border-y border-r border-[#b0a898] z-0" />
+                      <div className="absolute -bottom-1.5 left-1 right-1 h-2 bg-[#e0d8c8] rounded-b-sm border-x border-b border-[#c0b8a8] z-0" />
+
+                      {/* Main Cover */}
+                      <div 
+                        className="absolute inset-0 rounded-r-md rounded-l-sm overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] transition-shadow duration-500 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.9)] border border-white/5"
+                        style={{ background: coverGradient }}
+                      >
+                        <div className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/black-leather.png")' }} />
+                        <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-30 mix-blend-multiply" />
+                        <div className="absolute top-0 bottom-0 left-8 w-px bg-white/10 z-30" />
+                        
+                        {/* Spine Bands */}
+                        <div className="absolute top-[15%] left-0 w-8 h-1.5 bg-gradient-to-b from-white/10 to-transparent z-20 border-b border-black/50" />
+                        <div className="absolute top-[25%] left-0 w-8 h-1.5 bg-gradient-to-b from-white/10 to-transparent z-20 border-b border-black/50" />
+                        <div className="absolute bottom-[25%] left-0 w-8 h-1.5 bg-gradient-to-b from-white/10 to-transparent z-20 border-b border-black/50" />
+                        <div className="absolute bottom-[15%] left-0 w-8 h-1.5 bg-gradient-to-b from-white/10 to-transparent z-20 border-b border-black/50" />
+
+                        {/* Frame */}
+                        <div className="absolute inset-4 left-10 border border-white/20 rounded-sm z-10 pointer-events-none" />
+                        <div className="absolute inset-5 left-11 border border-white/10 rounded-sm z-10 pointer-events-none" />
+                        
+                        <div className="absolute top-4 left-10 w-4 h-4 border-t-2 border-l-2 z-10" style={{ borderColor: glowColor }} />
+                        <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 z-10" style={{ borderColor: glowColor }} />
+                        <div className="absolute bottom-4 left-10 w-4 h-4 border-b-2 border-l-2 z-10" style={{ borderColor: glowColor }} />
+                        <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 z-10" style={{ borderColor: glowColor }} />
+
+                        {/* Content */}
+                        <div className="relative z-20 flex flex-col items-center justify-between h-full py-8 px-6 pl-12 text-center">
+                          <div className="text-[6px] md:text-[8px] font-serif tracking-[0.4em] text-white/60">MERIDIAN ACADEMY</div>
+                          <div className="flex flex-col items-center w-full mt-4">
+                            <h3 className="text-sm md:text-lg font-serif font-bold text-transparent bg-clip-text bg-gradient-to-b from-white via-[#fdfbf7] to-[#c0b8a8] leading-tight mb-4" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+                              {book.title}
+                            </h3>
+                            <div className="flex items-center gap-1.5 w-full justify-center mb-4 opacity-70">
+                              <div className="h-px w-8 bg-gradient-to-r from-transparent to-white/80" />
+                              <div className="w-1.5 h-1.5 rotate-45" style={{ backgroundColor: glowColor }} />
+                              <div className="h-px w-8 bg-gradient-to-l from-transparent to-white/80" />
+                            </div>
+                            <div className="text-[7px] md:text-[9px] font-serif italic text-white/70 leading-relaxed max-w-[90%]">{book.subtitle}</div>
+                          </div>
+                          <div className="text-[5px] md:text-[7px] font-serif tracking-[0.4em] text-white/40 mt-auto">DIGITAL RENAISSANCE</div>
+                        </div>
+
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50 flex flex-col items-center justify-center border rounded-r-md rounded-l-sm p-4 text-center" style={{ borderColor: `${glowColor}88` }}>
+                          <p className="text-[10px] md:text-xs text-[#e5e9f0] leading-relaxed mb-6 line-clamp-6 px-2">{book.description}</p>
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3 border bg-black/50" style={{ borderColor: glowColor, boxShadow: `0 0 20px ${glowColor}44` }}>
+                            <span className="text-sm translate-x-0.5" style={{ color: glowColor }}>▶</span>
+                          </div>
+                          <span className="font-mono tracking-[0.2em] text-[9px]" style={{ color: glowColor }}>
+                            {isCompleted ? 'READ AGAIN' : isInProgress ? 'CONTINUE' : 'START READING'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 🎯 QUEST LIST METADATA */}
+                    <div className="mt-4 flex flex-col gap-2 pl-2">
+                      {isCompleted ? (
+                        <div className="flex items-center gap-2 text-[9px] font-mono tracking-wider text-[#10b981]">
+                          <span>✓</span> <span>COMPLETED</span>
+                        </div>
+                      ) : isInProgress ? (
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between text-[9px] font-mono tracking-wider">
+                            <span className="text-[#f59e0b]">IN PROGRESS</span>
+                            <span className="text-[#e5e9f0]">{progressPct}%</span>
+                          </div>
+                          <div className="w-full h-[2px] bg-[#1e2633] rounded-full overflow-hidden">
+                            <div className="h-full bg-[#f59e0b]" style={{ width: `${progressPct}%` }} />
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-[9px] font-mono tracking-[0.2em] text-[#566074]">UNREAD</span>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </AppShell>
+  )
+}

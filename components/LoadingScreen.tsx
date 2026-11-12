@@ -1,0 +1,4 @@
+import AcademyBackground from '@/components/AcademyBackground';
+import LogoEmblem from '@/components/LogoEmblem';
+import MeridianGlobalStyle from '@/components/MeridianGlobalStyle';
+export default function LoadingScreen(){return(<><MeridianGlobalStyle/><AcademyBackground/><div className="m-load"><div className="m-load-logo meridian-logo-stage"><LogoEmblem/></div><p className="m-load-quote">&ldquo;The training is nothing. The will is everything.&rdquo;</p><p className="m-load-author">&mdash; Bruce Wayne</p><div className="m-load-bar-wrap"><div className="m-load-label">Loading.</div><div className="m-load-bar"><div className="m-load-fill"/></div></div></div></>)}

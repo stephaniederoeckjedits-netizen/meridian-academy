@@ -1,0 +1,342 @@
+﻿// FILE: app/library/ebooks/[slug]/read/page.tsx
+'use client'
+
+import {
+  useEffect, useState, useCallback, use, useRef, useLayoutEffect, Fragment,
+} from 'react'
+import { createClient } from '@/lib/supabase/client'
+import LogoEmblem from '@/components/LogoEmblem'
+import CodexContent from '@/app/courses/[slug]/lessons/[lessonId]/CodexContent'
+import { playPageFlipSound } from '@/lib/sounds'
+
+const SPINE_WIDTH = 40
+const PAGE_PADDING = 48
+const HEADER_H = 56
+const FOOTER_H = 48
+const VPAD = 40
+
+type Chapter = {
+  id: string
+  chapter_number: number
+  title: string
+  content: string
+}
+
+export default function ReaderPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = use(params)
+  const supabase = createClient()
+
+  const [book, setBook] = useState<any>(null)
+  const [chapters, setChapters] = useState<Chapter[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
+
+  const [isOpen, setIsOpen] = useState(false)
+  const [fontSize, setFontSize] = useState(17)
+
+  const [spread, setSpread] = useState(0)
+  const [columnCount, setColumnCount] = useState(1)
+  const [chapterStarts, setChapterStarts] = useState<number[]>([])
+  const [dims, setDims] = useState({ pageW: 500, pageH: 700 })
+
+  const contentRef = useRef<HTMLDivElement>(null)
+  const hasRestoredRef = useRef(false)
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) setUserId(user.id)
+
+      const { data: b } = await supabase
+        .from('library_books')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle()
+      if (!b) return
+      setBook(b)
+
+      const { data: chs } = await supabase
+        .from('library_chapters')
+        .select('id, chapter_number, title, content')
+        .eq('book_id', b.id)
+        .order('chapter_number', { ascending: true })
+
+      if (chs) setChapters(chs as Chapter[])
+    }
+    load()
+  }, [slug, supabase])
+
+  useEffect(() => {
+    function measure() {
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const availW = Math.min(1200, vw - 80)
+      const pageW = Math.max(300, (availW - SPINE_WIDTH) / 2)
+      const pageH = Math.max(400, vh - HEADER_H - FOOTER_H - VPAD * 2)
+      setDims({ pageW, pageH })
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+
+  useLayoutEffect(() => {
+    if (!isOpen || !contentRef.current || chapters.length === 0) return
+
+    const raf = requestAnimationFrame(() => {
+      const container = contentRef.current
+      if (!container) return
+
+      const box = container.getBoundingClientRect()
+      const colW = dims.pageW - 2 * PAGE_PADDING
+      const gap = SPINE_WIDTH + 2 * PAGE_PADDING
+      const step = colW + gap
+
+      let maxRight = 0
+      for (const el of Array.from(container.children) as HTMLElement[]) {
+        const r = el.getBoundingClientRect()
+        const right = r.right - box.left
+        if (right > maxRight) maxRight = right
+      }
+      if (maxRight <= 0) {
+        setColumnCount(1)
+        setChapterStarts([0])
+        return
+      }
+      const totalCols = Math.max(1, Math.ceil((maxRight - PAGE_PADDING + gap) / step))
+      setColumnCount(totalCols)
+
+      const starts = chapters.map((_, i) => {
+        const node = container.querySelector<HTMLElement>(`[data-chapter-idx="${i}"]`)
+        if (!node) return 0
+        const r = node.getBoundingClientRect()
+        const offset = r.left - box.left - PAGE_PADDING
+        return Math.max(0, Math.floor(offset / step))
+      })
+      setChapterStarts(starts)
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [isOpen, chapters, fontSize, dims])
+
+  const totalSpreads = Math.max(1, Math.ceil(columnCount / 2))
+
+  useEffect(() => {
+    if (spread > totalSpreads - 1) setSpread(totalSpreads - 1)
+  }, [totalSpreads, spread])
+
+  useEffect(() => {
+    if (hasRestoredRef.current) return
+    if (!book || !userId || columnCount <= 1) return
+    hasRestoredRef.current = true
+
+    async function restore() {
+      const { data } = await supabase
+        .from('library_progress')
+        .select('scroll_percentage')
+        .eq('user_id', userId)
+        .eq('book_id', book.id)
+        .maybeSingle()
+      if (data?.scroll_percentage != null) {
+        const target = Math.round((data.scroll_percentage / 100) * (totalSpreads - 1))
+        setSpread(Math.min(Math.max(0, target), totalSpreads - 1))
+      }
+    }
+    restore()
+  }, [book, userId, columnCount, totalSpreads, supabase])
+
+  const saveProgress = useCallback(
+    (spreadIdx: number) => {
+      if (!userId || !book) return
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+      saveTimerRef.current = setTimeout(async () => {
+        const pct = Math.round((spreadIdx / Math.max(1, totalSpreads - 1)) * 100)
+        const currentCol = spreadIdx * 2
+        let chapterIdx = 0
+        for (let i = 0; i < chapterStarts.length; i++) {
+          if (chapterStarts[i] <= currentCol) chapterIdx = i
+        }
+        const chapterId = chapters[chapterIdx]?.id ?? null
+
+        await supabase.from('library_progress').upsert(
+          { user_id: userId, book_id: book.id, chapter_id: chapterId, scroll_percentage: pct },
+          { onConflict: 'user_id,book_id' }
+        )
+      }, 400)
+    },
+    [userId, book, totalSpreads, chapterStarts, chapters, supabase]
+  )
+
+  const next = useCallback(() => {
+    setSpread((s) => {
+      const n = Math.min(totalSpreads - 1, s + 1)
+      if (n !== s) { playPageFlipSound(); saveProgress(n); }
+      return n
+    })
+  }, [totalSpreads, saveProgress])
+
+  const prev = useCallback(() => {
+    setSpread((s) => {
+      const n = Math.max(0, s - 1)
+      if (n !== s) { playPageFlipSound(); saveProgress(n); }
+      return n
+    })
+  }, [saveProgress])
+
+  const jumpToSpread = useCallback((s: number) => {
+      setSpread((cur) => {
+        const n = Math.max(0, Math.min(totalSpreads - 1, s))
+        if (n !== cur) { playPageFlipSound(); saveProgress(n); }
+        return n
+      })
+    }, [totalSpreads, saveProgress]
+  )
+
+  useEffect(() => {
+    if (!isOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); next() }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev() }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [isOpen, next, prev])
+
+  const openBook = useCallback(() => {
+    setIsOpen(true); playPageFlipSound(); requestAnimationFrame(() => saveProgress(0))
+  }, [saveProgress])
+
+  if (!book) return <div className="min-h-screen bg-[#050810] flex items-center justify-center text-[#22d3ee] font-mono tracking-widest animate-pulse">ESTABLISHING CONNECTION...</div>
+
+  if (!isOpen) {
+    return (
+      <div className="min-h-screen bg-[#050810] flex items-center justify-center p-6" style={{ perspective: '2000px' }}>
+        <div className="relative w-full max-w-md aspect-[2/3] rounded-r-xl rounded-l-md cursor-pointer group transition-all duration-700 hover:rotate-y-[-15deg] hover:scale-105" onClick={openBook}>
+          <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-r-xl rounded-l-md bg-black/80 blur-2xl transition-all duration-700 group-hover:translate-x-10 group-hover:translate-y-5 group-hover:blur-3xl" />
+          <div className="absolute inset-0 rounded-r-xl rounded-l-md bg-[#e5e0d0] translate-x-2 translate-y-2" />
+          <div className="absolute inset-0 rounded-r-xl rounded-l-md overflow-hidden flex flex-col border border-[#22d3ee]/30" style={{ background: 'linear-gradient(180deg, #0a121e 0%, #050810 100%)', boxShadow: 'inset 10px 0 25px -8px rgba(0,0,0,0.95), 0 0 100px rgba(34,211,238,0.15)' }}>
+            <div className="absolute inset-0 opacity-40" style={{ background: `radial-gradient(circle at 50% 30%, #22d3ee30 0%, transparent 70%)` }} />
+            <div className="absolute top-0 bottom-0 left-0 w-10 bg-gradient-to-r from-black/95 to-transparent z-20 mix-blend-multiply" />
+            <div className="absolute top-0 bottom-0 left-10 w-px bg-white/5 z-20" />
+            <div className="absolute top-10 right-10 w-12 h-12 border-t border-r border-[#22d3ee]/50" />
+            <div className="absolute bottom-10 left-10 w-12 h-12 border-b border-l border-[#22d3ee]/50" />
+            <div className="relative z-10 flex flex-col h-full p-12 pl-16 justify-between items-center text-center">
+              <div className="text-[11px] font-mono tracking-[0.5em] text-[#22d3ee]/80 border-b border-[#22d3ee]/30 pb-3 w-full">MERIDIAN ACADEMY</div>
+              <div>
+                <div className="transform group-hover:scale-110 transition-transform duration-500 relative flex justify-center">
+                  <div className="absolute inset-0 bg-[#22d3ee] blur-[50px] opacity-20 rounded-full" />
+                  <LogoEmblem size={140} className="relative z-10" />
+                </div>
+                <h2 className="text-4xl font-serif font-bold text-white leading-tight mt-10 mb-6">{book.title}</h2>
+                <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#22d3ee] to-transparent mx-auto my-6" />
+                <div className="text-base font-serif italic text-[#8892a6]">{book.subtitle}</div>
+              </div>
+              <div className="text-[11px] font-mono tracking-[0.5em] text-[#22d3ee] animate-pulse">CLICK TO OPEN</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const colW = dims.pageW - 2 * PAGE_PADDING
+  const gap = SPINE_WIDTH + 2 * PAGE_PADDING
+  const totalW = 2 * dims.pageW + SPINE_WIDTH
+  const shiftPerSpread = 2 * (dims.pageW + SPINE_WIDTH)
+  const currentChapterIdx = (() => {
+    const col = spread * 2
+    let idx = 0
+    for (let i = 0; i < chapterStarts.length; i++) { if (chapterStarts[i] <= col) idx = i }
+    return idx
+  })()
+
+  return (
+    <div className="h-screen w-screen bg-[#050810] flex flex-col relative overflow-hidden font-sans selection:bg-[#22d3ee] selection:text-black">
+      <header className="h-14 bg-[#0a0f16] border-b border-[#1e2633] flex items-center justify-between px-6 shrink-0 z-50">
+        <div className="flex items-center gap-4 min-w-0">
+          <button onClick={() => setIsOpen(false)} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition shrink-0">← CLOSE BOOK</button>
+          <span className="text-[#1e2633]">|</span>
+          <span className="text-[10px] font-mono tracking-[0.2em] text-[#e5e9f0] uppercase truncate">{book.title}</span>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 border border-[#1e2633] rounded bg-[#141b26] p-1">
+            <button onClick={() => setFontSize((f) => Math.max(13, f - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-[#1e2633] rounded text-[#8892a6] text-xs font-mono">A-</button>
+            <span className="text-[10px] font-mono w-6 text-center text-[#22d3ee]">{fontSize}</span>
+            <button onClick={() => setFontSize((f) => Math.min(24, f + 1))} className="w-8 h-8 flex items-center justify-center hover:bg-[#1e2633] rounded text-[#8892a6] text-xs font-mono">A+</button>
+          </div>
+          <div className="text-[10px] font-mono tracking-[0.2em] text-[#22d3ee] tabular-nums">PAGES {Math.min(spread * 2 + 1, columnCount)}-{Math.min(spread * 2 + 2, columnCount)} / {columnCount}</div>
+        </div>
+      </header>
+
+      <div className="h-9 bg-[#080c12] border-b border-[#1e2633] flex items-center gap-1 px-4 overflow-x-auto no-scrollbar shrink-0 z-40">
+        <span className="text-[9px] font-mono tracking-[0.3em] text-[#3a4250] shrink-0 mr-2">CH</span>
+        {chapters.map((ch, i) => {
+          const isCurrent = i === currentChapterIdx
+          return (
+            <button key={ch.id} onClick={() => jumpToSpread(Math.floor((chapterStarts[i] ?? 0) / 2))} className="text-[10px] font-mono tracking-[0.15em] px-2.5 py-1 rounded shrink-0 transition-colors" style={{ color: isCurrent ? '#050810' : '#566074', background: isCurrent ? '#22d3ee' : 'transparent', border: isCurrent ? '1px solid #22d3ee' : '1px solid rgba(34,211,238,0.12)' }} title={ch.title}>
+              {String(ch.chapter_number).padStart(2, '0')}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
+        <div className="relative rounded-xl" style={{ width: totalW, height: dims.pageH, maxWidth: '100%', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.85)' }}>
+          <div className="absolute rounded-l-xl" style={{ left: 0, top: 0, width: dims.pageW, height: dims.pageH, background: '#fcf9f2', boxShadow: 'inset 0 0 60px rgba(0,0,0,0.03)' }} />
+          <div className="absolute rounded-r-xl" style={{ left: dims.pageW + SPINE_WIDTH, top: 0, width: dims.pageW, height: dims.pageH, background: '#fcf9f2', boxShadow: 'inset 0 0 60px rgba(0,0,0,0.03)' }} />
+          <div className="absolute pointer-events-none" style={{ left: dims.pageW, top: 0, width: SPINE_WIDTH, height: dims.pageH, background: 'linear-gradient(90deg, rgba(0,0,0,0.22), rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.22))', zIndex: 20, mixBlendMode: 'multiply' }} />
+
+          {/* CSS FIX: Move padding to a wrapper so height: 100% on the column container doesn't clip text */}
+          <div
+            ref={contentRef}
+            style={{
+              position: 'absolute',
+              top: 60,
+              bottom: 60,
+              left: PAGE_PADDING,
+              right: PAGE_PADDING,
+              columnWidth: colW,
+              columnGap: gap,
+              columnFill: 'auto',
+              fontSize,
+              transform: `translateX(-${spread * shiftPerSpread}px)`,
+              transition: 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)',
+              willChange: 'transform',
+            }}
+          >
+            {chapters.map((ch, chIdx) => (
+              <Fragment key={ch.id}>
+                <div data-chapter-idx={chIdx} style={{ breakBefore: 'column', breakAfter: 'avoid', paddingTop: chIdx === 0 ? 0 : 8 }}>
+                  <div style={{ textAlign: 'center', fontFamily: 'Georgia, serif', fontSize: '1.6em', fontWeight: 700, letterSpacing: '-0.01em', color: '#111', marginTop: '0.5em', marginBottom: '1.2em', lineHeight: 1.25 }}>
+                    <div style={{ fontSize: '0.5em', fontFamily: 'ui-monospace, monospace', letterSpacing: '0.35em', color: '#22d3ee', marginBottom: '0.6em', fontWeight: 600 }}>
+                      CHAPTER {String(ch.chapter_number).padStart(2, '0')}
+                    </div>
+                    {ch.title}
+                    <div style={{ width: 60, height: 1, background: 'linear-gradient(90deg, transparent, #22d3ee80, transparent)', margin: '1em auto 0' }} />
+                  </div>
+                </div>
+                <CodexContent content={ch.content} wrap={false} />
+              </Fragment>
+            ))}
+          </div>
+
+          <button onClick={prev} disabled={spread === 0} className="absolute top-1/2 -translate-y-1/2 left-2 w-10 h-20 flex items-center justify-center rounded-r-lg bg-[#0a0f16]/85 backdrop-blur border border-[#22d3ee]/30 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all disabled:opacity-0 z-50 text-lg">◂</button>
+          <button onClick={next} disabled={spread >= totalSpreads - 1} className="absolute top-1/2 -translate-y-1/2 right-2 w-10 h-20 flex items-center justify-center rounded-l-lg bg-[#0a0f16]/85 backdrop-blur border border-[#22d3ee]/30 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all disabled:opacity-0 z-50 text-lg">▸</button>
+
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.2em] text-[#999] pointer-events-none tabular-nums" style={{ opacity: 0.7 }}>
+            {spread * 2 + 1}{spread * 2 + 2 <= columnCount ? ` · ${spread * 2 + 2}` : ''}
+          </div>
+        </div>
+      </div>
+
+      <footer className="h-12 bg-[#0a0f16] border-t border-[#1e2633] flex items-center justify-between px-8 shrink-0 z-50">
+        <button onClick={prev} disabled={spread === 0} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition disabled:opacity-30">← PREV SPREAD</button>
+        <div className="text-[10px] font-mono tracking-[0.3em] text-[#22d3ee]/70">USE ← AND → ARROWS</div>
+        <button onClick={next} disabled={spread >= totalSpreads - 1} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition disabled:opacity-30">NEXT SPREAD →</button>
+      </footer>
+    </div>
+  )
+}

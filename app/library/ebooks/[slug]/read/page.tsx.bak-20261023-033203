@@ -1,0 +1,250 @@
+// FILE: app/library/ebooks/[slug]/read/page.tsx
+'use client'
+
+import { useEffect, useState, useCallback, use } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import LogoEmblem from '@/components/LogoEmblem'
+
+function playPageFlip() {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext
+    if (!AudioContext) return
+    const ctx = new AudioContext()
+    const bufferSize = ctx.sampleRate * 0.4
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+    const data = buffer.getChannelData(0)
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1
+    const noise = ctx.createBufferSource()
+    noise.buffer = buffer
+    const filter = ctx.createBiquadFilter()
+    filter.type = 'bandpass'
+    filter.frequency.value = 1000
+    filter.Q.value = 0.5
+    const gain = ctx.createGain()
+    gain.gain.setValueAtTime(0, ctx.currentTime)
+    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.05)
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3)
+    noise.connect(filter)
+    filter.connect(gain)
+    gain.connect(ctx.destination)
+    noise.start()
+  } catch (e) {}
+}
+
+// 🎯 PERFECT MATH PAGINATION (1250 chars, sentence-level splitting)
+function paginateBook(chapters: any[]): string[][] {
+  const pages: string[][] = []
+  let currentPage: string[] = []
+  let currentCharCount = 0
+  const MAX_CHARS_PER_PAGE = 1250 
+
+  const pushPage = () => {
+    if (currentPage.length > 0) {
+      pages.push(currentPage)
+      currentPage = []
+      currentCharCount = 0
+    }
+  }
+
+  chapters.forEach((chapter) => {
+    pushPage() 
+    currentPage.push(`# ${chapter.title}`)
+    currentCharCount += chapter.title.length + 10
+
+    const blocks = (chapter.content || '').split(/\n\s*\n/).map((b: string) => b.trim()).filter((b: string) => b.length > 0)
+
+    blocks.forEach((block: string) => {
+      const blockLength = block.length
+
+      // Keep headings with their content
+      if (block.startsWith('## ') || block.startsWith('### ')) {
+        if (currentCharCount + blockLength > MAX_CHARS_PER_PAGE - 150) pushPage()
+        currentPage.push(block)
+        currentCharCount += blockLength + 5
+        return
+      }
+
+      if (currentCharCount + blockLength < MAX_CHARS_PER_PAGE) {
+        currentPage.push(block)
+        currentCharCount += blockLength
+      } else {
+        // Split by sentence to perfectly fill the page
+        const sentences = block.match(/[^.!?]+[.!?]+/g) || [block]
+        sentences.forEach((sentence: string) => {
+          if (currentCharCount + sentence.length > MAX_CHARS_PER_PAGE) {
+            pushPage()
+          }
+          currentPage.push(sentence.trim())
+          currentCharCount += sentence.length
+        })
+      }
+    })
+  })
+
+  pushPage()
+  return pages
+}
+
+export default function ReaderPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params)
+  const supabase = createClient()
+
+  const [book, setBook] = useState<any>(null)
+  const [pages, setPages] = useState<string[][]>([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [isOpen, setIsOpen] = useState(false)
+  const [fontSize, setFontSize] = useState(15) // Default 15px to fit more
+
+  useEffect(() => {
+    async function load() {
+      const { data: b } = await supabase.from('library_books').select('*').eq('slug', slug).maybeSingle()
+      if (!b) return
+      setBook(b)
+
+      const { data: chs } = await supabase
+        .from('library_chapters')
+        .select('title, content')
+        .eq('book_id', b.id)
+        .order('chapter_number', { ascending: true })
+      
+      if (chs) {
+        setPages(paginateBook(chs))
+      }
+    }
+    load()
+  }, [slug, supabase])
+
+  const turnPage = useCallback((direction: 'next' | 'prev') => {
+    if (!isOpen) return
+    if (direction === 'next' && currentPage + 2 < pages.length) {
+      playPageFlip(); setCurrentPage(p => p + 2)
+    } else if (direction === 'prev' && currentPage > 0) {
+      playPageFlip(); setCurrentPage(p => p - 2)
+    }
+  }, [isOpen, currentPage, pages.length])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') turnPage('next')
+      if (e.key === 'ArrowLeft') turnPage('prev')
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, turnPage])
+
+  const renderBlock = (block: string, idx: number) => {
+    const t = block.trim()
+    if (!t) return null
+
+    let parsed = t.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #111; font-weight: 700;">$1</strong>').replace(/\*(.*?)\*/g, '<em style="color: #444;">$1</em>')
+
+    if (t.startsWith('# ')) return <h1 key={idx} className="text-2xl md:text-3xl font-bold mb-6 mt-4 font-serif text-[#111] text-center tracking-tight" dangerouslySetInnerHTML={{ __html: parsed.slice(2) }} />
+    if (t.startsWith('## ')) return <h2 key={idx} className="text-xl md:text-2xl font-bold mt-8 mb-4 font-serif text-[#1a1a1a]" dangerouslySetInnerHTML={{ __html: parsed.slice(3) }} />
+    if (t.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-bold mt-6 mb-3 font-serif text-[#1a1a1a]" dangerouslySetInnerHTML={{ __html: parsed.slice(4) }} />
+    
+    if (t.startsWith('> ')) return (
+      <p key={idx} className="mb-4 leading-[1.7] font-serif italic text-[#444] text-justify pl-4 border-l-2 border-[#ccc]">
+        <span dangerouslySetInnerHTML={{ __html: parsed.slice(2) }} />
+      </p>
+    )
+    
+    return (
+      <p 
+        key={idx} 
+        className="mb-4 leading-[1.7] text-[#2a2a2a] font-serif text-[1em] text-justify" 
+        dangerouslySetInnerHTML={{ __html: parsed }} 
+      />
+    )
+  }
+
+  if (!book) return <div className="min-h-screen bg-[#0a0f16] flex items-center justify-center text-[#22d3ee] font-mono tracking-widest animate-pulse">ESTABLISHING CONNECTION...</div>
+
+  if (!isOpen) {
+    return (
+      <div className="min-h-screen bg-[#050810] flex items-center justify-center p-6" style={{ perspective: '2000px' }}>
+        <div className="relative w-full max-w-md aspect-[2/3] rounded-r-xl rounded-l-md cursor-pointer group transition-all duration-700 hover:rotate-y-[-15deg] hover:scale-105"
+          onClick={() => { setIsOpen(true); playPageFlip(); }}>
+          <div className="absolute inset-0 translate-x-3 translate-y-3 rounded-r-xl rounded-l-md bg-black/80 blur-2xl transition-all duration-700 group-hover:translate-x-10 group-hover:translate-y-5 group-hover:blur-3xl" />
+          <div className="absolute inset-0 rounded-r-xl rounded-l-md bg-[#e5e0d0] translate-x-2 translate-y-2" />
+          <div className="absolute inset-0 rounded-r-xl rounded-l-md overflow-hidden flex flex-col border border-[#22d3ee]/30"
+            style={{ background: 'linear-gradient(180deg, #0a121e 0%, #050810 100%)', boxShadow: `inset 10px 0 25px -8px rgba(0,0,0,0.95), 0 0 100px rgba(34,211,238,0.15)` }}>
+            <div className="absolute inset-0 opacity-40" style={{ background: `radial-gradient(circle at 50% 30%, #22d3ee30 0%, transparent 70%)` }} />
+            <div className="absolute top-0 bottom-0 left-0 w-10 bg-gradient-to-r from-black/95 to-transparent z-20 mix-blend-multiply" />
+            <div className="absolute top-0 bottom-0 left-10 w-px bg-white/5 z-20" />
+            <div className="absolute top-10 right-10 w-12 h-12 border-t border-r border-[#22d3ee]/50" />
+            <div className="absolute bottom-10 left-10 w-12 h-12 border-b border-l border-[#22d3ee]/50" />
+            
+            <div className="relative z-10 flex flex-col h-full p-12 pl-16 justify-between items-center text-center">
+              <div className="text-[11px] font-mono tracking-[0.5em] text-[#22d3ee]/80 border-b border-[#22d3ee]/30 pb-3 w-full">MERIDIAN ACADEMY</div>
+              <div>
+                <div className="transform group-hover:scale-110 transition-transform duration-500 relative flex justify-center">
+                  <div className="absolute inset-0 bg-[#22d3ee] blur-[50px] opacity-20 rounded-full" />
+                  <LogoEmblem size={140} className="relative z-10" />
+                </div>
+                <h2 className="text-4xl font-serif font-bold text-white leading-tight mt-10 mb-6">{book.title}</h2>
+                <div className="h-px w-24 bg-gradient-to-r from-transparent via-[#22d3ee] to-transparent mx-auto my-6" />
+                <div className="text-base font-serif italic text-[#8892a6]">{book.subtitle}</div>
+              </div>
+              <div className="text-[11px] font-mono tracking-[0.5em] text-[#22d3ee] animate-pulse">CLICK TO OPEN</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-screen w-screen bg-[#050810] flex flex-col relative overflow-hidden font-sans selection:bg-[#22d3ee] selection:text-black">
+      <header className="h-14 bg-[#0a0f16] border-b border-[#1e2633] flex items-center justify-between px-6 shrink-0 z-50">
+        <button onClick={() => setIsOpen(false)} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition">← CLOSE BOOK</button>
+        <span className="text-[10px] font-mono tracking-[0.2em] text-[#e5e9f0] uppercase">{book.title}</span>
+        
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2 border border-[#1e2633] rounded bg-[#141b26] p-1">
+            <button onClick={() => setFontSize(f => Math.max(12, f - 1))} className="w-8 h-8 flex items-center justify-center hover:bg-[#1e2633] rounded text-[#8892a6] text-xs font-mono">A-</button>
+            <span className="text-[10px] font-mono w-6 text-center text-[#22d3ee]">{fontSize}</span>
+            <button onClick={() => setFontSize(f => Math.min(24, f + 1))} className="w-8 h-8 flex items-center justify-center hover:bg-[#1e2633] rounded text-[#8892a6] text-xs font-mono">A+</button>
+          </div>
+          <div className="text-[10px] font-mono tracking-[0.2em] text-[#22d3ee]">PAGE {currentPage + 1} / {pages.length}</div>
+        </div>
+      </header>
+
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
+        <button onClick={() => turnPage('prev')} disabled={currentPage === 0} className="absolute top-1/2 -translate-y-1/2 left-4 md:left-10 w-12 h-24 flex items-center justify-center rounded-r-xl bg-[#0a0f16] border border-[#22d3ee]/30 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all disabled:opacity-20 z-50 text-2xl shadow-[0_0_20px_rgba(34,211,238,0.15)]">◂</button>
+        <button onClick={() => turnPage('next')} disabled={currentPage + 2 >= pages.length} className="absolute top-1/2 -translate-y-1/2 right-4 md:right-10 w-12 h-24 flex items-center justify-center rounded-l-xl bg-[#0a0f16] border border-[#22d3ee]/30 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all disabled:opacity-20 z-50 text-2xl shadow-[0_0_20px_rgba(34,211,238,0.15)]">▸</button>
+
+        <div className="relative w-full max-w-[1200px] h-[calc(100vh-140px)] flex shadow-[0_30px_80px_rgba(0,0,0,0.8)] rounded-xl overflow-hidden">
+          
+          <div className="w-1/2 h-full bg-[#fcf9f2] flex flex-col relative border border-[#e5e0d0] border-r-0">
+            <div className="flex-1 overflow-hidden px-10 md:px-14 py-10">
+              <div className="max-w-[60ch] mx-auto">
+                {pages[currentPage]?.map((block, i) => renderBlock(block, i))}
+              </div>
+            </div>
+            <div className="absolute bottom-4 left-10 md:left-14 text-[10px] font-mono text-[#999]">{currentPage + 1}</div>
+          </div>
+
+          <div className="w-1/2 h-full bg-[#fcf9f2] flex flex-col relative border border-[#e5e0d0]">
+            <div className="flex-1 overflow-hidden px-10 md:px-14 py-10">
+              <div className="max-w-[60ch] mx-auto">
+                {pages[currentPage + 1]?.map((block, i) => renderBlock(block, i))}
+              </div>
+            </div>
+            <div className="absolute bottom-4 right-10 md:right-14 text-[10px] font-mono text-[#999]">
+              {currentPage + 2 <= pages.length ? currentPage + 2 : ''}
+            </div>
+          </div>
+
+          <div className="absolute top-0 bottom-0 left-1/2 w-8 -translate-x-1/2 bg-gradient-to-r from-transparent via-black/10 to-transparent pointer-events-none z-20 mix-blend-multiply" />
+        </div>
+      </div>
+
+      <div className="h-12 bg-[#0a0f16] border-t border-[#1e2633] flex items-center justify-between px-8 shrink-0 z-50">
+        <button onClick={() => turnPage('prev')} disabled={currentPage === 0} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition disabled:opacity-30">← PREV PAGE</button>
+        <div className="text-[10px] font-mono tracking-[0.3em] text-[#22d3ee]/70">USE ← AND → ARROWS</div>
+        <button onClick={() => turnPage('next')} disabled={currentPage + 2 >= pages.length} className="text-[10px] font-mono tracking-[0.2em] text-[#566074] hover:text-[#22d3ee] transition disabled:opacity-30">NEXT PAGE →</button>
+      </div>
+    </div>
+  )
+}
