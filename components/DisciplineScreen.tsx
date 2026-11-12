@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import LoadingScreen from './LoadingScreen'
 
-export default function DisciplineScreen({ onDone, duration = 6000 }: { onDone: () => void, duration?: number }) {
+export default function DisciplineScreen({ onDone, duration = 12000 }: { onDone: () => void, duration?: number }) {
   const [fading, setFading] = useState(false)
 
   useEffect(() => {
