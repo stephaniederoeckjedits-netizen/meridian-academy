@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import LogoEmblem from './LogoEmblem'
 import { createClient } from '@/lib/supabase/client'
 import { triggerNav } from './NavLoader'
 import { unlockAudio, playSelectSound, playConfirmSound } from '@/lib/sounds'
@@ -108,9 +107,15 @@ export default function Sidebar({ userEmail }: { userEmail?: string }) {
   return (
     <aside data-nav-zone="sidebar" className="hidden md:flex md:flex-col w-64 shrink-0 h-full relative overflow-hidden bg-[#050810] border-r border-[#22d3ee]/10">
       <div className="p-4 border-b border-white/5 shrink-0 relative z-10">
-                <Link href="/" onClick={() => { unlockAudio(); playConfirmSound(); triggerNav(); }} className="flex items-center justify-center group relative rounded-md px-2 py-2 -mx-1 transition-all hover:bg-[#22d3ee]/5">
-          <LogoEmblem size={60} />
-        </Link>
+                <Link href="/" onClick={() => { unlockAudio(); playConfirmSound(); triggerNav(); }} className="flex items-center gap-3 group relative rounded-md px-2 py-2 -mx-1 transition-all hover:bg-[#22d3ee]/10">
+  <div className="w-10 h-10 rounded-lg border border-[#22d3ee]/30 bg-[#22d3ee]/5 flex items-center justify-center text-[#22d3ee] shadow-[0_0_15px_rgba(34,211,238,0.1)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all">
+    <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+  </div>
+  <div className="min-w-0 flex-1">
+    <div className="text-[11px] font-bold tracking-[0.2em] text-white leading-none group-hover:text-[#22d3ee] transition-colors">MAIN MENU</div>
+    <div className="text-[8px] font-mono tracking-[0.3em] text-[#566074] mt-1 group-hover:text-[#8892a6] transition-colors">RETURN TO HUB</div>
+  </div>
+</Link>
       </div>
 
       <nav className="flex-1 min-h-0 px-3 pt-4 pb-4 overflow-y-auto no-scrollbar relative z-10">
