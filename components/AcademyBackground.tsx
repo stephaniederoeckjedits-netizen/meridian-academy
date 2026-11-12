@@ -15,16 +15,6 @@ export default function AcademyBackground({ variant }: Props) {
       {/* Ambient Orbs */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#22d3ee]/10 blur-[120px] rounded-full mix-blend-screen" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8b5cf6]/10 blur-[120px] rounded-full mix-blend-screen" />
-
-      {/* Perspective Grid (Star Wars/Cyberpunk style) */}
-      <div 
-        className="absolute inset-0 opacity-[0.06]" 
-        style={{ 
-          backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.8) 1px, transparent 1px)', 
-          backgroundSize: '40px 40px',
-          backgroundPosition: 'center top'
-        }} 
-      />
       
       {/* Subtle Vignette to focus the center */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_#050810_100%)] opacity-80" />
