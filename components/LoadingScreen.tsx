@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 const QUOTES = [
-  // Original 20
+  // Original 40
   { text: "The training is nothing. The will is everything.", author: "Bruce Wayne" },
   { text: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
   { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle" },
@@ -23,8 +23,6 @@ const QUOTES = [
   { text: "I think, therefore I am.", author: "René Descartes" },
   { text: "He who has a why to live for can bear almost any how.", author: "Friedrich Nietzsche" },
   { text: "The unexamined life is not worth living.", author: "Socrates" },
-  
-  // 20 New Quotes
   { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
   { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
   { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
@@ -44,7 +42,29 @@ const QUOTES = [
   { text: "Nothing in life is to be feared, it is only to be understood.", author: "Marie Curie" },
   { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
   { text: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
-  { text: "Get busy living or get busy dying.", author: "Stephen King" }
+  { text: "Get busy living or get busy dying.", author: "Stephen King" },
+  
+  // 20 New Quotes
+  { text: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+  { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+  { text: "If you tell the truth, you don't have to remember anything.", author: "Mark Twain" },
+  { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas Edison" },
+  { text: "A person who never made a mistake never tried anything new.", author: "Albert Einstein" },
+  { text: "It is never too late to be what you might have been.", author: "George Eliot" },
+  { text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair" },
+  { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+  { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+  { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Unknown" },
+  { text: "Dream bigger. Do bigger.", author: "Unknown" },
+  { text: "Don't stop when you're tired. Stop when you're done.", author: "Unknown" },
+  { text: "Wake up with determination. Go to bed with satisfaction.", author: "George Lorimer" },
+  { text: "Do something today that your future self will thank you for.", author: "Sean Patrick Flanery" },
+  { text: "Little things make big days.", author: "Unknown" },
+  { text: "It's going to be hard, but hard does not mean impossible.", author: "Unknown" },
+  { text: "Don't wait for opportunity. Create it.", author: "Unknown" },
+  { text: "Sometimes we're tested not to show our weaknesses, but to discover our strengths.", author: "Unknown" },
+  { text: "The key to success is to focus on goals, not obstacles.", author: "Unknown" },
+  { text: "Dream it. Wish it. Do it.", author: "Unknown" }
 ]
 
 export default function LoadingScreen() {
@@ -59,6 +79,14 @@ export default function LoadingScreen() {
     return () => clearInterval(dotTimer)
   }, [])
 
+  // Auto-cycle quotes every 6 seconds
+  useEffect(() => {
+    const quoteTimer = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % QUOTES.length)
+    }, 6000)
+    return () => clearInterval(quoteTimer)
+  }, [])
+
   return (
     <div 
       className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer pointer-events-auto"
@@ -66,7 +94,7 @@ export default function LoadingScreen() {
     >
       {/* Background Image */}
       <img 
-        src="/loading-bg.jpg?v=12" 
+        src="/loading-bg.jpg?v=13" 
         alt="Loading Background" 
         className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
       />

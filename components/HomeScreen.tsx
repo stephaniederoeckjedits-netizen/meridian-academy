@@ -61,17 +61,21 @@ export default function HomeScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050810] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#050810] flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden">
       
-      {/* Bulletproof Background Image */}
-      <img 
-        src="/main-bg.jpg?v=7" 
-        alt="Background" 
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      />
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
+      {/* Mobile Background (Hidden on Desktop) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a1018] via-[#050810] to-[#020408] md:hidden z-0" />
+      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-[#22d3ee]/10 blur-[100px] rounded-full mix-blend-screen md:hidden" />
 
-      <div className="relative z-10 w-full max-w-xl flex flex-col items-center">
+      {/* Desktop Background Image (Hidden on Mobile) */}
+      <img 
+        src="/main-bg.jpg?v=13" 
+        alt="Background" 
+        className="hidden md:block absolute inset-0 w-full h-full object-cover z-0"
+      />
+      <div className="hidden md:block absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80" />
+
+      <div className="relative z-10 w-full max-w-xl flex flex-col items-center mt-12 md:mt-0">
         <div className="w-full bg-[#0a1018]/80 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/[0.02]">
             <span className="flex items-center gap-2 text-[#22d3ee] font-mono text-xs tracking-[0.2em] uppercase font-bold">
@@ -80,7 +84,7 @@ export default function HomeScreen() {
             <span className="text-[10px] font-mono text-[#566074] tracking-widest uppercase">V2.0</span>
           </div>
 
-          <div className="p-3 space-y-5 max-h-[70vh] overflow-y-auto no-scrollbar">
+          <div className="p-2 md:p-3 space-y-4 md:space-y-5 max-h-[75vh] md:max-h-[70vh] overflow-y-auto no-scrollbar">
             {MENU_GROUPS.map((group) => (
               <div key={group.label}>
                 <div className="flex items-center gap-2 px-2 mb-2">
@@ -96,7 +100,7 @@ export default function HomeScreen() {
                         key={item.id}
                         onClick={() => handleNavigate(item.href)}
                         onMouseEnter={() => setSelected(globalIdx)}
-                        className={`group w-full flex items-center gap-4 px-4 py-2.5 rounded-xl transition-all duration-300 text-left relative overflow-hidden ${
+                        className={`group w-full flex items-center gap-3 md:gap-4 px-3 md:px-4 py-2.5 rounded-xl transition-all duration-300 text-left relative overflow-hidden ${
                           isSelected 
                             ? 'bg-gradient-to-r from-[#22d3ee]/20 to-transparent border border-[#22d3ee]/50 shadow-[0_0_30px_rgba(34,211,238,0.15)] scale-[1.02]' 
                             : 'border border-transparent hover:bg-white/5'
@@ -104,21 +108,21 @@ export default function HomeScreen() {
                       >
                         {isSelected && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_2s_infinite]" />}
                         
-                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        <div className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 ${
                           isSelected ? 'bg-[#22d3ee] text-black shadow-[0_0_25px_rgba(34,211,238,0.6)]' : 'bg-white/5'
                         }`} style={{ color: isSelected ? '#000' : group.color }}>
                           {item.icon}
                         </div>
                         <div className="flex-1 min-w-0 relative z-10">
-                          <div className={`text-sm font-bold tracking-widest font-[family-name:var(--font-cinzel)] ${isSelected ? 'text-white' : 'text-[#e5e9f0]'}`}>
+                          <div className={`text-xs md:text-sm font-bold tracking-widest font-[family-name:var(--font-cinzel)] ${isSelected ? 'text-white' : 'text-[#e5e9f0]'}`}>
                             {item.label}
                           </div>
-                          <div className="text-[9px] font-mono text-[#566074] tracking-widest uppercase mt-0.5">
+                          <div className="text-[8px] md:text-[9px] font-mono text-[#566074] tracking-widest uppercase mt-0.5">
                             {item.sub}
                           </div>
                         </div>
                         <div className={`relative z-10 transition-transform duration-300 ${isSelected ? 'translate-x-2 text-[#22d3ee]' : 'text-[#3a4250]'}`}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
                         </div>
                       </button>
                     )
