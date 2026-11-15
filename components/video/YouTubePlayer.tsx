@@ -37,16 +37,25 @@ export default function YouTubePlayer({ videoId, title }: YouTubePlayerProps) {
       tag.src = 'https://www.youtube.com/iframe_api'
       const firstScriptTag = document.getElementsByTagName('script')[0]
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
-      window.onYouTubeIframeAPIReady = () => { initPlayer() }
+
+      window.onYouTubeIframeAPIReady = () => {
+        initPlayer()
+      }
     } else {
       initPlayer()
     }
 
     function initPlayer() {
       if (!containerRef.current) return
+
       playerRef.current = new window.YT.Player(containerRef.current, {
         videoId: videoId,
-        playerVars: { autoplay: 1, rel: 0, modestbranding: 1, start: Math.floor(startTime) },
+        playerVars: {
+          autoplay: 1,
+          rel: 0,
+          modestbranding: 1,
+          start: Math.floor(startTime), // CRITICAL FIX: Apply saved timestamp here
+        },
         events: {
           onReady: (event: any) => {
             setStatus('ready')
@@ -54,7 +63,9 @@ export default function YouTubePlayer({ videoId, title }: YouTubePlayerProps) {
             startTracking()
           },
           onStateChange: (event: any) => {
-            if (event.data === 0) { localStorage.removeItem('meridian_video_resume') }
+            if (event.data === 0) {
+              localStorage.removeItem('meridian_video_resume')
+            }
           },
           onError: (event: any) => {
             setStatus('error')
