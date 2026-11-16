@@ -6,13 +6,11 @@ export default function DiscoverCard({
   video, 
   themeColor, 
   themeIcon, 
-  onPlay, 
   autoPlay 
 }: { 
   video: any
   themeColor: string
   themeIcon: React.ReactNode
-  onPlay?: (video: any) => void
   autoPlay?: boolean 
 }) {
   const [imgError, setImgError] = useState(false)
@@ -21,11 +19,6 @@ export default function DiscoverCard({
   useEffect(() => {
     if (autoPlay) setIsPlaying(true)
   }, [autoPlay])
-
-  const handlePlayClick = () => {
-    setIsPlaying(true)
-    if (onPlay) onPlay(video)
-  }
 
   return (
     <div 
@@ -38,7 +31,7 @@ export default function DiscoverCard({
         {isPlaying ? (
           <YouTubePlayer videoId={video.external_video_id} title={video.title} />
         ) : (
-          <div className="absolute inset-0 cursor-pointer" onClick={handlePlayClick}>
+          <div className="absolute inset-0 cursor-pointer" onClick={() => setIsPlaying(true)}>
             {imgError ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-[#0a1018] to-[#050810] overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: `linear-gradient(${themeColor} 1px, transparent 1px), linear-gradient(90deg, ${themeColor} 1px, transparent 1px)`, backgroundSize: '20px 20px' }} />

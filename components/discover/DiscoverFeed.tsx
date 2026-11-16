@@ -49,7 +49,6 @@ export default function DiscoverFeed({ initialVideos }: { initialVideos: any[] }
   const [activeTab, setActiveTab] = useState('All')
   const [currentPage, setCurrentPage] = useState(1)
   const [resumeVideoId, setResumeVideoId] = useState<string | null>(null)
-  const [activeVideo, setActiveVideo] = useState<any>(null)
   
   const itemsPerPage = 6
   const currentCategory = CATEGORIES.find(c => c.id === activeTab) || CATEGORIES[0]
@@ -67,6 +66,16 @@ export default function DiscoverFeed({ initialVideos }: { initialVideos: any[] }
     setCurrentPage(1)
   }
 
+  const handleResume = (id: string) => {
+    setActiveTab('All')
+    const index = initialVideos.findIndex(v => v.external_video_id === id)
+    if (index !== -1) {
+      const page = Math.floor(index / itemsPerPage) + 1
+      setCurrentPage(page)
+    }
+    setResumeVideoId(id)
+  }
+
   return (
     <div className="w-full max-w-5xl mx-auto pb-12">
       <div className="mb-8 border-b border-white/10 pb-8">
@@ -82,7 +91,7 @@ export default function DiscoverFeed({ initialVideos }: { initialVideos: any[] }
         </p>
       </div>
 
-      <ContinueWatching onResume={(id) => setResumeVideoId(id)} />
+      <ContinueWatching onResume={handleResume} />
 
       <div className="flex flex-wrap gap-2 mb-10">
         {CATEGORIES.map(tab => {
@@ -116,8 +125,7 @@ export default function DiscoverFeed({ initialVideos }: { initialVideos: any[] }
             video={video} 
             themeColor={currentCategory.color} 
             themeIcon={Icons[currentCategory.id as keyof typeof Icons] || Icons.All} 
-            onPlay={(v) => setActiveVideo(v)} 
-            autoPlay={resumeVideoId === video.id} 
+            autoPlay={resumeVideoId === video.external_video_id}
           />
         ))}
       </div>
