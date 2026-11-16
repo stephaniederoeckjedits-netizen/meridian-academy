@@ -11,7 +11,7 @@ export default async function DiscoverPage() {
   const { data: videos } = await supabase
     .from('discover_videos')
     .select('*')
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: false }) // CRITICAL FIX: Newest first
 
   return (
     <AppShell userEmail={user?.email ?? undefined} variant="dashboard">
