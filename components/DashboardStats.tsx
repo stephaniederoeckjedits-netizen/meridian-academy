@@ -44,31 +44,31 @@ export default function DashboardStats({
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-      <div className="dash-stat-card p-5 rounded-lg relative overflow-hidden group">
+      <div className="dash-stat-card p-4 md:p-5 rounded-lg relative overflow-hidden group">
         <h3 className="text-[10px] font-mono tracking-[0.2em] text-[#8892a6] uppercase mb-2">Student Level</h3>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-mono font-bold text-white tracking-wider">LVL {level}</span>
+          <span className="text-2xl md:text-3xl font-mono font-bold text-white tracking-wider">LVL {level}</span>
           <span className="text-xs font-mono text-[#c084fc] mb-1.5">{xp.toLocaleString()} XP</span>
         </div>
       </div>
-      <div className="dash-stat-card p-5 rounded-lg relative overflow-hidden group">
+      <div className="dash-stat-card p-4 md:p-5 rounded-lg relative overflow-hidden group">
         <h3 className="text-[10px] font-mono tracking-[0.2em] text-[#8892a6] uppercase mb-2">Lessons Cleared</h3>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-mono font-bold text-white tracking-wider">{completedLessons}</span>
+          <span className="text-2xl md:text-3xl font-mono font-bold text-white tracking-wider">{completedLessons}</span>
           <span className="text-xs font-mono text-[#22d3ee] mb-1.5">/ {totalLessons}</span>
         </div>
       </div>
-      <div className="dash-stat-card p-5 rounded-lg relative overflow-hidden group">
+      <div className="dash-stat-card p-4 md:p-5 rounded-lg relative overflow-hidden group">
         <h3 className="text-[10px] font-mono tracking-[0.2em] text-[#8892a6] uppercase mb-2">Curriculum</h3>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-mono font-bold text-white tracking-wider">{progressPct}%</span>
+          <span className="text-2xl md:text-3xl font-mono font-bold text-white tracking-wider">{progressPct}%</span>
           <span className="text-xs font-mono text-[#10b981] mb-1.5">COMPLETE</span>
         </div>
       </div>
-      <div className="dash-stat-card p-5 rounded-lg relative overflow-hidden group">
+      <div className="dash-stat-card p-4 md:p-5 rounded-lg relative overflow-hidden group">
         <h3 className="text-[10px] font-mono tracking-[0.2em] text-[#8892a6] uppercase mb-2">Data Shards</h3>
         <div className="flex items-end gap-2">
-          <span className="text-3xl font-mono font-bold text-white tracking-wider">{shards}</span>
+          <span className="text-2xl md:text-3xl font-mono font-bold text-white tracking-wider">{shards}</span>
           <span className="text-xs font-mono text-[#f59e0b] mb-1.5">COLLECTED</span>
         </div>
       </div>

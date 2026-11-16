@@ -44,7 +44,7 @@ export default function AppShell({
           {/* FULLSCREEN TOGGLE */}
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="fixed top-4 right-4 md:top-6 md:right-6 z-[100] bg-[#0a1018]/90 backdrop-blur-md border border-[#22d3ee]/40 rounded-full p-2.5 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:scale-105 active:scale-95"
+            className="hidden md:flex fixed top-6 right-6 z-[100] bg-[#0a1018]/90 backdrop-blur-md border border-[#22d3ee]/40 rounded-full p-2.5 text-[#22d3ee] hover:bg-[#22d3ee] hover:text-black transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:scale-105 active:scale-95"
             title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           >
             {isFullscreen ? (

@@ -48,16 +48,18 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
   return (
     <>
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-[#050810]/90 backdrop-blur-md border-b border-white/10 relative z-50 w-full overflow-hidden">
+        <Link href="/" className="flex items-center gap-3 group relative rounded-md px-2 py-1 -ml-2 transition-all hover:bg-[#22d3ee]/10">
+          <div className="w-8 h-8 rounded-lg border border-[#22d3ee]/30 bg-[#22d3ee]/5 flex items-center justify-center text-[#22d3ee] shadow-[0_0_15px_rgba(34,211,238,0.1)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all">
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div className="min-w-0">
+            <div className="text-[10px] font-bold tracking-[0.2em] text-white leading-none group-hover:text-[#22d3ee] transition-colors">MAIN MENU</div>
+          </div>
+        </Link>
+
         <button onClick={() => setMenuOpen(true)} className="text-[#8892a6] hover:text-white p-1">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
-        
-        <div className="flex items-center gap-2 truncate max-w-[150px]">
-          <LogoEmblem size={24} />
-          <span className="text-xs font-bold tracking-[0.2em] text-white truncate">MERIDIAN</span>
-        </div>
-
-        <ThemeToggle compact />
       </header>
 
       {menuOpen && (
@@ -78,7 +80,7 @@ export default function MobileNav({ userEmail }: { userEmail?: string }) {
             </div>
             
             <div className="p-4 space-y-6">
-              {NAV_GROUPS.map((group, gi) => (
+              {NAV_GROUPS.map((group) => (
                 <div key={group.label}>
                   <div className="flex items-center gap-2 px-2 mb-3">
                     <span className="text-[9px] font-mono tracking-[0.35em]" style={{ color: group.color }}>{group.label}</span>
