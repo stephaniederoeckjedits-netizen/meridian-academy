@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const QUOTES = [
   { text: "The training is nothing. The will is everything.", author: "Bruce Wayne" },
@@ -26,22 +26,39 @@ const QUOTES = [
 
 export default function LoadingScreen() {
   const [quoteIndex, setQuoteIndex] = useState(0)
+  const [dots, setDots] = useState('')
+
+  // 1. RANDOM START ON MOUNT
+  useEffect(() => {
+    setQuoteIndex(Math.floor(Math.random() * QUOTES.length))
+  }, [])
+
+  // 2. ANIMATE DOTS
+  useEffect(() => {
+    const dotTimer = setInterval(() => {
+      setDots((d) => (d.length >= 3 ? '' : d + '.'))
+    }, 400)
+    return () => clearInterval(dotTimer)
+  }, [])
 
   return (
     <div 
-      className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer pointer-events-auto"
+      className="fixed inset-0 z-[99999] overflow-hidden bg-[#050810] cursor-pointer pointer-events-auto flex flex-col items-center"
       onClick={() => setQuoteIndex((prev) => (prev + 1) % QUOTES.length)}
     >
+      {/* Background Image */}
       <img 
-        src="/loading-bg.jpg?v=15" 
+        src="/loading-bg.jpg?v=16" 
         alt="Loading Background" 
         className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
       />
       
+      {/* Vignette */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_transparent_20%,_#050810_90%)] opacity-80 pointer-events-none" />
       
+      {/* Text Content */}
       <div className="absolute top-[48%] left-0 right-0 z-10 flex flex-col items-center max-w-5xl mx-auto text-center px-6 pointer-events-none">
-        <div className="text-2xl md:text-4xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif min-h-[120px] flex items-center justify-center" key={quoteIndex}>
+        <div className="text-2xl md:text-4xl leading-relaxed italic mb-8 text-[#e5e9f0] font-serif transition-opacity duration-300 min-h-[120px] flex items-center justify-center" key={quoteIndex}>
           "{QUOTES[quoteIndex].text}"
         </div>
         <div className="text-sm tracking-widest uppercase text-[#22d3ee] font-mono mb-12">
@@ -50,10 +67,14 @@ export default function LoadingScreen() {
         
         <div className="flex flex-col items-center gap-3">
           <div className="text-[11px] tracking-[0.25em] uppercase text-[#8892a6] font-mono font-medium">
-            LOADING...
+            LOADING{dots}
           </div>
           <div className="h-px w-64 overflow-hidden bg-[#1e2633]">
             <div className="h-full bg-[#22d3ee]" style={{ width: '50%', animation: 'loading 2s ease-in-out infinite' }} />
+          </div>
+          {/* CLICK INDICATOR */}
+          <div className="text-[9px] text-[#566074] font-mono tracking-widest uppercase mt-4 opacity-50 hover:opacity-100 transition-opacity">
+            [ CLICK TO CHANGE QUOTE ]
           </div>
         </div>
       </div>
